@@ -151,7 +151,7 @@ PostgreSQL 下 `AUTO_CREATE_SCHEMA` 默认是关的，后端不会再偷偷建�
 
 ## 8. 原生安装（当前方案）
 
-官方安装程序在本机会失败：它会把自己解压到 `C:\Users\盛浩然\AppData\Local\Temp\`，
+官方安装程序在本机会失败：它会把自己解压到 `C:\Users\<用户名>\AppData\Local\Temp\`，
 路径含中文，PowerShell 以 GBK 码页执行脚本时报 `getlocales.ps1` 编码错误，
 且提权后不继承 `set TEMP` 的临时改动。
 

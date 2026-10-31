@@ -1,6 +1,6 @@
 # 食刻 EatWhat —— 工程记忆（Agent Memory）
 
-> **定位**：跨会话的工程状态与决策账本。**唯一事实来源永远是 [`MASTER_SPEC.md`](../MASTER_SPEC.md)（当前 v2.3.5）**；本文件只记录三类东西：
+> **定位**：跨会话的工程状态与决策账本。**唯一事实来源永远是 [`MASTER_SPEC.md`](../MASTER_SPEC.md)（当前 v2.3.7）**；本文件只记录三类东西：
 > ① 文档没写、但施工必须知道的工程决策与理由；② 文档写了但代码还没跟上的漂移；③ 阻塞项与教训。
 > 与文档冲突时**以文档为准**，并回来改本文件。
 >
@@ -19,7 +19,7 @@
 
 | 文件 | 状态 |
 | --- | --- |
-| `MASTER_SPEC.md`（根目录，546 行） | **SSOT，v2.3.5**，2026-10-24 00:0x 从 `D:\谷歌\MASTER_SPEC_v2.3.2.md` 拷入 |
+| `MASTER_SPEC.md`（根目录，780 行） | **SSOT，v2.3.7**，2026-10-24 00:0x 从 `D:\谷歌\MASTER_SPEC_v2.3.2.md` 拷入 |
 | `docs/spec_archive/MASTER_SPEC_v2.3.1.md` | 上一版 SSOT 归档（59548 字节，540 行） |
 | `docs/spec_archive/MASTER_SPEC_v2.1_初稿.md` | 最初被 @ 的历史稿（2026-10-24 从根目录归档），仅存档不再引用 |
 | `MOBILE_VISUAL_SPEC.md` / `WEATHERPILL_GLASS.md` / `DASHBOARD_EXPANSION.md` | ✅ 均在仓库根目录。`MOBILE_VISUAL_SPEC.md` 已于 2026-10-24 13:4x 用 `D:\谷歌` 的 **12353 字节新版覆盖**（含 §4.1 G 方案与 §4.3 单屏硬约束），旧版 8285 字节归档为 `docs/spec_archive/MOBILE_VISUAL_SPEC_v1_旧版_8285B.md` |
@@ -35,7 +35,7 @@
   1. `Grainient`（谷物）银灰版 → 移动端**全局底**，三色 `#3A3A40 / #17171A / #55555E`，`timeSpeed ≈ 0.2` 近静止，禁用默认蓝紫配色；内容密集页允许冻帧或降帧。
   2. `Liquid Chrome` → **仅**首页顶部与共识揭晓页；底色 `#1A1A1A`（最亮不超 `#222226`）；**文字严禁直接压铬面**，必须落在玻璃或实底组件上。
   3. `Silk` → **仅**启动/登录页，银灰，Speed 5 → 1~2；**不得作全局底**（墨池已用 Silk 作全局底，两作品须区分）。
-- **三层架构（当前 v2.3.5）**：L0 背景氛围 → L1 小面积悬浮件使用 WeatherPill 配方 → L2 内容卡使用液态玻璃 G 方案。旧“内容一律实底”已废止；一级卡折射、次卡 matte 降级，按 `MOBILE_VISUAL_SPEC.md` 执行。
+- **三层架构（当前 v2.3.7）**：L0 背景氛围 → L1 小面积悬浮件使用 WeatherPill 配方 → L2 内容卡使用液态玻璃 G 方案。旧“内容一律实底”已废止；一级卡折射、次卡 matte 降级，按 `MOBILE_VISUAL_SPEC.md` 执行。
 - **daisyUI 令牌**：`primary` = `#17171A`、`secondary` = `#55555E`、`base` = `#FFFFFF` / `#F4F4F5`。「颜色只许引用主题令牌、严禁写死」的硬约束不变。
 - **WeatherPill 玻璃**：不再「打开 Figma 抄 CSS」，参数已实测提取，**唯一数值来源是 `WEATHERPILL_GLASS.md`**（Apple「macOS 27」Materials 页 Liquid Glass - Small（Light）两层填充 + 3 内阴影 + 4 外阴影 + 折射参数）。该文件缺失 → 当前阻塞。
 - **其他**：状态气泡选中态 = 深灰实底白字（无模式色）；卡片仍是 `rounded-3xl` + `shadow-[0_8px_30px_rgb(0,0,0,0.04)]`，但图标改**单色**（不再双色图标）。
@@ -753,7 +753,7 @@ benchmark JSON 默认也跟随该目录。复验一律指向新目录，不再�
 ## 32. 运行库切到原生 PostgreSQL（2026-10-30）
 
 - Docker 当天崩四次（WSL2 内存不足 + ecommerce 六个服务 `restart: unless-stopped` 自动拉起），放弃容器方案。
-- 官方 EDB 安装程序在本机必然失败：解压到 `C:\Users\盛浩然\AppData\Local\Temp\`，中文路径让 PowerShell 以 GBK 执行 `getlocales.ps1` 报编码错；提权后不继承 `set TEMP`。
+- 官方 EDB 安装程序在本机必然失败：解压到 `C:\Users\<用户名>\AppData\Local\Temp\`，中文路径让 PowerShell 以 GBK 执行 `getlocales.ps1` 报编码错；提权后不继承 `set TEMP`。
 - 改用免安装包：`postgresql-16.15-5-windows-x64-binaries.zip`（直链 get.enterprisedb.com，356MB），解压到 `D:\PostgreSQL\16`。
 - initdb：`-D D:\PGData\16 -U postgres -E UTF8 --locale=C --pwfile`；pg_hba 本机连接 trust → scram-sha-256；postgresql.conf `port=5433`、`listen_addresses=127.0.0.1`。
 - 建 role/database `eatwhat`（UTF8），跑三个迁移（13 表），搬家 14,311 行，逐表核对一致。

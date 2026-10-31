@@ -1,6 +1,6 @@
 # docs/ 目录地图
 
-先读根目录的 `MASTER_SPEC.md`（SSOT，当前 v2.3.5），再看这里。
+先读根目录的 `MASTER_SPEC.md`（SSOT，当前 v2.3.7），再看这里。
 
 ## 谁会读这些文件
 
@@ -18,12 +18,12 @@
 
 | 文件 | 作用 |
 |---|---|
-| `MASTER_SPEC.md` | 唯一事实来源（v2.3.5）：架构、契约、算法口径、批次路线图 |
+| `MASTER_SPEC.md` | 唯一事实来源（v2.3.7）：架构、契约、算法口径、批次路线图 |
 | `MOBILE_VISUAL_SPEC.md` | 移动端视觉细则：单色总纲、背景分工、三层架构、§4.1 内容卡 G 方案基准值、§4.3 首页尺寸基线 + 单屏硬约束 |
 | `WEATHERPILL_GLASS.md` | 悬浮小件（WeatherPill / Tab / 沙盒钮）玻璃配方，数值唯一来源 |
 | `DASHBOARD_EXPANSION.md` | 后台大屏扩容方案（批次 4 用，图表清单待勾选） |
 
-`DASHBOARD_EXPANSION.md` 的“待勾选”为历史措辞；现行 SSOT 已锁定 17 项。根目录新增 `BATCH4_PLAN.md` 为执行细则，含整改复核、批次 4、批次 5；不另设设计 SSOT。统计接口已确认 **13 个**（含 `quality`），SSOT v2.3.5 已同步；不能私删路由。
+`DASHBOARD_EXPANSION.md` 的“待勾选”为历史措辞；现行 SSOT 已锁定 17 项。根目录新增 `BATCH4_PLAN.md` 为执行细则，含整改复核、批次 4、批次 5；不另设设计 SSOT。统计接口已确认 **13 个**（含 `quality`），SSOT v2.3.7 已同步；不能私删路由。
 
 ## 当前执行门禁
 
