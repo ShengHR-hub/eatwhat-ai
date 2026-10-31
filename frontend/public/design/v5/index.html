@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>食刻 · V5 极简设计</title>
+<style>
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --paper-strong: #fffdf8;
+    --ink: #241e18;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(36, 30, 24, .12);
+    --line-strong: rgba(36, 30, 24, .2);
+    --glass: rgba(255, 253, 248, .72);
+    --glass-line: rgba(255, 255, 255, .85);
+    --shadow: rgba(38, 31, 23, .16);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  button { border: 0; background: none; cursor: pointer; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+  }
+  .stage-note {
+    position: fixed;
+    left: 42px;
+    top: 40px;
+    width: 220px;
+    color: var(--ink);
+  }
+  .stage-note__eyebrow {
+    margin: 0 0 8px;
+    font-size: 10px;
+    letter-spacing: .18em;
+    color: var(--muted);
+  }
+  .stage-note__title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .stage-note__body {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .stage-note__meta {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--faint);
+  }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background-color: var(--paper);
+    background-image: var(--bg-image, none);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 32px 90px var(--shadow), 0 2px 8px rgba(38, 31, 23, .08);
+    border: 1px solid rgba(255, 255, 255, .68);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--bg-scrim, transparent);
+    opacity: var(--bg-scrim-opacity, 0);
+    pointer-events: none;
+  }
+  .phone.has-photo .ambient { display: none; }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("./assets/paper-grain.png");
+    background-size: 180px 180px;
+    opacity: .52;
+    mix-blend-mode: multiply;
+  }
+  .ambient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .ambient__wash {
+    position: absolute;
+    inset: -5%;
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
+    opacity: .2;
+  }
+
+  .statusbar {
+    position: relative;
+    z-index: 2;
+    height: 34px;
+    padding: 11px 24px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .01em;
+  }
+  .statusbar__icons { display: flex; gap: 5px; align-items: center; }
+  .statusbar__battery {
+    width: 17px; height: 8px;
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    position: relative;
+    opacity: .8;
+  }
+  .statusbar__battery::after {
+    content: "";
+    position: absolute;
+    right: -3px; top: 2px;
+    width: 2px; height: 3px;
+    border-radius: 0 1px 1px 0;
+    background: var(--ink);
+  }
+  .statusbar__battery i {
+    position: absolute;
+    inset: 1px;
+    width: 70%;
+    border-radius: 1px;
+    background: var(--ink);
+  }
+  .statusbar__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink); opacity: .6; }
+
+  .topbar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 22px 0;
+  }
+  .persona {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    padding: 0;
+  }
+  .persona__avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: var(--paper-strong);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .persona__copy { display: flex; flex-direction: column; gap: 3px; }
+  .persona__name { font-size: 12px; font-weight: 500; letter-spacing: -.01em; }
+  .persona__context { font-size: 10px; color: var(--muted); }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, .48);
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .top-actions { display: flex; align-items: center; gap: 7px; }
+  .weather-chip { height: 32px; padding: 0 9px; border-radius: 16px; background: rgba(255, 255, 255, .48); border: 1px solid var(--line); display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9.5px; white-space: nowrap; }
+  .weather-chip svg { width: 13px; height: 13px; }
+  .weather-chip i { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+  .weather-pop { position: absolute; top: 74px; right: 22px; z-index: 6; width: 228px; padding: 12px; border-radius: 16px; background: rgba(251, 249, 244, .82); border: 1px solid rgba(255, 255, 255, .9); box-shadow: 0 16px 40px rgba(38, 31, 23, .16); -webkit-backdrop-filter: blur(28px) saturate(1.25); backdrop-filter: blur(28px) saturate(1.25); }
+  .weather-pop[hidden] { display: none; }
+  .weather-pop__head { display: flex; justify-content: space-between; font-size: 8.5px; color: var(--faint); }
+  .weather-pop__main { display: flex; align-items: baseline; gap: 6px; margin: 9px 0 8px; }
+  .weather-pop__main b { font-size: 30px; font-weight: 500; letter-spacing: -.05em; line-height: 1; }
+  .weather-pop__main span { font-size: 11px; color: var(--muted); }
+  .weather-pop__grid { display: flex; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 8.5px; color: var(--muted); }
+  .weather-pop__tip { margin: 8px 0 0; font-size: 9px; line-height: 1.55; color: var(--muted); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 22px 18px;
+  }
+  .context-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    color: var(--muted);
+    padding: 0 2px 2px;
+  }
+  .context-line__left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .context-line__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+  .radar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 8px 2px 0;
+  }
+  .radar-head__label {
+    font-size: 9px;
+    letter-spacing: .16em;
+    color: var(--faint);
+  }
+  .radar-head__score { display: flex; align-items: baseline; gap: 4px; }
+  .radar-head__score b { font-size: 25px; font-weight: 500; letter-spacing: -.04em; line-height: 1; }
+  .radar-head__score span { font-size: 9px; color: var(--muted); }
+
+  .radar-wrap {
+    position: relative;
+    height: 270px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 -4px;
+  }
+  .radar-wrap::before {
+    content: "";
+    position: absolute;
+    width: 244px;
+    height: 244px;
+    border-radius: 50%;
+    background: rgba(231, 235, 239, .035);
+    border: 1px solid rgba(231, 235, 239, .075);
+    box-shadow: inset 0 0 40px rgba(231, 235, 239, .025);
+  }
+  .radar-wrap svg { position: relative; z-index: 1; width: 270px; height: 270px; display: block; overflow: visible; }
+
+  .dish {
+    padding: 0 2px;
+  }
+  .dish__title {
+    margin: 0 0 5px;
+    font-size: 25px;
+    line-height: 1.18;
+    font-weight: 500;
+    letter-spacing: -.035em;
+  }
+  .dish__meta {
+    margin: 0;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .dish__reason {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 320px;
+  }
+  .dish__evidence {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .dish__evidence b { font-weight: 500; color: var(--ink); }
+  .dish__evidence button {
+    margin-left: auto;
+    padding: 0;
+    font-size: 10px;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .alternatives { margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .alternatives__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; font-size: 8.5px; color: var(--faint); }
+  .alternatives__list { display: flex; flex-direction: column; }
+  .alternative { width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .alternative:last-child { border-bottom: 0; }
+  .alternative__name { font-size: 10px; color: var(--ink); }
+  .alternative__meta { margin-left: auto; font-size: 8.5px; color: var(--faint); }
+  .alternative__score { min-width: 26px; text-align: right; font-size: 9px; color: var(--muted); }
+
+  .actions {
+    margin-top: auto;
+    padding-top: 12px;
+  }
+  .primary {
+    width: 100%;
+    height: 50px;
+    border-radius: 16px;
+    border: 1px solid var(--cta-border, rgba(255, 255, 255, .85));
+    background: var(--cta-bg, rgba(255, 255, 255, .58));
+    color: var(--cta-ink, var(--ink));
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    backdrop-filter: blur(24px) saturate(1.4);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 8px 22px rgba(4, 6, 12, .18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .primary span:last-child { font-size: 17px; font-weight: 400; opacity: .72; }
+  .primary:active { transform: scale(.985); opacity: .9; }
+  .secondary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 3px 2px;
+  }
+  .text-btn {
+    padding: 0;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .text-btn:active { opacity: .55; }
+
+  .tabbar {
+    position: relative;
+    z-index: 3;
+    height: 58px;
+    margin: 0 12px 10px;
+    padding: 5px 7px calc(4px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    background: var(--tabbar-bg, rgba(251, 249, 244, .74));
+    -webkit-backdrop-filter: blur(24px) saturate(1.16);
+    backdrop-filter: blur(24px) saturate(1.16);
+    border: 1px solid var(--tabbar-border, rgba(255, 255, 255, .76));
+    border-radius: 22px;
+    box-shadow: 0 8px 26px rgba(38, 31, 23, .08);
+  }
+  .tab {
+    position: relative;
+    height: 46px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--faint);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: .01em;
+    transition: color .18s ease, opacity .18s ease;
+  }
+  .tab svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tab.is-active {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .tab.is-active svg { stroke-width: 1.75; }
+  .tab.is-active::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .tab:active { opacity: .58; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(20, 18, 15, .28);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+  }
+  .overlay.is-open { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 11;
+    max-height: 78%;
+    display: flex;
+    flex-direction: column;
+    background: var(--sheet-bg, rgba(251, 249, 244, .62));
+    -webkit-backdrop-filter: blur(36px) saturate(1.3);
+    backdrop-filter: blur(36px) saturate(1.3);
+    border-top: 1px solid var(--sheet-border, rgba(255, 255, 255, .88));
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -24px 70px rgba(38, 31, 23, .18);
+    transform: translateY(102%);
+    transition: transform .36s cubic-bezier(.32, .72, 0, 1);
+  }
+  .sheet.is-open { transform: translateY(0); }
+  .sheet__handle {
+    width: 38px; height: 4px;
+    border-radius: 2px;
+    background: var(--line-strong);
+    margin: 10px auto 0;
+  }
+  .sheet__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 22px 10px;
+  }
+  .sheet__eyebrow {
+    margin: 0 0 3px;
+    font-size: 9px;
+    letter-spacing: .16em;
+    color: var(--faint);
+  }
+  .sheet__title { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; }
+  .sheet__close {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(231, 235, 239, .08);
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    color: var(--muted);
+  }
+  .sheet__body {
+    overflow-y: auto;
+    padding: 0 22px 20px;
+    overscroll-behavior: contain;
+  }
+  .sheet__body::-webkit-scrollbar { display: none; }
+  .section { padding: 15px 0; border-top: 1px solid var(--line); }
+  .section:first-child { border-top: 0; padding-top: 4px; }
+  .section__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .section__title { margin: 0; font-size: 11px; font-weight: 500; }
+  .section__hint { font-size: 9.5px; color: var(--faint); }
+
+  .is-hidden { display: none !important; }
+  .upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px dashed var(--line-strong);
+    background: rgba(231, 235, 239, .04);
+    color: var(--muted);
+    font-size: 10px;
+    cursor: pointer;
+  }
+  .image-preview { display: flex; align-items: center; gap: 9px; margin-top: 9px; }
+  .image-preview img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; background: var(--line); border: 1px solid var(--line); }
+  .image-preview__copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .image-preview__name { font-size: 10px; color: var(--ink); max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .image-preview__meta { font-size: 9px; color: var(--faint); }
+  .segmented {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    padding: 3px;
+    border-radius: 12px;
+    background: rgba(29, 28, 25, .055);
+  }
+  .segmented--two { grid-template-columns: 1fr 1fr; }
+  .segmented button {
+    height: 32px;
+    border-radius: 9px;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .segmented button.is-active {
+    background: rgba(255, 255, 255, .8);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(38, 31, 23, .06);
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--ink);
+    height: 4px;
+  }
+  .slider-value {
+    min-width: 52px;
+    text-align: right;
+    font-size: 10px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    height: 30px;
+    padding: 0 11px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .46);
+    border: 1px solid var(--line);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .chip.is-active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-strong);
+  }
+
+  .select-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .select-field {
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .46);
+    border: 1px solid var(--line);
+    font-size: 10px;
+    color: var(--ink);
+    appearance: none;
+  }
+
+  .sheet__footer {
+    padding: 10px 22px calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--sheet-footer-bg, rgba(251, 249, 244, .7));
+  }
+  .apply {
+    width: 100%;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: var(--paper-strong);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .toast {
+    position: absolute;
+    left: 50%;
+    bottom: 76px;
+    z-index: 20;
+    transform: translate(-50%, 16px);
+    padding: 9px 14px;
+    border-radius: 12px;
+    background: rgba(29, 28, 25, .9);
+    color: var(--paper);
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+    white-space: nowrap;
+  }
+  .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stage-note { display: none; }
+    .stage { padding: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+    .radar-wrap { height: 300px; }
+  }
+  @media (max-height: 760px) {
+    .radar-wrap { height: 250px; }
+    .radar-wrap svg { width: 250px; height: 250px; }
+    .dish__reason { margin-top: 8px; font-size: 11px; }
+    .actions { padding-top: 10px; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <aside class="stage-note" aria-label="设计说明">
+    <p class="stage-note__eyebrow">EATWHAT · V5</p>
+    <h1 class="stage-note__title">极简首页，功能全部收进抽屉</h1>
+    <p class="stage-note__body">主界面只回答三个问题：今天吃什么、为什么推荐、要不要吃。模式、预算、状态、筛选、算法、足迹、冰箱和房间都不在主屏。</p>
+    <div class="stage-note__meta">390 × 844<br>静态设计原型<br>不连接数据库与后端</div>
+  </aside>
+
+  <section class="phone" id="phone" aria-label="食刻移动端极简首页">
+    <div class="phone-bg-overlay" id="phoneBgOverlay"></div>
+    <div class="ambient" aria-hidden="true">
+      <img class="ambient__wash" src="./assets/watercolor-ink.png" alt="">
+    </div>
+
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="statusbar__icons">
+        <span class="statusbar__dot"></span>
+        <span class="statusbar__dot"></span>
+        <span class="statusbar__battery"><i></i></span>
+      </span>
+    </div>
+
+    <header class="topbar">
+      <button class="persona" type="button" id="personaButton" aria-label="切换演示角色">
+        <span class="persona__avatar" id="avatar">赵</span>
+        <span class="persona__copy">
+          <span class="persona__name" id="personaName">晚上好，小赵</span>
+          <span class="persona__context" id="personaContext">思源 · 外食</span>
+        </span>
+      </button>
+      <div class="top-actions">
+        <button class="weather-chip" type="button" id="weatherButton" title="查看实时天气" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 15a5 5 0 1 1 10 0"/><path d="M12 4v2M5 7l1.4 1.4M19 7l-1.4 1.4M4 15h16M8 18l-1 2M12 18v2M16 18l1 2"/></svg>
+          <span>18° 小雨</span>
+          <i aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn" type="button" id="openSheet" aria-label="打开调整抽屉" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke-linecap="round"/>
+            <circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="weather-pop" id="weatherPop" hidden>
+      <div class="weather-pop__head"><span>实时天气</span><span>19:30 更新</span></div>
+      <div class="weather-pop__main"><b>18°</b><span>小雨</span></div>
+      <div class="weather-pop__grid">
+        <span>体感 16°</span><span>湿度 82%</span><span>东风 3 级</span>
+      </div>
+      <p class="weather-pop__tip">今晚适合热汤，路面湿滑，优先选近的窗口。</p>
+    </div>
+
+    <div class="content">
+      <div class="context-line">
+        <div class="context-line__left">
+          <span id="contextMode">外食</span><span class="context-line__dot"></span>
+          <span id="contextBudget">预算 ¥30</span><span class="context-line__dot"></span>
+          <span id="contextState">热汤 · 省事</span>
+        </div>
+        <span id="contextCampus">思源</span>
+      </div>
+
+      <div class="radar-head">
+        <span class="radar-head__label">八维风味</span>
+        <span class="radar-head__score"><b id="score">88</b><span>匹配</span></span>
+      </div>
+      <div class="radar-wrap" aria-hidden="true">
+        <svg id="radar" viewBox="0 0 320 320" role="img" aria-label="菜品八维风味雷达图"></svg>
+      </div>
+
+      <div class="dish">
+        <h2 class="dish__title" id="dishName">番茄牛腩汤面</h2>
+        <p class="dish__meta" id="dishMeta">一食堂 · 川湘窗口 · ¥26 · 20 分钟</p>
+        <p class="dish__reason" id="dishReason">下雨降温，热汤更合适。你三天没吃牛肉，防腻权重高，价格也在预算内。</p>
+        <div class="dish__evidence">
+          <span>口味 <b id="tasteScore">92</b></span>
+          <span>天气 <b id="weatherScore">88</b></span>
+          <span>预算 <b id="budgetScore">76</b></span>
+          <button type="button" id="whyButton">推荐依据</button>
+        </div>
+        <div class="alternatives" id="alternatives">
+          <div class="alternatives__head"><span>也可以考虑</span><span>点一下切换</span></div>
+          <div class="alternatives__list" id="alternativesList"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="button" id="eatButton"><span>就吃这个</span><span aria-hidden="true">→</span></button>
+        <div class="secondary-row">
+          <button class="text-btn" type="button" id="shuffleButton">换一个</button>
+          <button class="text-btn" type="button" id="comboButton">组合方案</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="tabbar" aria-label="主导航">
+      <a class="tab is-active" href="index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5.5h5V20"/></svg>
+        <span>首页</span>
+      </a>
+      <a class="tab" href="footprint.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4.5l3 1.8"/></svg>
+        <span>足迹</span>
+      </a>
+      <a class="tab" href="fridge.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M5 10h14M9 6.5v1.8M9 13v2.2"/></svg>
+        <span>冰箱</span>
+      </a>
+      <a class="tab" href="room.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.8 19c.5-3 2.5-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 14.8c2.7-.4 5.1.8 6 3.4"/></svg>
+        <span>房间</span>
+      </a>
+      <a class="tab" href="profile.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"/></svg>
+        <span>我的</span>
+      </a>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+    <aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="调整这顿" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head">
+        <div>
+          <p class="sheet__eyebrow">ADJUST</p>
+          <h2 class="sheet__title">调整这顿</h2>
+        </div>
+        <button class="sheet__close" type="button" id="closeSheet" aria-label="关闭">×</button>
+      </header>
+
+      <div class="sheet__body">
+        <section class="section">
+          <div class="section__head"><h3 class="section__title">模式</h3><span class="section__hint">主屏只保留结果</span></div>
+          <div class="segmented" id="modeGroup">
+            <button type="button" data-mode="OUT" class="is-active">外食</button>
+            <button type="button" data-mode="HOME">下厨</button>
+            <button type="button" data-mode="COMBO">组合</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__head"><h3 class="section__title">预算</h3><span class="section__hint" id="budgetLabel">¥30</span></div>
+          <div class="slider-row">
+            <input id="budgetRange" type="range" min="10" max="120" step="5" value="30">
+            <span class="slider-value" id="budgetValue">¥30</span>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__head"><h3 class="section__title">现在状态</h3><span class="section__hint">可多选</span></div>
+          <div class="chips" id="stateGroup">
+            <button class="chip is-active" type="button" data-state="热汤">热汤</button>
+            <button class="chip is-active" type="button" data-state="省事">省事</button>
+            <button class="chip" type="button" data-state="清淡">清淡</button>
+            <button class="chip" type="button" data-state="高蛋白">高蛋白</button>
+            <button class="chip" type="button" data-state="甜口">甜口</button>
+            <button class="chip" type="button" data-state="一个人">一个人</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__head"><h3 class="section__title">筛选</h3><span class="section__hint">不占主屏</span></div>
+          <div class="select-grid">
+            <select class="select-field" id="campusSelect" aria-label="校区">
+              <option>思源</option><option>建大雁塔</option>
+            </select>
+            <select class="select-field" id="distanceSelect" aria-label="距离">
+              <option>3 公里内</option><option>1 公里内</option><option>不限距离</option>
+            </select>
+            <select class="select-field" id="cuisineSelect" aria-label="菜系">
+              <option>全部菜系</option><option>川湘菜</option><option>粤菜</option><option>轻食</option>
+            </select>
+            <select class="select-field" id="sortSelect" aria-label="排序">
+              <option>综合匹配</option><option>距离优先</option><option>价格优先</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__head"><h3 class="section__title">算法沙盒</h3><span class="section__hint">现场调参</span></div>
+          <div style="margin-bottom:12px;">
+            <div class="slider-row">
+              <span style="width:38px;font-size:10px;color:var(--muted);">λ 防腻</span>
+              <input id="lambdaRange" type="range" min="0.1" max="2" step="0.1" value="0.5">
+              <span class="slider-value" id="lambdaValue">0.50</span>
+            </div>
+          </div>
+          <div>
+            <div class="slider-row">
+              <span style="width:38px;font-size:10px;color:var(--muted);">ω 群组</span>
+              <input id="omegaRange" type="range" min="0" max="1" step="0.05" value="0.5">
+              <span class="slider-value" id="omegaValue">0.50</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <footer class="sheet__footer">
+        <button class="apply" type="button" id="applyButton">应用并关闭</button>
+      </footer>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+  const DISHES = {
+    OUT: [
+      {
+        name: '番茄牛腩汤面',
+        meta: '一食堂 · 川湘窗口 · ¥26 · 20 分钟',
+        score: 88,
+        taste: 92,
+        weather: 88,
+        budget: 76,
+        reason: '下雨降温，热汤更合适。你三天没吃牛肉，防腻权重高，价格也在预算内。',
+        note: '一食堂汤面窗口，热汤和高饱腹都适合雨天；从宿舍走过去约 6 分钟。',
+        personal: '口味 92 · 天气 88 · 预算 76。雨天和三天没吃牛肉拉高匹配；预算接近上限。',
+        vector: { spicy: .25, oily: .3, soup: .9, temp: .85, satiety: .8, speed: .55, social: .35, comfort: .9 }
+      },
+      {
+        name: '青椒肉丝盖饭',
+        meta: '三食堂 · 家常小炒 · ¥18 · 12 分钟',
+        score: 84,
+        taste: 88,
+        weather: 62,
+        budget: 92,
+        reason: '预算友好，出餐快；青椒和肉丝的辣度适中，适合今天不想等太久。',
+        note: '三食堂家常小炒，出餐快、价格低；青椒和肉丝的辣度适中。',
+        personal: '口味 88 · 天气 62 · 预算 92。预算很友好；雨天吃盖饭不如热汤舒服。',
+        vector: { spicy: .55, oily: .55, soup: .15, temp: .65, satiety: .9, speed: .8, social: .4, comfort: .6 }
+      },
+      {
+        name: '菌菇鸡汤面',
+        meta: '二食堂 · 汤面窗口 · ¥22 · 18 分钟',
+        score: 86,
+        taste: 82,
+        weather: 94,
+        budget: 84,
+        reason: '雨天更适合热汤；菌菇和鸡汤偏清淡，不会和最近的饮食重复。',
+        note: '二食堂汤面窗口，菌菇和鸡汤偏清淡，18 分钟出餐。',
+        personal: '口味 82 · 天气 94 · 预算 84。雨天匹配高；最近吃过菌菇，防腻权重一般。',
+        vector: { spicy: .1, oily: .2, soup: .95, temp: .9, satiety: .7, speed: .45, social: .3, comfort: .95 }
+      }
+    ],
+    HOME: [
+      {
+        name: '番茄牛腩汤面',
+        meta: '下厨 · 40 分钟 · 约 ¥18 · 一锅出',
+        score: 90,
+        taste: 94,
+        weather: 92,
+        budget: 88,
+        reason: '冰箱里有牛腩和番茄，今晚降温，热汤面比炒菜更合适。',
+        note: '冰箱里有牛腩和番茄，25 分钟一锅出；今晚优先用掉临期食材。',
+        personal: '口味 94 · 天气 92 · 预算 88。厨具和时间都够；牛腩需要提前解冻。',
+        vector: { spicy: .2, oily: .25, soup: .92, temp: .88, satiety: .82, speed: .45, social: .3, comfort: .92 }
+      },
+      {
+        name: '香菇滑鸡饭',
+        meta: '下厨 · 30 分钟 · 约 ¥15 · 电饭煲',
+        score: 85,
+        taste: 86,
+        weather: 70,
+        budget: 94,
+        reason: '主要食材已在冰箱，厨具只需要电饭煲；比外卖更省预算。',
+        note: '香菇和鸡胸肉已在冰箱，电饭煲一锅出；比外卖省预算。',
+        personal: '口味 86 · 天气 70 · 预算 94。食材齐、厨具简单；但缺少绿叶菜。',
+        vector: { spicy: .15, oily: .3, soup: .35, temp: .7, satiety: .85, speed: .65, social: .3, comfort: .78 }
+      },
+      {
+        name: '清炒虾仁',
+        meta: '下厨 · 15 分钟 · 约 ¥24 · 炒锅',
+        score: 83,
+        taste: 84,
+        weather: 60,
+        budget: 80,
+        reason: '高蛋白、低油腻，适合减脂日；虾仁临期，优先消耗。',
+        note: '虾仁临期，15 分钟快炒；适合减脂日的高蛋白选择。',
+        personal: '口味 84 · 天气 60 · 预算 80。高蛋白低油；但饱腹感偏弱。',
+        vector: { spicy: .05, oily: .15, soup: .1, temp: .6, satiety: .55, speed: .85, social: .25, comfort: .6 }
+      }
+    ],
+    COMBO: [
+      {
+        name: '一荤一素一汤',
+        meta: '青椒肉丝 · 清炒时蔬 · 番茄蛋汤 · ¥32',
+        score: 91,
+        taste: 90,
+        weather: 90,
+        budget: 86,
+        reason: '三道菜互补：有肉、有菜、有热汤，平均油腻度控制在阈值内。',
+        note: '三道菜互补：有肉、有菜、有热汤，平均油腻度在阈值内。',
+        personal: '口味 90 · 天气 90 · 预算 86。组合比单点省 ¥6；两个人吃刚好。',
+        vector: { spicy: .4, oily: .38, soup: .7, temp: .78, satiety: .82, speed: .6, social: .55, comfort: .82 }
+      }
+    ]
+  };
+
+  const AXES = [
+    ['spicy', '辣'], ['oily', '油'], ['soup', '汤'], ['temp', '温'],
+    ['satiety', '饱'], ['speed', '快'], ['social', '社交'], ['comfort', '抚慰']
+  ];
+  const modeLabels = { OUT: '外食', HOME: '下厨', COMBO: '组合' };
+  const state = {
+    mode: 'OUT', index: 0, budget: 30, states: new Set(['热汤', '省事']), lambda: .5, omega: .5,
+    image: { mode: 'default', url: '', name: '', overlay: 42, textMode: 'auto', luminance: .5, avg: '#808080' }
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const radar = $('radar');
+
+  function hexToRgb(hex) {
+    const value = hex.replace('#', '');
+    const full = value.length === 3 ? value.split('').map((c) => c + c).join('') : value;
+    const n = parseInt(full, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+
+  function luminance(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const channel = (v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  }
+
+  function mixHex(a, b, t) {
+    const ca = hexToRgb(a);
+    const cb = hexToRgb(b);
+    const mix = (x, y) => Math.round(x + (y - x) * t);
+    return `#${[mix(ca.r, cb.r), mix(ca.g, cb.g), mix(ca.b, cb.b)].map((v) => v.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+  }
+
+  function imageTextMode() {
+    if (state.image.textMode !== 'auto') return state.image.textMode;
+    return state.image.luminance < .48 ? 'light' : 'dark';
+  }
+
+  function applyImage() {
+    const phone = $('phone');
+    if (state.image.mode === 'image' && state.image.url) {
+      const mode = imageTextMode();
+      const scrim = mode === 'light' ? '#070A0F' : '#F7F8FA';
+      const ink = mode === 'light' ? '#F0F3F6' : '#1D1C19';
+      const muted = mode === 'light' ? '#B4C0C9' : '#5E5A53';
+      const faint = mode === 'light' ? '#7E8B9C' : '#918A80';
+      const lightCta = luminance(ink) > .5;
+      phone.classList.add('has-photo');
+      phone.style.setProperty('--bg-image', `url("${state.image.url}")`);
+      phone.style.setProperty('--bg-scrim', scrim);
+      phone.style.setProperty('--bg-scrim-opacity', (state.image.overlay / 100).toFixed(2));
+      phone.style.setProperty('--ink', ink);
+      phone.style.setProperty('--muted', muted);
+      phone.style.setProperty('--faint', faint);
+      phone.style.setProperty('--line', lightCta ? 'rgba(231,235,239,.14)' : 'rgba(29,28,25,.12)');
+      phone.style.setProperty('--line-strong', lightCta ? 'rgba(231,235,239,.26)' : 'rgba(29,28,25,.22)');
+      phone.style.setProperty('--paper-strong', lightCta ? '#1F212A' : '#F0F3F6');
+      phone.style.setProperty('--cta-bg', lightCta ? 'rgba(255,255,255,.16)' : 'rgba(255,255,255,.58)');
+      phone.style.setProperty('--cta-ink', ink);
+      phone.style.setProperty('--cta-border', lightCta ? 'rgba(255,255,255,.32)' : 'rgba(255,255,255,.8)');
+      phone.style.setProperty('--tabbar-bg', lightCta ? 'rgba(44,47,59,.66)' : 'rgba(247,248,250,.72)');
+      phone.style.setProperty('--tabbar-border', lightCta ? 'rgba(231,235,239,.16)' : 'rgba(255,255,255,.8)');
+      phone.style.setProperty('--sheet-bg', lightCta ? 'rgba(44,47,59,.42)' : 'rgba(247,248,250,.62)');
+      phone.style.setProperty('--sheet-border', lightCta ? 'rgba(231,235,239,.28)' : 'rgba(255,255,255,.9)');
+      phone.style.setProperty('--sheet-footer-bg', lightCta ? 'rgba(44,47,59,.32)' : 'rgba(247,248,250,.55)');
+      phone.style.color = ink;
+      $('imageMeta').textContent = `平均亮度 ${Math.round(state.image.luminance * 100)}% · ${mode === 'light' ? '浅色' : '深色'}文字`;
+    } else {
+      phone.classList.remove('has-photo');
+      ['--bg-image', '--bg-scrim', '--bg-scrim-opacity', '--ink', '--muted', '--faint', '--line', '--line-strong', '--paper-strong', '--cta-bg', '--cta-ink', '--cta-border', '--tabbar-bg', '--tabbar-border', '--sheet-bg', '--sheet-border', '--sheet-footer-bg'].forEach((key) => phone.style.removeProperty(key));
+      phone.style.color = '';
+    }
+  }
+
+  function point(index, ratio) {
+    const angle = (-90 + index * 45) * Math.PI / 180;
+    return { x: 160 + Math.cos(angle) * 106 * ratio, y: 160 + Math.sin(angle) * 106 * ratio };
+  }
+
+  function polygon(ratio) {
+    return AXES.map((_, index) => {
+      const p = point(index, ratio);
+      return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+    }).join(' ');
+  }
+
+  function renderRadar(vector) {
+    const grid = [0.25, 0.5, 0.75, 1].map((ratio) =>
+      `<polygon points="${polygon(ratio)}" fill="none" stroke="rgba(36,30,24,${ratio === 1 ? '.2' : '.13'})" stroke-width="${ratio === 1 ? '1.1' : '1'}"/>`
+    ).join('');
+    const axes = AXES.map((_, index) => {
+      const p = point(index, 1);
+      return `<line x1="160" y1="160" x2="${p.x.toFixed(2)}" y2="${p.y.toFixed(2)}" stroke="rgba(36,30,24,.1)" stroke-width="1"/>`;
+    }).join('');
+    const points = AXES.map(([key], index) => {
+      const value = Math.max(0, Math.min(1, Number(vector[key]) || 0));
+      return point(index, value);
+    });
+    const shape = points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+    const dots = points.map((p) => `<circle cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="2.2" fill="#241e18" stroke="rgba(244,241,234,.9)" stroke-width="1"/>`).join('');
+    const labels = AXES.map(([, label], index) => {
+      const p = point(index, 1.27);
+      const anchor = p.x < 157 ? 'end' : p.x > 163 ? 'start' : 'middle';
+      return `<text x="${p.x.toFixed(2)}" y="${p.y.toFixed(2)}" text-anchor="${anchor}" dominant-baseline="middle" fill="#6e6256" font-size="11" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif">${label}</text>`;
+    }).join('');
+    radar.innerHTML = `
+      <title>菜品八维风味雷达</title>
+      <desc>${AXES.map(([key, label]) => `${label}${Math.round((vector[key] || 0) * 100)}`).join(' ')}</desc>
+      <defs>
+        <filter id="radar-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
+      </defs>
+      <circle cx="160" cy="160" r="116" fill="none" stroke="rgba(36,30,24,.08)" stroke-width="1"/>
+      ${grid}${axes}
+      <polygon points="${shape}" fill="none" stroke="#a39a8c" stroke-width="7" opacity=".22" filter="url(#radar-glow)"/>
+      <polygon points="${shape}" fill="rgba(36,30,24,.075)" stroke="#241e18" stroke-width="1.6" stroke-linejoin="round"/>
+      ${dots}
+      <circle cx="160" cy="160" r="3.2" fill="#241e18"/>
+      <circle cx="160" cy="160" r="8" fill="none" stroke="rgba(36,30,24,.16)" stroke-width="1"/>
+      ${labels}
+    `;
+  }
+
+  function currentDish() {
+    const list = DISHES[state.mode];
+    return list[state.index % list.length];
+  }
+
+  function renderDish() {
+    const dish = currentDish();
+    $('dishName').textContent = dish.name;
+    $('dishMeta').textContent = dish.meta;
+    $('dishReason').textContent = dish.reason;
+    const list = DISHES[state.mode];
+    const alternatives = list.filter((item) => item.name !== dish.name).slice(0, 2);
+    const altBox = $('alternatives');
+    altBox.style.display = alternatives.length ? '' : 'none';
+    $('alternativesList').innerHTML = alternatives.map((item) => {
+      const index = list.indexOf(item);
+      const shortMeta = item.meta.split('·').map((part) => part.trim()).slice(-2).join(' · ');
+      return `<button class="alternative" type="button" data-alt="${index}"><span class="alternative__name">${item.name}</span><span class="alternative__meta">${shortMeta}</span><span class="alternative__score">${item.score}</span></button>`;
+    }).join('');
+    document.querySelectorAll('[data-alt]').forEach((button) => {
+      button.addEventListener('click', () => {
+        state.index = Number(button.dataset.alt);
+        renderDish();
+      });
+    });
+    const lambdaAdjust = Math.round((state.lambda - .5) * 4);
+    $('score').textContent = Math.max(1, Math.min(99, dish.score + lambdaAdjust));
+    $('tasteScore').textContent = dish.taste;
+    $('weatherScore').textContent = dish.weather;
+    $('budgetScore').textContent = dish.budget;
+    renderRadar(dish.vector);
+    updateContext();
+  }
+
+  function updateContext() {
+    $('personaContext').textContent = `${$('campusSelect').value} · ${modeLabels[state.mode]}`;
+    $('contextMode').textContent = modeLabels[state.mode];
+    $('contextBudget').textContent = `预算 ¥${state.budget}`;
+    $('contextState').textContent = [...state.states].join(' · ') || '未选择状态';
+    $('contextCampus').textContent = $('campusSelect').value;
+    $('budgetValue').textContent = `¥${state.budget}`;
+    $('budgetLabel').textContent = `¥${state.budget}`;
+  }
+
+  function openSheet() {
+    $('overlay').classList.add('is-open');
+    $('sheet').classList.add('is-open');
+    $('sheet').setAttribute('aria-hidden', 'false');
+    $('openSheet').setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSheet() {
+    $('overlay').classList.remove('is-open');
+    $('sheet').classList.remove('is-open');
+    $('sheet').setAttribute('aria-hidden', 'true');
+    $('openSheet').setAttribute('aria-expanded', 'false');
+  }
+
+  let toastTimer;
+  function showToast(message) {
+    const toast = $('toast');
+    toast.textContent = message;
+    toast.classList.add('is-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-show'), 2400);
+  }
+
+  const weatherButton = $('weatherButton');
+  const weatherPop = $('weatherPop');
+  function closeWeather() {
+    weatherPop.hidden = true;
+    weatherButton.setAttribute('aria-expanded', 'false');
+  }
+  weatherButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const open = weatherPop.hidden;
+    weatherPop.hidden = !open;
+    weatherButton.setAttribute('aria-expanded', String(open));
+  });
+  weatherPop.addEventListener('click', (event) => event.stopPropagation());
+  document.addEventListener('click', closeWeather);
+
+  $('openSheet').addEventListener('click', openSheet);
+  $('closeSheet').addEventListener('click', closeSheet);
+  $('overlay').addEventListener('click', closeSheet);
+
+  $('modeGroup').addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-mode]');
+    if (!button) return;
+    state.mode = button.dataset.mode;
+    state.index = 0;
+    [...$('modeGroup').children].forEach((item) => item.classList.toggle('is-active', item === button));
+    renderDish();
+  });
+
+  $('budgetRange').addEventListener('input', (event) => {
+    state.budget = Number(event.target.value);
+    updateContext();
+  });
+
+  $('stateGroup').addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-state]');
+    if (!button) return;
+    const value = button.dataset.state;
+    if (state.states.has(value)) state.states.delete(value);
+    else state.states.add(value);
+    button.classList.toggle('is-active', state.states.has(value));
+    updateContext();
+  });
+
+  $('campusSelect').addEventListener('change', updateContext);
+
+  $('lambdaRange').addEventListener('input', (event) => {
+    state.lambda = Number(event.target.value);
+    $('lambdaValue').textContent = state.lambda.toFixed(2);
+    renderDish();
+  });
+  $('omegaRange').addEventListener('input', (event) => {
+    state.omega = Number(event.target.value);
+    $('omegaValue').textContent = state.omega.toFixed(2);
+  });
+
+  $('shuffleButton').addEventListener('click', () => {
+    state.index += 1;
+    renderDish();
+    showToast('已换一个候选');
+  });
+  $('comboButton').addEventListener('click', () => {
+    state.mode = 'COMBO';
+    state.index = 0;
+    [...$('modeGroup').children].forEach((item) => item.classList.toggle('is-active', item.dataset.mode === 'COMBO'));
+    renderDish();
+    showToast('已切到一荤一素一汤');
+  });
+  $('eatButton').addEventListener('click', () => {
+    showToast('已记录：' + currentDish().name);
+  });
+  $('whyButton').addEventListener('click', openSheet);
+  $('applyButton').addEventListener('click', () => {
+    closeSheet();
+    renderDish();
+    showToast('已按新条件重算');
+  });
+  $('personaButton').addEventListener('click', () => {
+    showToast('演示角色切换：川渝 / 粤式 / 吃土 / 减脂');
+  });
+
+  document.querySelectorAll('.tab').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((item) => item.classList.toggle('is-active', item === button));
+    });
+  });
+
+  document.querySelectorAll('[data-toast]').forEach((button) => {
+    button.addEventListener('click', () => showToast(button.dataset.toast));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeSheet();
+      closeWeather();
+    }
+  });
+
+  try {
+    const savedBackground = JSON.parse(localStorage.getItem('eatwhat.v5.background') || 'null');
+    if (savedBackground?.mode === 'image' && savedBackground.url) {
+      state.image = { ...state.image, ...savedBackground };
+    }
+  } catch {
+    // 本地背景配置损坏时回退默认水彩，不影响首页。
+  }
+  renderDish();
+  applyImage();
+  if (new URLSearchParams(location.search).has('sheet')) openSheet();
+  if (new URLSearchParams(location.search).has('weather')) {
+    weatherPop.hidden = false;
+    weatherButton.setAttribute('aria-expanded', 'true');
+  }
+</script>
+</body>
+</html>

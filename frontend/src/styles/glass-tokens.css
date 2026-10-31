@@ -1,0 +1,63 @@
+/* ==========================================================================
+   玻璃令牌（L1 悬浮层）
+   --------------------------------------------------------------------------
+   数值唯一来源：WEATHERPILL_GLASS.md §4「Web 生产组合版」。
+   ← 该段是 macOS 27 Liquid Glass - Small(Light) 在浏览器里的最接近复刻，
+     由用户定稿：**整段照抄，不许自调**。想改数值 = 改文档，不在这里改。
+
+   使用范围：只给小面积悬浮件（WeatherPill、顶部操作条、底部 Tab 胶囊）。
+   L2 正文区一律 .surface 实底，不许铺玻璃 —— 文字压在铬面上不可读。
+   ========================================================================== */
+
+:root {
+  /* —— §4 生产组合版原值，逐字对齐文档，勿改 —— */
+  --glass-radius: 999px;
+  --glass-bg: rgba(246, 246, 246, 0.48); /* Thin 档 */
+  --glass-blur: blur(60px);
+  --glass-shadow:
+    inset 0 40px 10px -40px rgba(40, 40, 40, 1),
+    inset 0 -40px 10px -40px rgba(40, 40, 40, 1),
+    inset 0 40px 30px -40px rgba(230, 230, 230, 1),
+    1.25px 0 0 -0.75px rgba(208, 208, 208, 1),
+    -1.25px 0 0 -0.75px rgba(208, 208, 208, 1),
+    0 0 0 0.5px rgba(232, 232, 232, 1),
+    0 8px 15px rgba(0, 0, 0, 0.02);
+
+  /* 浏览器不支持 backdrop-filter 时的实底降级（MOBILE_VISUAL_SPEC §3） */
+  --glass-fallback-bg: rgba(246, 246, 246, 0.85);
+
+  /* 文档注：Figma 未给出 saturate 原值。若后续确需叠加饱和度，
+     必须显式注明「自选参数、非 Apple 原值」，且不得写进上面的组合版。 */
+}
+
+/* WeatherPill 的字面块：与 WEATHERPILL_GLASS.md §4 完全一致 */
+.weather-pill {
+  border-radius: 999px;
+  /* 数值与 §4 逐字一致，只是换成通道令牌书写（F12 要求：业务处不写死色值） */
+  background: rgb(var(--rgb-glass-fill) / 0.48);
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
+  box-shadow:
+    inset 0 40px 10px -40px rgb(var(--rgb-glass-shade)),
+    inset 0 -40px 10px -40px rgb(var(--rgb-glass-shade)),
+    inset 0 40px 30px -40px rgb(var(--rgb-glass-highlight)),
+    1.25px 0 0 -0.75px rgb(var(--rgb-glass-edge)),
+    -1.25px 0 0 -0.75px rgb(var(--rgb-glass-edge)),
+    0 0 0 0.5px rgb(var(--rgb-glass-ring)),
+    0 8px 15px rgb(var(--rgb-black) / 0.02);
+}
+
+/* 其他小面积悬浮件复用同一套令牌（不新造数值） */
+.glass-shell--pill {
+  border-radius: var(--glass-radius);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .weather-pill {
+    background: var(--glass-fallback-bg);
+  }
+
+  .glass-shell {
+    background: var(--glass-fallback-bg);
+  }
+}

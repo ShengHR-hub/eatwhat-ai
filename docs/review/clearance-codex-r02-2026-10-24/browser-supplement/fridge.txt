@@ -1,0 +1,96 @@
+- banner:
+  - paragraph: 虚拟冰箱
+  - heading "冰箱里有什么" [level=1]
+  - paragraph: 临期先吃，别放坏了
+- generic: "3"
+- generic: 件食材
+- generic: "1"
+- generic: 件临期
+- generic: "0"
+- generic: 道想做的菜
+- paragraph: 有 1 件快到期了，今明两天优先用掉它们
+- heading "库存" [level=2]
+- button "＋ 添加食材"
+- heading "肉禽蛋奶 1" [level=3]:
+  - text: 肉禽蛋奶
+  - generic: "1"
+- list:
+  - paragraph: 牛肉
+  - paragraph:
+    - generic: 适量
+    - generic: ·
+    - generic: 2 天后到期
+  - button "用完了"
+- heading "新鲜果蔬 1" [level=3]:
+  - text: 新鲜果蔬
+  - generic: "1"
+- list:
+  - paragraph: 土豆
+  - paragraph:
+    - generic: 适量
+    - generic: ·
+    - generic: 还有 5 天
+  - button "用完了"
+- heading "豆制品与干货 1" [level=3]:
+  - text: 豆制品与干货
+  - generic: "1"
+- list:
+  - paragraph: 面条
+  - paragraph:
+    - generic: 适量
+    - generic: ·
+    - generic: 还有 30 天
+  - button "用完了"
+- heading "买菜清单" [level=2]
+- generic: 选菜 → 扣掉冰箱现有
+- button "番茄炒蛋"
+- button "青椒土豆丝"
+- button "蒜蓉西兰花"
+- button "手撕包菜"
+- button "麻婆豆腐"
+- button "鱼香茄子"
+- button "可乐鸡翅"
+- button "红烧排骨"
+- button "宫保鸡丁"
+- button "回锅肉"
+- button "清蒸鲈鱼"
+- button "白灼虾"
+- button "香菇滑鸡"
+- button "洋葱炒蛋"
+- button "韭菜炒鸡蛋"
+- button "酸辣白菜"
+- button "干煸豆角"
+- button "蒜蓉生菜"
+- button "西芹百合"
+- button "冬瓜排骨汤"
+- button "番茄蛋汤"
+- button "紫菜蛋花汤"
+- button "玉米排骨汤"
+- button "菌菇鸡汤"
+- button "电饭煲焖饭"
+- button "腊肠煲仔饭"
+- button "电饭煲茶叶蛋"
+- button "电饭煲红烧肉"
+- button "电饭煲青菜粥"
+- button "空气炸锅鸡翅"
+- button "空气炸锅薯条"
+- button "空气炸锅烤茄子"
+- button "空气炸锅三文鱼"
+- button "凉拌黄瓜"
+- button "凉拌木耳"
+- button "凉拌豆腐丝"
+- button "凉拌鸡丝"
+- button "一锅出番茄牛腩"
+- button "一锅出土豆炖鸡"
+- button "一锅出咖喱饭"
+- button "生成清单"
+- navigation:
+  - link "首页":
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹":
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的":
+    - /url: /m/profile
+    - generic: 我的

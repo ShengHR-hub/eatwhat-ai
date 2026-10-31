@@ -1,0 +1,405 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   MASTER_SPEC v2.3.1 第六章 + MOBILE_VISUAL_SPEC v1
+   单色体系：近黑 #17171A ｜ 银灰 #55555E ｜ 白 var(--color-white) ｜ 浅灰 #F4F4F5
+   旧暖橙 / 森林绿 / 奶油白已作废，本文件不再出现任何暖色。
+   ========================================================================== */
+@layer base {
+  :root {
+    /* JS 侧（ECharts / confetti / Lottie / Vue Bits props）取真实色值的唯一出口 */
+    --color-ink: #17171a;
+    --color-steel: #55555e;
+    --color-mist: #f4f4f5;
+    --color-white: #ffffff;
+    --color-silver: #d4d4d8;
+
+    /* 背景三件套（L0 层，只做氛围） */
+    --color-grain-a: #3a3a40;
+    --color-grain-b: #17171a;
+    --color-grain-c: #55555e;
+    --color-chrome: #1a1a1a;
+    --color-chrome-max: #222226;
+  --color-black: #000000;
+  /* 面板与弹层：不属于调色板第四级，但会被 rgb(var(--rgb-…)) 组合出透明度 */
+  --color-panel: #121215;
+  --color-sheet: #101013;
+
+  /* RGB 通道令牌：组件里写透明度只能用 rgb(var(--rgb-x) / a)，不许再写裸 rgb 值。
+     这一组是「颜色只有一个出口」的出口。 */
+  --rgb-white: 255 255 255;
+  --rgb-black: 0 0 0;
+  --rgb-ink: 23 23 26;
+  --rgb-steel: 85 85 94;
+  --rgb-mist: 244 244 245;
+  --rgb-silver: 212 212 216;
+
+  /* ── v5 暖色皮肤（首页/足迹/我的/房间/登录使用） ──────────────
+     这套皮肤是 2026-10 定稿的设计，与 v2.3 单色体系并存。
+     按 R2-05 口径，裸色值只能出现在主题出口，所以统一收在这里，
+     业务样式一律通过 var(--v5-*) / rgb(var(--rgb-v5-*) / a) 引用。 */
+  --v5-bg: #e7e1d5;
+  --v5-paper: #f4f1ea;
+  --v5-paper-strong: #fffdf8;
+  --v5-soft: #fbf9f4;
+  --v5-ink: #241e18;
+  --v5-muted: #6e6256;
+  --v5-faint: #a39a8c;
+  --v5-accent: #b85c2e;
+  --v5-ok: #0f7a5a;
+  --v5-shadow: #26201a;
+  --v5-mist: #e7ebef;
+
+  --rgb-v5-bg: 231 225 213;
+  --rgb-v5-paper: 244 241 234;
+  --rgb-v5-paper-strong: 255 253 248;
+  --rgb-v5-soft: 251 249 244;
+  --rgb-v5-ink: 36 30 24;
+  --rgb-v5-muted: 110 98 86;
+  --rgb-v5-faint: 163 154 140;
+  --rgb-v5-accent: 184 92 46;
+
+  /* 冰箱识别插画配色：这是画面元素而非语义色，集中在此便于统一调整 */
+  --v5-illus-line: #30342d;
+  --v5-illus-warm-1: #9e4f3a;
+  --v5-illus-warm-2: #b25b42;
+  --v5-illus-warm-3: #754638;
+  --v5-illus-warm-4: #8c5542;
+  --v5-illus-green-1: #5e7558;
+  --v5-illus-green-2: #718766;
+  --v5-illus-light-1: #d9d1c0;
+  --v5-illus-light-2: #e7e0d1;
+  --v5-illus-panel: #f8f4eb;
+  --rgb-v5-illus-scrim: 15 17 15;
+  --rgb-v5-ok: 15 122 90;
+  --rgb-v5-shadow: 38 31 23;
+  --rgb-v5-mist: 231 235 239;
+
+  /* 图片背景模式：背景是照片时改用这套（浅字压在暗图上） */
+  --v5-photo-ink: #f0f3f6;
+  --v5-photo-muted: #b4c0c9;
+  --v5-photo-faint: #7e8b9c;
+  --v5-photo-paper: #1d1c19;
+  --v5-photo-overlay-dark: #070a0f;
+  --v5-photo-overlay-light: #f7f8fa;
+  --v5-danger: #a33a2b;
+  --v5-scan-bg: #171a17;
+  --rgb-v5-photo-ink: 240 243 246;
+  --rgb-v5-accent: 184 92 46;
+  --rgb-grain-a: 58 58 64;
+  --rgb-grain-c: 85 85 94;
+  --rgb-chrome: 26 26 26;
+  --rgb-chrome-max: 34 34 38;
+  --rgb-panel: 18 18 21;
+  --rgb-sheet: 16 16 19;
+
+    /* —— 管理后台数据大屏（v8 冷色）——
+       后台是独立产品面，与移动端 V5 燕麦/青黛解耦：管理端需要低色温长时阅读，
+       状态色（ok/warn/bad）必须是页面上唯一带色彩语义的东西。
+       设计稿：design/admin-v7/dashboard-v8.html */
+    --wall-bg: #0b0e14;
+    --wall-bg-2: #0e121a;
+    --wall-text: #eef1f6;
+    --wall-muted: #9aa3b2;
+    --wall-faint: #69717f;
+    --wall-accent: #5b8cff;
+    --wall-accent-hi: #8fb0ff;
+    --wall-accent-dim: #2f4f9e;
+    --wall-ok: #3ddc97;
+    --wall-warn: #f0b429;
+    --wall-bad: #ff6b6b;
+
+    --rgb-wall-bg: 11 14 20;
+    --rgb-wall-bg-2: 14 18 26;
+    --rgb-wall-text: 238 241 246;
+    --rgb-wall-muted: 154 163 178;
+    --rgb-wall-faint: 105 113 127;
+    --rgb-wall-accent: 91 140 255;
+    --rgb-wall-accent-hi: 143 176 255;
+    --rgb-wall-ok: 61 220 151;
+    --rgb-wall-warn: 240 180 41;
+    --rgb-wall-bad: 255 107 107;
+
+    /* —— 管理后台浅色（v7 设计稿 app.css 的口径）——
+       大屏是投屏场景、用深色；后台是长时阅读场景、用浅色。
+       两套令牌各自独立，互不覆盖。 */
+    --admin-bg: #f4f5f7;
+    --admin-surface: #ffffff;
+    --admin-surface-2: #fafbfc;
+    --admin-ink: #171a1f;
+    --admin-muted: #5b636d;
+    --admin-faint: #8d959f;
+    --admin-accent: #2f6bff;
+    --admin-ok: #0f7a5a;
+    --admin-warn: #9a6a00;
+    --admin-bad: #c0392b;
+
+    --rgb-admin-bg: 244 245 247;
+    --rgb-admin-surface: 255 255 255;
+    --rgb-admin-surface-2: 250 251 252;
+    --rgb-admin-ink: 23 26 31;
+    --rgb-admin-muted: 91 99 109;
+    --rgb-admin-faint: 141 149 159;
+    --rgb-admin-accent: 47 107 255;
+    --rgb-admin-ok: 15 122 90;
+    --rgb-admin-warn: 154 106 0;
+    --rgb-admin-bad: 192 57 43;
+
+    /* 文字与描边：v2.3.2 内容卡改深色液态玻璃，正文一律白/浅灰 */
+    --color-text: var(--color-white);
+    --color-text-soft: rgba(255, 255, 255, 0.74);
+    --color-line: rgba(255, 255, 255, 0.22);
+
+    /* 内容层材质（L2）：v2.3.2 起由 glass-card.css 的液态玻璃提供，这里只留语义别名 */
+    --color-surface: var(--glass-card-fill);
+    --color-surface-alt: var(--glass-card-fill-matte);
+    --color-surface-dark: rgba(0, 0, 0, 0.32);
+
+  /* —— 玻璃调色板（WEATHERPILL_GLASS §4 原值的通道形式，数值不变）—— */
+  --rgb-glass-fill: 246 246 246;
+  --rgb-glass-shade: 40 40 40;
+  --rgb-glass-highlight: 230 230 230;
+  --rgb-glass-edge: 208 208 208;
+  --rgb-glass-ring: 232 232 232;
+  }
+
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    /* L0 由 Vue Bits 背景组件渲染；这里是首帧与降级时的底色，必须是近黑，不能是白 */
+    background-color: var(--color-grain-b);
+    color: var(--color-text);
+    font-feature-settings: 'ss01' on, 'cv01' on;
+    overscroll-behavior-y: none;
+  }
+
+  /* 移动端滚动条隐形，避免破坏卡片留白 */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  /* 焦点可见性：单色体系下用银灰描边保证可访问性 */
+  :focus-visible {
+    outline: 2px solid var(--color-steel);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* —— L0 · 背景插槽：页面只负责把 Vue Bits 背景塞进来，不许自己画渐变 —— */
+  .backdrop-slot {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* —— L2 · 内容层：v2.3.2 定款液态玻璃（结构见 glass-card.css），这里只给语义别名 —— */
+  .surface {
+    background-color: var(--glass-card-fill);
+    backdrop-filter: var(--glass-card-blur);
+    -webkit-backdrop-filter: var(--glass-card-blur);
+    box-shadow:
+      inset 0 0 0 1px var(--glass-card-edge),
+      inset 0 1px 0 var(--glass-card-inner-top),
+      var(--glass-card-shadow);
+    color: var(--on-glass);
+  }
+
+  .surface-alt {
+    background-color: var(--glass-card-fill-matte);
+    backdrop-filter: var(--glass-card-blur-matte);
+    -webkit-backdrop-filter: var(--glass-card-blur-matte);
+    color: var(--on-glass);
+  }
+
+  /* 卡片规范：rounded-3xl + 液态玻璃材质（v2.3.2 §6） */
+  .card-bento {
+    @apply rounded-3xl;
+    background-color: var(--glass-card-fill);
+    backdrop-filter: var(--glass-card-blur);
+    -webkit-backdrop-filter: var(--glass-card-blur);
+    box-shadow:
+      inset 0 0 0 1px var(--glass-card-edge),
+      inset 0 1px 0 var(--glass-card-inner-top),
+      var(--glass-card-shadow);
+    color: var(--on-glass);
+  }
+
+  .card-press {
+    @apply transition-transform duration-150 ease-spring active:scale-[0.985];
+  }
+
+  /* —— L1 · 玻璃悬浮件：数值全部来自 glass-tokens.css（WEATHERPILL_GLASS.md §4） —— */
+  .glass-shell {
+    background: var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+  }
+
+  /* 分段开关：双模式区分靠选中态，不靠颜色 */
+  .seg {
+    @apply inline-flex items-center gap-1 rounded-full p-1;
+    background-color: rgb(var(--rgb-white) / 0.16);
+  }
+
+  .seg-item {
+    @apply rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200;
+    color: rgb(var(--rgb-white) / 0.72);
+  }
+
+  .seg-item[data-active='true'] {
+    background-color: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  /* 单色主按钮（主 CTA 另用 Inspira Shimmer Button） */
+  .btn-ink {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-150 active:scale-[0.985];
+    background-color: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .btn-ghost-ink {
+    @apply inline-flex items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors duration-150;
+    border-color: var(--color-line);
+    color: var(--color-ink);
+  }
+
+  /* 数字与得分用等宽数字，避免跳动 */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* 路由过渡：只做淡入 + 轻微上浮，避免与列表的 auto-animate 抢动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 抽屉/弹层过渡 */
+.sheet-enter-active,
+.sheet-leave-active {
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.24s ease;
+}
+.sheet-enter-from,
+.sheet-leave-to {
+  transform: translateX(102%);
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * 滑杆（daisyUI .range 的视觉修正）
+ * daisyUI v4 的 range 靠「1.5rem 方块 thumb + 超大 box-shadow 填充条」画进度，
+ * 在深色玻璃上会变成一个被 overflow 裁掉的浅色方块。这里保留 .range 语义，
+ * 但把 thumb 重置成 16px 白色圆点、禁用 filler 阴影，轨道统一成 4px 细线。
+ * 用法：<input class="range range-xs slider-ink" type="range" />
+ * ------------------------------------------------------------------ */
+.slider-ink.range {
+  width: 100%;
+  height: 22px;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: visible;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider-ink.range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(var(--rgb-v5-ink) / 0.16);
+}
+
+.slider-ink.range::-webkit-slider-thumb {
+  position: relative;
+  top: 50%;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border: none;
+  border-radius: 999px;
+  background: var(--v5-paper-strong);
+  border: 1px solid rgb(var(--rgb-v5-ink) / 0.18);
+  box-shadow: 0 2px 8px rgb(var(--rgb-v5-shadow) / 0.18);
+  transform: none;
+  -webkit-appearance: none;
+}
+
+.slider-ink.range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(var(--rgb-v5-ink) / 0.16);
+}
+
+.slider-ink.range::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--v5-paper-strong);
+  border: 1px solid rgb(var(--rgb-v5-ink) / 0.18);
+  box-shadow: 0 2px 8px rgb(var(--rgb-v5-shadow) / 0.18);
+}
+
+.slider-ink.range:focus-visible {
+  outline: 2px solid rgb(var(--rgb-v5-ink) / 0.35);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+/* 后台路由下 body 也跟着变浅：路由切换的首帧与降级底色不能还是近黑 */
+html[data-surface="admin"],
+html[data-surface="admin"] body {
+  background-color: var(--admin-bg);
+  color: var(--admin-ink);
+}

@@ -1,0 +1,709 @@
+/* ==========================================================================
+   管理后台 · 数据大屏 v8（冷色三屏）
+   设计稿：design/admin-v7/dashboard-v8.html
+   色值一律取 main.css 的 --wall-* / --rgb-wall-* 令牌，本文件不定义任何色值。
+   布局：1920×1080 一屏装下；高度全部用 fr 分配，不写死卡片像素高。
+   ========================================================================== */
+
+.admin-wall {
+  --wall-gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--wall-gap);
+  flex: 1;
+  width: 100%;
+  /* 顶栏 54px 由 AdminShell 提供，这里把剩余视口吃满，
+     否则 flex 链路算不准会让底部三卡被裁 */
+  height: calc(100dvh - 54px);
+  min-height: 0;
+  padding: 12px 16px 8px;
+  overflow: hidden;
+  color: var(--admin-ink);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei UI", system-ui, sans-serif;
+}
+
+/* ── 顶栏 ─────────────────────────────────────────────────── */
+.wall-top {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 34px;
+}
+
+.wall-brand { display: flex; align-items: center; gap: 9px; }
+.wall-brand__mark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  background: linear-gradient(140deg, var(--admin-accent), var(--admin-muted));
+  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 700;
+}
+.wall-brand__copy { display: flex; flex-direction: column; line-height: 1.15; }
+.wall-brand__name { font-size: 13px; font-weight: 600; }
+.wall-brand__sub {
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  color: var(--admin-faint);
+}
+
+.wall-seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgb(var(--rgb-admin-ink) / 0.05);
+}
+.wall-seg button {
+  height: 24px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.wall-seg button.is-on {
+  background: rgb(var(--rgb-admin-ink) / 0.1);
+  color: var(--admin-ink);
+  font-weight: 500;
+}
+
+.wall-pills { display: flex; gap: 6px; }
+.wall-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  border-radius: 999px;
+  background: rgb(var(--rgb-admin-ink) / 0.03);
+  color: var(--admin-muted);
+  font: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+.wall-pill.is-on {
+  border-color: rgb(var(--rgb-admin-accent) / 0.42);
+  background: rgb(var(--rgb-admin-accent) / 0.14);
+  color: var(--admin-accent);
+}
+
+.wall-top__right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.wall-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--admin-muted);
+}
+.wall-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--admin-ok);
+  box-shadow: 0 0 9px var(--admin-ok);
+  animation: wallPulse 2.4s ease-in-out infinite;
+}
+@keyframes wallPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.wall-clock {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.wall-clock small {
+  margin-left: 4px;
+  color: var(--admin-faint);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.wall-link {
+  border: 0;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+.wall-link:hover { color: var(--admin-ink); }
+
+/* ── 三屏容器 ─────────────────────────────────────────────── */
+.wall-screens { position: relative; flex: 1; min-height: 0; }
+.wall-screen {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: var(--wall-gap);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.995);
+  transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), visibility 0.42s;
+}
+.wall-screen.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+/* 1fr 默认 min-height:auto，图表 canvas 会把行撑高并顶出屏幕；
+   统一用 minmax(0, 1fr) 让行真正按剩余空间分配。 */
+.wall-screen--overview { grid-template-rows: 78px minmax(0, 1fr) 172px; }
+.wall-screen--quality { grid-template-rows: 78px minmax(0, 1fr); }
+.wall-screen--experiment { grid-template-rows: 78px minmax(0, 1fr); }
+
+.wall-body { display: grid; gap: var(--wall-gap); min-height: 0; height: 100%; }
+.wall-body--overview { grid-template-columns: 1.68fr 1fr; }
+.wall-body--overview .wall-side { display: grid; grid-template-rows: 1fr 1fr; gap: var(--wall-gap); min-height: 0; }
+/* 底部三卡独立成行，父级是 .wall-screen 而不是 .wall-body--overview */
+.wall-bottom {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: var(--wall-gap);
+  min-height: 0;
+}
+/* 质量屏只有 5 张卡（其中散点跨 2 列）：用 3 列刚好铺满 2 行，
+   用 4 列会在右侧留下两个空格。 */
+.wall-body--quality { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+/* 屏 3 有 6 个图表，3×2 等分；任一图跨行都会把最后一个挤到隐式行并溢出屏幕 */
+/* 屏 3 只保留有真实数据支撑的 4 张图（曲线 / 满意度 / 雷达 / 趋势），2×2 放大 */
+.wall-body--experiment { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+.wall-span2 { grid-column: span 2; }
+.wall-span2row { grid-row: span 2; }
+
+/* ── KPI ──────────────────────────────────────────────────── */
+.wall-kpis { display: grid; gap: var(--wall-gap); }
+.wall-kpis--6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.wall-kpis--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.wall-kpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 14px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 12px;
+  background: var(--admin-surface);
+  overflow: hidden;
+}
+.wall-kpi--hero {
+  border-color: rgb(var(--rgb-admin-accent) / 0.24);
+  background: linear-gradient(150deg, rgb(var(--rgb-admin-accent) / 0.13), rgb(var(--rgb-admin-ink) / 0.032) 72%);
+}
+.wall-kpi__label { font-size: 10.5px; color: var(--admin-muted); letter-spacing: 0.04em; }
+.wall-kpi__value {
+  margin-top: 2px;
+  font-size: clamp(22px, 1.62vw, 31px);
+  font-weight: 600;
+  line-height: 1.14;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.wall-kpi--hero .wall-kpi__value { color: var(--admin-accent); }
+.wall-kpi__value em {
+  margin-left: 4px;
+  color: var(--admin-muted);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+.wall-kpi__foot {
+  margin-top: 1px;
+  line-height: 1.25;
+  color: var(--admin-faint);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wall-kpi__foot b { color: var(--admin-accent); font-weight: 500; }
+
+/* ── 卡片 ─────────────────────────────────────────────────── */
+.wall-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 12px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 12px;
+  background: var(--admin-surface);
+  overflow: hidden;
+}
+.wall-card--map { padding: 10px 12px 12px; }
+.wall-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-bottom: 8px;
+}
+.wall-card__title { font-size: 12.5px; font-weight: 500; letter-spacing: 0.01em; }
+.wall-scope { display: flex; gap: 4px; margin-left: 6px; }
+.wall-scope button {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.14);
+  background: transparent;
+  color: var(--admin-muted);
+  font-size: 9px;
+  white-space: nowrap;
+}
+.wall-scope button.is-on {
+  border-color: var(--admin-ink);
+  background: var(--admin-ink);
+  color: var(--admin-surface);
+}
+
+.wall-card__note {
+  margin-left: auto;
+  color: var(--admin-faint);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.wall-card__body { flex: 1; min-height: 0; display: flex; }
+
+/* EChartPanel 在 bare 模式下的容器 */
+.wall-chart {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.wall-chart .admin-chart { width: 100%; height: 100%; }
+.wall-chart__actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.wall-card:hover .wall-chart__actions { opacity: 1; }
+.wall-chart .admin-empty,
+.wall-chart .admin-empty-block {
+  margin: auto;
+  color: var(--admin-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ── 词云（HTML 文字云，对应设计稿 .cloud） ───────────────── */
+.wall-cloud {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 10px 18px;
+  min-height: 0;
+  padding: 4px 10px;
+  overflow: hidden;
+}
+.wall-cloud__w { line-height: 1.12; color: var(--admin-muted); }
+.wall-cloud__w--t1 { font-size: clamp(18px, 1.5vw, 26px); color: var(--admin-ink); font-weight: 600; }
+.wall-cloud__w--t2 { font-size: clamp(15px, 1.2vw, 20px); color: var(--admin-accent); }
+.wall-cloud__w--t3 { font-size: clamp(12px, 0.95vw, 15px); color: var(--admin-muted); }
+.wall-cloud__w--t4 { font-size: clamp(11px, 0.8vw, 12px); color: var(--admin-faint); }
+
+/* ── 条形列表 ─────────────────────────────────────────────── */
+.wall-bars {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 0;
+}
+.wall-bar { display: grid; grid-template-columns: 76px 1fr 52px; align-items: center; gap: 10px; }
+.wall-bar__name {
+  color: var(--admin-muted);
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wall-bar__track {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: rgb(var(--rgb-admin-ink) / 0.055);
+  overflow: hidden;
+}
+.wall-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--admin-muted), var(--admin-accent));
+}
+.wall-bar__fill--hi {
+  background: linear-gradient(90deg, var(--admin-accent), var(--admin-accent));
+  box-shadow: 0 0 12px rgb(var(--rgb-admin-accent) / 0.3);
+}
+.wall-bar__val {
+  color: var(--admin-ink);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.wall-group-label {
+  margin: 2px 0 -4px;
+  color: var(--admin-faint);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+}
+
+/* ── 排行 ─────────────────────────────────────────────────── */
+.wall-rank {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-height: 0;
+}
+.wall-rank__row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 54px 34px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.wall-rank__no { color: var(--admin-faint); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.wall-rank__row:first-child .wall-rank__no { color: var(--admin-accent); }
+.wall-rank__name {
+  color: var(--admin-ink);
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wall-rank__name small { margin-left: 5px; color: var(--admin-faint); font-size: 10px; }
+.wall-rank__track {
+  display: block;
+  height: 4px;
+  border-radius: 3px;
+  background: rgb(var(--rgb-admin-ink) / 0.055);
+  overflow: hidden;
+}
+.wall-rank__track i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--admin-muted), var(--admin-accent));
+}
+.wall-rank__val {
+  color: var(--admin-muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ── 环形 ─────────────────────────────────────────────────── */
+.wall-ringwrap { display: flex; flex: 1; align-items: center; gap: 14px; min-height: 0; }
+.wall-ring {
+  --p: 0;
+  position: relative;
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--admin-ok) calc(var(--p) * 1%),
+    rgb(var(--rgb-admin-ink) / 0.08) 0
+  );
+}
+.wall-ring::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: var(--admin-surface-2);
+}
+.wall-ring__center {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.wall-ring__center small { margin-left: 1px; color: var(--admin-faint); font-size: 10px; }
+.wall-legend { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.wall-legend div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--admin-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.wall-legend i { width: 7px; height: 7px; border-radius: 2px; flex: 0 0 7px; }
+.wall-legend b {
+  margin-left: auto;
+  color: var(--admin-ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 待处理 / 明细列表 ────────────────────────────────────── */
+.wall-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 0;
+}
+.wall-list__row {
+  display: grid;
+  grid-template-columns: 5px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: rgb(var(--rgb-admin-ink) / 0.055);
+  color: var(--admin-muted);
+  font-size: 11px;
+}
+.wall-list__row b {
+  color: var(--admin-ink);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.wall-list__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--admin-accent); }
+.wall-list__row.is-warn .wall-list__dot { background: var(--admin-warn); }
+.wall-list__row.is-warn b { color: var(--admin-warn); }
+.wall-list__row.is-bad .wall-list__dot { background: var(--admin-bad); }
+.wall-list__row.is-bad b { color: var(--admin-bad); }
+.wall-list__row.is-ok .wall-list__dot { background: var(--admin-ok); }
+.wall-list__row.is-ok b { color: var(--admin-ok); }
+
+/* ── 地图 ─────────────────────────────────────────────────── */
+.wall-map { position: relative; flex: 1; min-height: 0; }
+.wall-map .admin-map-card {
+  height: 100%;
+  border: 0;
+  border-radius: 9px;
+  background: var(--admin-surface-2);
+  padding: 0;
+}
+.wall-map .admin-map-export { height: 100%; display: flex; flex-direction: column; }
+.wall-map .admin-map-canvas-wrap { flex: 1; min-height: 0; }
+.wall-map .admin-map-heading { display: none; }
+.wall-map .admin-map-legend {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  font-size: 10px;
+  color: var(--admin-faint);
+}
+.wall-map .admin-chart-actions { top: 6px; right: 6px; }
+
+/* ── 分页 ─────────────────────────────────────────────────── */
+.wall-pager {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  color: var(--admin-faint);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.wall-pager__title { color: var(--admin-muted); }
+.wall-pager__dots { display: flex; gap: 6px; margin-left: auto; }
+.wall-pager__dot {
+  width: 26px;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgb(var(--rgb-admin-ink) / 0.14);
+  cursor: pointer;
+  transition: background 0.3s ease, width 0.3s ease;
+}
+.wall-pager__dot.is-on { width: 40px; background: var(--admin-accent); }
+
+/* ── 空态与状态色 ─────────────────────────────────────────── */
+.wall-tone-ok { color: var(--admin-ok); }
+.wall-tone-warn { color: var(--admin-warn); }
+.wall-tone-bad { color: var(--admin-bad); }
+.wall-tone-accent { color: var(--admin-accent); }
+.wall-empty {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  padding: 8px;
+  color: var(--admin-faint);
+  font-size: 11.5px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (max-width: 1440px) {
+  .wall-kpi__value { font-size: 24px; }
+  .wall-card__title { font-size: 12px; }
+}
+
+/* 100% 时环是满圈，视觉上等于没有信息；改用大数字 + 图例 */
+.wall-bignum {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 92px;
+}
+.wall-bignum b {
+  color: var(--admin-ink);
+  font-size: clamp(26px, 2vw, 38px);
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.wall-bignum b em { margin-left: 2px; color: var(--admin-muted); font-size: 12px; font-style: normal; }
+.wall-bignum span { color: var(--admin-faint); font-size: 10.5px; }
+
+/* 100% 时环是满圈，视觉上等于没有信息；改用大数字 + 图例 */
+.wall-bignum {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 92px;
+}
+.wall-bignum b {
+  color: var(--admin-ink);
+  font-size: clamp(26px, 2vw, 38px);
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.wall-bignum b em { margin-left: 2px; color: var(--admin-muted); font-size: 12px; font-style: normal; }
+.wall-bignum span { color: var(--admin-faint); font-size: 10.5px; }
+
+/* ── 抽屉式分析台：左侧主题导航 + 右侧内容 ─────────────────── */
+.wall-workbench {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  min-height: 0;
+}
+
+.wall-drawer {
+  display: flex;
+  flex: 0 0 158px;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.wall-drawer__item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.wall-drawer__item b { font-size: 12.5px; font-weight: 500; }
+.wall-drawer__item small { color: var(--admin-faint); font-size: 9.5px; }
+.wall-drawer__item:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+.wall-drawer__item.is-on {
+  border-color: rgb(var(--rgb-admin-ink) / 0.09);
+  background: var(--admin-surface);
+  color: var(--admin-ink);
+  box-shadow: 0 1px 2px rgb(var(--rgb-admin-ink) / 0.05);
+}
+.wall-drawer__item.is-on b { color: var(--admin-accent); font-weight: 600; }
+
+.wall-stage { position: relative; flex: 1; min-width: 0; min-height: 0; }
+
+.wall-topic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+}
+.wall-topic--overview { grid-template-rows: 88px minmax(0, 1fr) 168px; }
+.wall-topic--quality { grid-template-rows: 88px minmax(0, 1fr); }
+.wall-topic--experiment { grid-template-rows: 88px minmax(0, 1fr); }
+
+/* ── 抽屉式分析台：左侧主题导航 + 右侧内容 ─────────────────── */
+.wall-workbench {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  min-height: 0;
+}
+
+.wall-drawer {
+  display: flex;
+  flex: 0 0 158px;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.wall-drawer__item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.wall-drawer__item b { font-size: 12.5px; font-weight: 500; }
+.wall-drawer__item small { color: var(--admin-faint); font-size: 9.5px; }
+.wall-drawer__item:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+.wall-drawer__item.is-on {
+  border-color: rgb(var(--rgb-admin-ink) / 0.09);
+  background: var(--admin-surface);
+  color: var(--admin-ink);
+  box-shadow: 0 1px 2px rgb(var(--rgb-admin-ink) / 0.05);
+}
+.wall-drawer__item.is-on b { color: var(--admin-accent); font-weight: 600; }
+
+.wall-stage { position: relative; flex: 1; min-width: 0; min-height: 0; }
+
+.wall-topic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+}
+.wall-topic--overview { grid-template-rows: 78px minmax(0, 1fr) 172px; }
+.wall-topic--quality { grid-template-rows: 78px minmax(0, 1fr); }
+/* 仿真底表状态行是主题容器的直接子项，必须单独占一行，
+   否则它会顶掉 1fr 行，把 2×2 图表区挤进隐式行（canvas 高度变 0）。 */
+.wall-topic--experiment { grid-template-rows: 78px auto minmax(0, 1fr); }
+.wall-topic--experiment > .wall-card__note { grid-row: 2; align-self: start; height: auto; }
+.wall-topic--experiment > .wall-body { grid-row: 3; }

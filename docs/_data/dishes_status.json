@@ -1,0 +1,802 @@
+[
+ {
+  "id": 1,
+  "name": "麻辣香锅",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "001-mala-xiang-guo-spicy-stir.jpg",
+  "ok": true
+ },
+ {
+  "id": 2,
+  "name": "水煮肉片",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "002-sichuan-boiled-pork-slices.jpg",
+  "ok": true
+ },
+ {
+  "id": 3,
+  "name": "辣子鸡",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "003-chongqing-spicy-chicken.jpg",
+  "ok": true
+ },
+ {
+  "id": 4,
+  "name": "干煸四季豆",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "004-dry-fried-green-beans.jpg",
+  "ok": true
+ },
+ {
+  "id": 5,
+  "name": "酸辣土豆丝",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 6,
+  "name": "蜜汁叉烧饭",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "006-char-siu-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 7,
+  "name": "白切鸡饭",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "007-white-cut-chicken-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 8,
+  "name": "烧鸭饭",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "008-roast-duck-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 9,
+  "name": "清炒菜心",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "009-stir-fried-choy-sum.jpg",
+  "ok": true
+ },
+ {
+  "id": 10,
+  "name": "例汤",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "010-cantonese-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 11,
+  "name": "红烧牛肉面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "011-braised-beef-noodle-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 12,
+  "name": "清汤牛肉面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "012-beef-noodle-soup-clear-bro.jpg",
+  "ok": true
+ },
+ {
+  "id": 13,
+  "name": "番茄鸡蛋面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "013-tomato-egg-noodle-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 14,
+  "name": "牛肉粉丝汤",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "014-beef-vermicelli-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 15,
+  "name": "麻辣烫套餐",
+  "mode": "OUT_DINING",
+  "cuisine": "麻辣烫",
+  "file": "015-malatang.jpg",
+  "ok": true
+ },
+ {
+  "id": 16,
+  "name": "番茄麻辣烫",
+  "mode": "OUT_DINING",
+  "cuisine": "麻辣烫",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 17,
+  "name": "骨汤麻辣烫",
+  "mode": "OUT_DINING",
+  "cuisine": "麻辣烫",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 18,
+  "name": "鸡胸肉沙拉",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "018-chicken-breast-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 19,
+  "name": "低脂鸡胸饭",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "019-grilled-chicken-rice-bowl.jpg",
+  "ok": true
+ },
+ {
+  "id": 20,
+  "name": "南瓜浓汤",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "020-pumpkin-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 21,
+  "name": "青椒肉丝",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "021-shredded-pork-with-green-p.jpg",
+  "ok": true
+ },
+ {
+  "id": 22,
+  "name": "鱼香肉丝",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "022-yuxiang-shredded-pork.jpg",
+  "ok": true
+ },
+ {
+  "id": 23,
+  "name": "宫保鸡丁",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "023-kung-pao-chicken.jpg",
+  "ok": true
+ },
+ {
+  "id": 24,
+  "name": "麻婆豆腐",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "024-mapo-tofu.jpg",
+  "ok": true
+ },
+ {
+  "id": 25,
+  "name": "西红柿炒蛋",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "025-tomato-scrambled-eggs.jpg",
+  "ok": true
+ },
+ {
+  "id": 26,
+  "name": "紫菜蛋花汤",
+  "mode": "OUT_DINING",
+  "cuisine": "家常菜",
+  "file": "026-seaweed-egg-drop-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 27,
+  "name": "皮蛋瘦肉粥",
+  "mode": "OUT_DINING",
+  "cuisine": "粥粉面",
+  "file": "027-century-egg-congee.jpg",
+  "ok": true
+ },
+ {
+  "id": 28,
+  "name": "肠粉",
+  "mode": "OUT_DINING",
+  "cuisine": "粥粉面",
+  "file": "028-rice-noodle-roll.jpg",
+  "ok": true
+ },
+ {
+  "id": 29,
+  "name": "云吞面",
+  "mode": "OUT_DINING",
+  "cuisine": "粥粉面",
+  "file": "029-wonton-noodles.jpg",
+  "ok": true
+ },
+ {
+  "id": 30,
+  "name": "干炒牛河",
+  "mode": "OUT_DINING",
+  "cuisine": "粥粉面",
+  "file": "030-beef-chow-fun.jpg",
+  "ok": true
+ },
+ {
+  "id": 31,
+  "name": "石锅拌饭",
+  "mode": "OUT_DINING",
+  "cuisine": "韩餐",
+  "file": "031-bibimbap.jpg",
+  "ok": true
+ },
+ {
+  "id": 32,
+  "name": "部队锅",
+  "mode": "OUT_DINING",
+  "cuisine": "韩餐",
+  "file": "032-budae-jjigae-army-stew.jpg",
+  "ok": true
+ },
+ {
+  "id": 33,
+  "name": "兰州牛肉拉面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "033-lanzhou-beef-noodles.jpg",
+  "ok": true
+ },
+ {
+  "id": 34,
+  "name": "牛肉炒面片",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "034-fried-noodle-pieces-beef.jpg",
+  "ok": true
+ },
+ {
+  "id": 35,
+  "name": "羊肉串",
+  "mode": "OUT_DINING",
+  "cuisine": "烧烤",
+  "file": "035-lamb-skewers.jpg",
+  "ok": true
+ },
+ {
+  "id": 36,
+  "name": "排骨莲藕汤",
+  "mode": "OUT_DINING",
+  "cuisine": "炖菜",
+  "file": "036-lotus-root-pork-rib-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 37,
+  "name": "砂锅豆腐",
+  "mode": "OUT_DINING",
+  "cuisine": "炖菜",
+  "file": "037-claypot-tofu.jpg",
+  "ok": true
+ },
+ {
+  "id": 38,
+  "name": "砂锅鸡",
+  "mode": "OUT_DINING",
+  "cuisine": "炖菜",
+  "file": "038-claypot-chicken.jpg",
+  "ok": true
+ },
+ {
+  "id": 39,
+  "name": "毛血旺",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "039-maoxuewang.jpg",
+  "ok": true
+ },
+ {
+  "id": 40,
+  "name": "水煮鱼",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "040-sichuan-boiled-fish.jpg",
+  "ok": true
+ },
+ {
+  "id": 41,
+  "name": "回锅肉",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "041-twice-cooked-pork.jpg",
+  "ok": true
+ },
+ {
+  "id": 42,
+  "name": "凉拌折耳根",
+  "mode": "OUT_DINING",
+  "cuisine": "川湘菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 43,
+  "name": "虾饺皇",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "043-har-gow-shrimp-dumpling.jpg",
+  "ok": true
+ },
+ {
+  "id": 44,
+  "name": "白灼虾",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "044-boiled-shrimp.jpg",
+  "ok": true
+ },
+ {
+  "id": 45,
+  "name": "烧鹅拼饭",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "045-roast-goose-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 46,
+  "name": "老火靓汤",
+  "mode": "OUT_DINING",
+  "cuisine": "粤菜",
+  "file": "046-cantonese-slow-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 47,
+  "name": "招牌牛腩面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "047-beef-brisket-noodles.jpg",
+  "ok": true
+ },
+ {
+  "id": 48,
+  "name": "酸菜牛肉面",
+  "mode": "OUT_DINING",
+  "cuisine": "面食",
+  "file": "048-pickled-cabbage-beef-noodl.jpg",
+  "ok": true
+ },
+ {
+  "id": 49,
+  "name": "藜麦鸡胸沙拉",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "049-quinoa-chicken-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 50,
+  "name": "三文鱼沙拉",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "050-salmon-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 51,
+  "name": "全麦鸡肉卷",
+  "mode": "OUT_DINING",
+  "cuisine": "轻食",
+  "file": "051-whole-wheat-chicken-wrap.jpg",
+  "ok": true
+ },
+ {
+  "id": 52,
+  "name": "招牌麻辣烫",
+  "mode": "OUT_DINING",
+  "cuisine": "麻辣烫",
+  "file": "052-malatang-bowl.jpg",
+  "ok": true
+ },
+ {
+  "id": 53,
+  "name": "五花肉烤肉套餐",
+  "mode": "OUT_DINING",
+  "cuisine": "烤肉",
+  "file": "053-korean-bbq-pork-belly.jpg",
+  "ok": true
+ },
+ {
+  "id": 54,
+  "name": "烤牛肉拼盘",
+  "mode": "OUT_DINING",
+  "cuisine": "烤肉",
+  "file": "054-korean-bbq-beef-platter.jpg",
+  "ok": true
+ },
+ {
+  "id": 55,
+  "name": "烤蔬菜拼盘",
+  "mode": "OUT_DINING",
+  "cuisine": "烤肉",
+  "file": "055-grilled-vegetables-platter.jpg",
+  "ok": true
+ },
+ {
+  "id": 56,
+  "name": "三文鱼刺身",
+  "mode": "OUT_DINING",
+  "cuisine": "日料",
+  "file": "056-salmon-sashimi.jpg",
+  "ok": true
+ },
+ {
+  "id": 57,
+  "name": "鳗鱼饭",
+  "mode": "OUT_DINING",
+  "cuisine": "日料",
+  "file": "057-unagi-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 58,
+  "name": "韩式炸鸡",
+  "mode": "OUT_DINING",
+  "cuisine": "韩餐",
+  "file": "058-korean-fried-chicken.jpg",
+  "ok": true
+ },
+ {
+  "id": 59,
+  "name": "红烧狮子头",
+  "mode": "OUT_DINING",
+  "cuisine": "江浙菜",
+  "file": "059-lion-head-meatball.jpg",
+  "ok": true
+ },
+ {
+  "id": 60,
+  "name": "猪肚鸡汤",
+  "mode": "OUT_DINING",
+  "cuisine": "粥品",
+  "file": "060-pork-tripe-chicken-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 61,
+  "name": "番茄炒蛋",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "061-tomato-scrambled-eggs.jpg",
+  "ok": true
+ },
+ {
+  "id": 62,
+  "name": "青椒土豆丝",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 63,
+  "name": "蒜蓉西兰花",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "063-garlic-broccoli.jpg",
+  "ok": true
+ },
+ {
+  "id": 64,
+  "name": "手撕包菜",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "064-hand-torn-cabbage.jpg",
+  "ok": true
+ },
+ {
+  "id": 65,
+  "name": "麻婆豆腐",
+  "mode": "HOME_COOKING",
+  "cuisine": "川湘菜",
+  "file": "024-mapo-tofu.jpg",
+  "ok": true
+ },
+ {
+  "id": 66,
+  "name": "鱼香茄子",
+  "mode": "HOME_COOKING",
+  "cuisine": "川湘菜",
+  "file": "066-yuxiang-eggplant.jpg",
+  "ok": true
+ },
+ {
+  "id": 67,
+  "name": "可乐鸡翅",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "067-cola-chicken-wings.jpg",
+  "ok": true
+ },
+ {
+  "id": 68,
+  "name": "红烧排骨",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "068-braised-pork-ribs.jpg",
+  "ok": true
+ },
+ {
+  "id": 69,
+  "name": "宫保鸡丁",
+  "mode": "HOME_COOKING",
+  "cuisine": "川湘菜",
+  "file": "023-kung-pao-chicken.jpg",
+  "ok": true
+ },
+ {
+  "id": 70,
+  "name": "回锅肉",
+  "mode": "HOME_COOKING",
+  "cuisine": "川湘菜",
+  "file": "041-twice-cooked-pork.jpg",
+  "ok": true
+ },
+ {
+  "id": 71,
+  "name": "清蒸鲈鱼",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "071-steamed-sea-bass.jpg",
+  "ok": true
+ },
+ {
+  "id": 72,
+  "name": "白灼虾",
+  "mode": "HOME_COOKING",
+  "cuisine": "粤菜",
+  "file": "044-boiled-shrimp.jpg",
+  "ok": true
+ },
+ {
+  "id": 73,
+  "name": "香菇滑鸡",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "073-chicken-with-shiitake.jpg",
+  "ok": true
+ },
+ {
+  "id": 74,
+  "name": "洋葱炒蛋",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 75,
+  "name": "韭菜炒鸡蛋",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 76,
+  "name": "酸辣白菜",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 77,
+  "name": "干煸豆角",
+  "mode": "HOME_COOKING",
+  "cuisine": "川湘菜",
+  "file": "077-dry-fried-long-beans.jpg",
+  "ok": true
+ },
+ {
+  "id": 78,
+  "name": "蒜蓉生菜",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "078-garlic-lettuce.jpg",
+  "ok": true
+ },
+ {
+  "id": 79,
+  "name": "西芹百合",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "079-celery-with-lily-bulb.jpg",
+  "ok": true
+ },
+ {
+  "id": 80,
+  "name": "冬瓜排骨汤",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "080-winter-melon-pork-rib-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 81,
+  "name": "番茄蛋汤",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "081-tomato-egg-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 82,
+  "name": "紫菜蛋花汤",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "026-seaweed-egg-drop-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 83,
+  "name": "玉米排骨汤",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 84,
+  "name": "菌菇鸡汤",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "084-mushroom-chicken-soup.jpg",
+  "ok": true
+ },
+ {
+  "id": 85,
+  "name": "电饭煲焖饭",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "085-rice-cooker-rice.jpg",
+  "ok": true
+ },
+ {
+  "id": 86,
+  "name": "腊肠煲仔饭",
+  "mode": "HOME_COOKING",
+  "cuisine": "粤菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 87,
+  "name": "电饭煲茶叶蛋",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "087-tea-egg.jpg",
+  "ok": true
+ },
+ {
+  "id": 88,
+  "name": "电饭煲红烧肉",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "088-braised-pork-belly.jpg",
+  "ok": true
+ },
+ {
+  "id": 89,
+  "name": "电饭煲青菜粥",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "089-vegetable-congee.jpg",
+  "ok": true
+ },
+ {
+  "id": 90,
+  "name": "空气炸锅鸡翅",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "090-air-fryer-chicken-wings.jpg",
+  "ok": true
+ },
+ {
+  "id": 91,
+  "name": "空气炸锅薯条",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "091-air-fryer-fries.jpg",
+  "ok": true
+ },
+ {
+  "id": 92,
+  "name": "空气炸锅烤茄子",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "092-air-fryer-eggplant.jpg",
+  "ok": true
+ },
+ {
+  "id": 93,
+  "name": "空气炸锅三文鱼",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "093-air-fryer-salmon.jpg",
+  "ok": true
+ },
+ {
+  "id": 94,
+  "name": "凉拌黄瓜",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "094-smashed-cucumber-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 95,
+  "name": "凉拌木耳",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 96,
+  "name": "凉拌豆腐丝",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "096-tofu-skin-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 97,
+  "name": "凉拌鸡丝",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "097-shredded-chicken-salad.jpg",
+  "ok": true
+ },
+ {
+  "id": 98,
+  "name": "一锅出番茄牛腩",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 99,
+  "name": "一锅出土豆炖鸡",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "",
+  "ok": false
+ },
+ {
+  "id": 100,
+  "name": "一锅出咖喱饭",
+  "mode": "HOME_COOKING",
+  "cuisine": "家常菜",
+  "file": "100-curry-rice.jpg",
+  "ok": true
+ }
+]

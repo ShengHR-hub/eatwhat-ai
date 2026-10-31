@@ -1,0 +1,8 @@
+HOME_COOKING
+  before: statements=37 fridge=32 returned=31
+  after : statements=6 fridge=1 returned=31
+  same top3: True | same count: True
+OUT_DINING
+  before: statements=6 fridge=0 returned=40
+  after : statements=6 fridge=0 returned=40
+  same top3: True | same count: True

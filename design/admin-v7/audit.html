@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>审计日志 · 食刻 EatWhat 后台</title>
+<link rel="stylesheet" href="app.css" />
+<style>
+  .statline {
+    display: flex; align-items: center;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 11px; padding: 9px 4px; margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .statline__item { flex: 1; padding: 0 16px; border-right: 1px solid var(--line-soft); }
+  .statline__item:last-child { border-right: 0; }
+  .statline__k { font-size: 10.5px; color: var(--faint); }
+  .statline__v { font-size: 18px; font-weight: 500; letter-spacing: -.02em; margin-top: 1px; }
+  .statline__v small { font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+  .statline__v.is-alert { color: var(--bad); }
+
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;
+    padding: 11px 13px; border-bottom: 1px solid var(--line-soft);
+    background: var(--surface-2);
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field span { font-size: 10.5px; color: var(--faint); }
+  .field select, .field input {
+    height: 30px; min-width: 132px; padding: 0 9px;
+    border: 1px solid var(--line); border-radius: 7px;
+    background: var(--surface); font-size: 11.5px; outline: none;
+  }
+  .field select:focus, .field input:focus { border-color: var(--line-strong); }
+  .filters__actions { margin-left: auto; display: flex; gap: 8px; }
+
+  .op { display: flex; align-items: center; gap: 8px; }
+  .op__avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: 0 0 24px;
+  }
+  .op__copy { display: flex; flex-direction: column; line-height: 1.3; }
+  .op__name { font-size: 12px; }
+  .op__role { font-size: 9px; color: var(--faint); letter-spacing: .06em; }
+
+  .act {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 20px; padding: 0 7px; border-radius: 4px;
+    font-size: 10px; font-family: var(--mono); letter-spacing: .01em;
+    border: 1px solid transparent;
+  }
+  .act--create { color: var(--ok); background: var(--ok-bg); border-color: rgba(15,122,90,.16); }
+  .act--update { color: var(--accent); background: var(--accent-soft); border-color: rgba(47,107,255,.18); }
+  .act--delete { color: var(--bad); background: var(--bad-bg); border-color: rgba(192,57,43,.18); }
+  .act--tag { color: var(--warn); background: var(--warn-bg); border-color: rgba(154,106,0,.18); }
+
+  .summary { color: var(--muted); font-size: 12px; }
+  .summary b { color: var(--ink); font-weight: 500; }
+
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--surface-2); }
+
+  /* 详情抽屉 */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(16, 24, 40, .34);
+    opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s;
+    z-index: 40; backdrop-filter: blur(2px);
+  }
+  .scrim.is-open { opacity: 1; visibility: visible; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 460px;
+    background: var(--surface); z-index: 50;
+    transform: translateX(100%); transition: transform .26s cubic-bezier(.32,.72,0,1);
+    display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+  }
+  .drawer.is-open { transform: none; }
+  .drawer__head { padding: 18px 20px 13px; border-bottom: 1px solid var(--line-soft); }
+  .drawer__eyebrow { font-size: 9.5px; letter-spacing: .12em; color: var(--faint); text-transform: uppercase; }
+  .drawer__head h2 { font-size: 16px; font-weight: 600; margin-top: 4px; }
+  .drawer__head p { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .drawer__body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .kv { display: grid; grid-template-columns: 84px 1fr; gap: 7px 12px; font-size: 12px; margin-bottom: 16px; }
+  .kv dt { color: var(--faint); font-size: 11px; }
+  .kv dd { color: var(--ink); }
+
+  .diff { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+  .diff__row { display: grid; grid-template-columns: 96px 1fr 1fr; font-size: 11.5px; }
+  .diff__row + .diff__row { border-top: 1px solid var(--line-soft); }
+  .diff__row > span { padding: 8px 10px; }
+  .diff__k { color: var(--faint); font-size: 11px; background: var(--surface-2); }
+  .diff__old { color: var(--bad); background: rgba(192, 57, 43, .05); text-decoration: line-through; text-decoration-color: rgba(192,57,43,.4); }
+  .diff__new { color: var(--ok); background: rgba(15, 122, 90, .05); }
+  .diff__head { font-size: 10px; color: var(--faint); letter-spacing: .06em; }
+  .diff__head > span { padding: 6px 10px; background: var(--surface-2); }
+  .drawer__foot { padding: 12px 20px; border-top: 1px solid var(--line-soft); display: flex; gap: 8px; justify-content: flex-end; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span class="brand__copy"><span class="brand__name">食刻 EatWhat</span><span class="brand__sub">Admin</span></span>
+    </div>
+    <nav class="nav">
+      <p class="nav__label">数据</p>
+      <button class="nav__item" onclick="location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>数据管理</button>
+      <button class="nav__item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5h9M9 12h9M9 19h9M4 5h1M4 12h1M4 19h1"/></svg>审计日志</button>
+      <p class="nav__label">分析</p>
+      <button class="nav__item" onclick="location.href='dashboard.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>实验大屏</button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="who">
+        <span class="who__avatar">测</span>
+        <span class="who__copy"><span class="who__name">测试账号</span><span class="who__role">ADMIN</span></span>
+      </div>
+      <button class="logout" onclick="location.href='login.html'">退出登录</button>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span>后台</span><span>/</span><b>审计日志</b></div>
+      <label class="search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input placeholder="搜摘要、资源 ID 或操作人" />
+      </label>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <h1>审计日志</h1>
+          <p>所有写操作留痕：谁、什么时候、改了哪条数据、改前改后是什么。</p>
+        </div>
+        <div class="page-head__actions">
+          <button class="btn">导出 CSV</button>
+        </div>
+      </div>
+
+      <div class="statline">
+        <div class="statline__item"><div class="statline__k">今日操作</div><div class="statline__v tabular">128<small>次</small></div></div>
+        <div class="statline__item"><div class="statline__k">删除类</div><div class="statline__v tabular is-alert">3<small>次</small></div></div>
+        <div class="statline__item"><div class="statline__k">批量打标</div><div class="statline__v tabular">12<small>次</small></div></div>
+        <div class="statline__item"><div class="statline__k">操作人</div><div class="statline__v tabular">2<small>人</small></div></div>
+        <div class="statline__item"><div class="statline__k">最早记录</div><div class="statline__v tabular" style="font-size:13px">2026-10-30 02:14</div></div>
+      </div>
+
+      <div class="panel">
+        <form class="filters" onsubmit="return false">
+          <label class="field"><span>动作</span>
+            <select><option>全部动作</option><option>restaurant.create</option><option>restaurant.update</option><option>restaurant.delete</option><option>dish.create</option><option>dish.update</option><option>dish.delete</option><option>dish.llm_tag</option></select>
+          </label>
+          <label class="field"><span>资源</span>
+            <select><option>全部资源</option><option>门店</option><option>菜品</option></select>
+          </label>
+          <label class="field"><span>操作人</span>
+            <select><option>全部</option><option>测试账号</option><option>PW测试</option></select>
+          </label>
+          <label class="field"><span>时间范围</span>
+            <select><option>今天</option><option>近 7 天</option><option>近 30 天</option><option>全部</option></select>
+          </label>
+          <div class="filters__actions">
+            <button class="btn btn--sm">重置</button>
+            <button class="btn btn--primary btn--sm">筛选</button>
+          </div>
+        </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:132px">时间</th>
+              <th style="width:150px">操作人</th>
+              <th style="width:150px">动作</th>
+              <th style="width:110px">资源</th>
+              <th>摘要</th>
+              <th style="width:104px">IP</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr data-act="delete" data-title="删除门店「审计测试店」" data-op="测试账号" data-ip="127.0.0.1" data-time="2026-10-30 02:14:08">
+              <td class="cell-time">10-30 02:14:08</td>
+              <td><div class="op"><span class="op__avatar">测</span><span class="op__copy"><span class="op__name">测试账号</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--delete">restaurant.delete</span></td>
+              <td>门店 #7705</td>
+              <td class="summary">删除门店 <b>审计测试店</b>，连带下线 0 道菜</td>
+              <td class="cell-time">127.0.0.1</td>
+            </tr>
+            <tr data-act="update" data-title="修改门店「审计测试店」" data-op="测试账号" data-ip="127.0.0.1" data-time="2026-10-30 02:14:05">
+              <td class="cell-time">10-30 02:14:05</td>
+              <td><div class="op"><span class="op__avatar">测</span><span class="op__copy"><span class="op__name">测试账号</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--update">restaurant.update</span></td>
+              <td>门店 #7705</td>
+              <td class="summary">修改门店 <b>审计测试店</b>（1 个字段）</td>
+              <td class="cell-time">127.0.0.1</td>
+            </tr>
+            <tr data-act="create" data-title="新建门店「审计测试店」" data-op="测试账号" data-ip="127.0.0.1" data-time="2026-10-30 02:14:01">
+              <td class="cell-time">10-30 02:14:01</td>
+              <td><div class="op"><span class="op__avatar">测</span><span class="op__copy"><span class="op__name">测试账号</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--create">restaurant.create</span></td>
+              <td>门店 #7705</td>
+              <td class="summary">新建门店 <b>审计测试店</b></td>
+              <td class="cell-time">127.0.0.1</td>
+            </tr>
+            <tr data-act="tag" data-title="批量打标 12 道菜" data-op="PW测试" data-ip="192.168.1.24" data-time="2026-10-30 01:52:37">
+              <td class="cell-time">10-30 01:52:37</td>
+              <td><div class="op"><span class="op__avatar">PW</span><span class="op__copy"><span class="op__name">PW测试</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--tag">dish.llm_tag</span></td>
+              <td>菜品 ×12</td>
+              <td class="summary">批量打标成功 <b>12</b> 道，跳过 0 道</td>
+              <td class="cell-time">192.168.1.24</td>
+            </tr>
+            <tr data-act="update" data-title="修改菜品「砂锅豆腐」" data-op="PW测试" data-ip="192.168.1.24" data-time="2026-10-30 01:48:12">
+              <td class="cell-time">10-30 01:48:12</td>
+              <td><div class="op"><span class="op__avatar">PW</span><span class="op__copy"><span class="op__name">PW测试</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--update">dish.update</span></td>
+              <td>菜品 #1</td>
+              <td class="summary">修改菜品 <b>砂锅豆腐</b>（2 个字段）</td>
+              <td class="cell-time">192.168.1.24</td>
+            </tr>
+            <tr data-act="delete" data-title="删除菜品「番茄鸡蛋面」" data-op="测试账号" data-ip="127.0.0.1" data-time="2026-10-30 01:31:55">
+              <td class="cell-time">10-30 01:31:55</td>
+              <td><div class="op"><span class="op__avatar">测</span><span class="op__copy"><span class="op__name">测试账号</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--delete">dish.delete</span></td>
+              <td>菜品 #5</td>
+              <td class="summary">删除菜品 <b>番茄鸡蛋面</b></td>
+              <td class="cell-time">127.0.0.1</td>
+            </tr>
+            <tr data-act="create" data-title="新建菜品「清蒸鲈鱼」" data-op="PW测试" data-ip="192.168.1.24" data-time="2026-10-30 01:22:40">
+              <td class="cell-time">10-30 01:22:40</td>
+              <td><div class="op"><span class="op__avatar">PW</span><span class="op__copy"><span class="op__name">PW测试</span><span class="op__role">ADMIN</span></span></div></td>
+              <td><span class="act act--create">dish.create</span></td>
+              <td>菜品 #8</td>
+              <td class="summary">新建菜品 <b>清蒸鲈鱼</b></td>
+              <td class="cell-time">192.168.1.24</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <footer class="panel__foot">
+          <span>共 128 条 · 第 1 / 7 页</span>
+          <div class="pager">
+            <button disabled>上一页</button><button class="is-active">1</button><button>2</button><button>3</button><button>下一页</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <header class="drawer__head">
+    <p class="drawer__eyebrow">AUDIT DETAIL</p>
+    <h2 id="dTitle">修改门店「审计测试店」</h2>
+    <p id="dMeta">测试账号 · 2026-10-30 02:14:05 · 127.0.0.1</p>
+  </header>
+  <div class="drawer__body">
+    <dl class="kv">
+      <dt>动作</dt><dd id="dAct">restaurant.update</dd>
+      <dt>资源</dt><dd>门店 #7705（audit_test_shop）</dd>
+      <dt>结果</dt><dd style="color:var(--ok)">成功</dd>
+    </dl>
+    <p class="form-section" style="border:0;margin:0 0 8px" id="diffTitle">变更明细</p>
+    <div class="diff" id="diff">
+      <div class="diff__row diff__head"><span>字段</span><span>改前</span><span>改后</span></div>
+      <div class="diff__row"><span class="diff__k">avg_price</span><span class="diff__old">—</span><span class="diff__new">42.5</span></div>
+      <div class="diff__row"><span class="diff__k">rating</span><span class="diff__old">4.2</span><span class="diff__new">4.5</span></div>
+    </div>
+    <p id="dNote" style="display:none;font-size:11.5px;color:var(--muted);line-height:1.75;margin-top:2px"></p>
+  </div>
+  <footer class="drawer__foot">
+    <button class="btn btn--sm" id="dClose">关闭</button>
+  </footer>
+</aside>
+
+<script>
+  const scrim = document.getElementById('scrim');
+  const drawer = document.getElementById('drawer');
+  const ACT_LABEL = {
+    create: 'restaurant.create', update: 'restaurant.update',
+    delete: 'restaurant.delete', tag: 'dish.llm_tag',
+  };
+  document.getElementById('rows').addEventListener('click', (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    document.getElementById('dTitle').textContent = tr.dataset.title;
+    document.getElementById('dMeta').textContent =
+      `${tr.dataset.op} · ${tr.dataset.time} · ${tr.dataset.ip}`;
+    const act = tr.querySelector('.act').textContent.trim();
+    document.getElementById('dAct').textContent = act;
+    // 只有 update 才有"改前改后"；删除/新建/打标看说明
+    const isUpdate = act.endsWith('.update');
+    document.getElementById('diff').style.display = isUpdate ? 'block' : 'none';
+    document.getElementById('diffTitle').style.display = isUpdate ? 'block' : 'none';
+    const note = document.getElementById('dNote');
+    note.style.display = isUpdate ? 'none' : 'block';
+    note.textContent = act.endsWith('.delete')
+      ? '软删除：记录仍保留在库中（deleted_at 已写入），历史足迹不受影响，可追溯但不会出现在推荐候选里。'
+      : act.endsWith('.create')
+      ? '新建记录已写入，并同步进入推荐候选池。'
+      : '批量打标已完成，结果逐条写回 dishes.feature_vector。';
+    scrim.classList.add('is-open');
+    drawer.classList.add('is-open');
+  });
+  function close() {
+    scrim.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+  }
+  scrim.addEventListener('click', close);
+  document.getElementById('dClose').addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+</script>
+</body>
+</html>

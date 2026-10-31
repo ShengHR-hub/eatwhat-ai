@@ -1,0 +1,94 @@
+- generic: 🍵
+- heading "养生阿明" [level=1]
+- paragraph: 广东清淡养生党
+- button "🔄 切换室友"
+- link "虚拟冰箱 4 件食材 · 3 件临期":
+  - /url: /m/fridge
+  - generic: 🧊
+  - generic: 虚拟冰箱
+  - generic: 4 件食材 · 3 件临期
+  - generic: ›
+- link "多人干饭房间 建房或输房间码，和室友一起划卡定菜":
+  - /url: /m/room
+  - generic: 👥
+  - generic: 多人干饭房间
+  - generic: 建房或输房间码，和室友一起划卡定菜
+  - generic: ›
+- heading "饮食基因" [level=2]
+- generic: 八维口味偏好
+- generic: 辣度
+- generic: "5"
+- generic: 油度
+- generic: "15"
+- generic: 汤感
+- generic: "85"
+- generic: 温度适配
+- generic: "45"
+- generic: 饱腹需求
+- generic: "50"
+- generic: 出餐速度
+- generic: "50"
+- generic: 社交友好
+- generic: "50"
+- generic: 治愈程度
+- generic: "60"
+- heading "日常默认预算" [level=2]
+- generic: 当前 ¥30
+- slider "日常默认预算": "30"
+- generic: ¥30
+- heading "忌口红线" [level=2]
+- generic: 命中即一票否决
+- list:
+  - generic: 海鲜
+  - button "移除忌口 海鲜": ×
+  - generic: 香菜
+  - button "移除忌口 香菜": ×
+  - listitem: 共 2 项
+- textbox "加一个忌口，回车确认"
+- button "加入"
+- button "折耳根"
+- button "香菜" [disabled]
+- button "海鲜" [disabled]
+- button "花生"
+- button "牛奶"
+- button "内脏"
+- heading "美食红黑榜" [level=2]
+- generic: 红榜享 1.15x 提权
+- tablist:
+  - tab "红榜菜品 2" [selected]:
+    - text: 红榜菜品
+    - generic: "2"
+  - tab "黑榜菜品 1":
+    - text: 黑榜菜品
+    - generic: "1"
+  - tab "黑榜门店 0":
+    - text: 黑榜门店
+    - generic: "0"
+- list:
+  - generic: 老火靓汤
+  - generic: 粤菜 · ¥18
+  - button "移出"
+  - generic: 白切鸡饭
+  - generic: 粤菜 · ¥15
+  - button "移出"
+- heading "干饭战绩" [level=2]
+- generic: 帮你少纠结 3 次
+- generic: 累计解决吃什么
+- generic: 3次
+- generic: 累计花费
+- generic: 38元
+- generic: 多人干饭
+- generic: 0次
+- img "外食 82%，下厨 18%"
+- generic: 外卖 ¥31
+- generic: 下厨 ¥7
+- navigation:
+  - link "首页":
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹":
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的" [active]:
+    - /url: /m/profile
+    - generic: 我的

@@ -1,0 +1,68 @@
+generated_at: 2026-10-25T03:50:11.345175+08:00
+cwd: D:\eatwhat
+python: 3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]
+pkg fastapi: 0.115.0
+pkg sqlalchemy: 2.0.35
+pkg pydantic: 2.13.3
+pkg httpx: 0.28.1
+pkg uvicorn: 0.30.0
+pkg pytest: 9.0.3
+node: v24.19.0
+npm: 11.17.0
+git HEAD: 128 (128 = no commit)
+git status entries: 329 (staged/unstaged counts below)
+  staged: 280
+  unstaged: 130
+  untracked: 49
+staged diff sha256: cbfeb1e84ea5a38053d2b0fa67bd897b69a9aa988e16426e2ccc437e13a630cb
+untracked sample: ['BATCH4_PLAN.md', 'BATCH4_PRE_CLEARANCE.md', 'backend/algorithms/fridge_clock.py', 'backend/algorithms/simulate_personas.py', 'backend/scripts/benchmark_snapshot.json', 'backend/scripts/fetch_amap_poi.py', 'backend/scripts/import_open_recipes.py', 'backend/scripts/measure_recommend_sql.py', 'backend/scripts/migrate_s10_data_schema.py', 'backend/scripts/s10_common.py']
+
+=== backend/eatwhat.db
+size: 217088 sha256: 775da775ce8dbd5f078d61d5c05db175d8f10d4224fd41755435ac864bd3a60b schema_fingerprint: 692c76fbd59486ad4ddcb50433737593086a50051ffd20a670c9f476d179e6b6
+[algo_configs] rows=1 cols=9
+  id:INTEGER NOTNULL, config_name:VARCHAR(64) NOTNULL, lambda_decay:FLOAT NOTNULL, omega_group:FLOAT NOTNULL, alpha_taste:FLOAT NOTNULL, beta_weather:FLOAT NOTNULL, gamma_budget:FLOAT NOTNULL, delta_status:FLOAT NOTNULL, benchmark_json:JSON
+[dishes_and_recipes] rows=100 cols=14
+  id:INTEGER NOTNULL, name:VARCHAR(128) NOTNULL, mode_type:VARCHAR(16) NOTNULL, restaurant_id:INTEGER, cuisine_type:VARCHAR(64), dish_role:VARCHAR(16) NOTNULL, price_or_cost:FLOAT, cook_minutes:INTEGER, appliance_tag:VARCHAR(32) NOTNULL, ingredients_main:JSON NOTNULL, ingredients_aux:JSON NOTNULL, recipe_steps:TEXT, feature_vector:JSON NOTNULL, image_url:VARCHAR(255)
+[eating_logs] rows=9 cols=8
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, dish_id:INTEGER NOTNULL, mode_type:VARCHAR(16) NOTNULL, cost_amount:FLOAT, weather_snapshot:VARCHAR(64), status_bubbles:JSON NOTNULL, eaten_at:DATETIME NOTNULL
+[fridge_inventory] rows=12 cols=7
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, ingredient_name:VARCHAR(64) NOTNULL, category:VARCHAR(32) NOTNULL, quantity_desc:VARCHAR(32), expire_days:INTEGER, created_at:DATETIME NOTNULL
+[group_rooms] rows=0 cols=14
+  id:INTEGER NOTNULL, room_code:VARCHAR(10) NOTNULL, host_user_id:INTEGER NOTNULL, mode_type:VARCHAR(16) NOTNULL, status:VARCHAR(16) NOTNULL, member_user_ids:JSON NOTNULL, candidate_dish_ids:JSON NOTNULL, winner_dish_id:INTEGER, consensus_report:JSON, created_at:DATETIME NOTNULL, budget:FLOAT, deadline_at:DATETIME, settled_at:DATETIME, algo_params:JSON
+[restaurants] rows=20 cols=10
+  id:INTEGER NOTNULL, name:VARCHAR(128) NOTNULL, source_type:VARCHAR(32) NOTNULL, category:VARCHAR(64), avg_price:FLOAT, rating:FLOAT, longitude:FLOAT, latitude:FLOAT, distance_meters:INTEGER, address:VARCHAR(255)
+[room_votes] rows=0 cols=6
+  id:INTEGER NOTNULL, room_code:VARCHAR(10) NOTNULL, user_id:INTEGER NOTNULL, dish_id:INTEGER NOTNULL, vote_type:VARCHAR(16) NOTNULL, voted_at:DATETIME NOTNULL
+[user_preferences] rows=4 cols=9
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, base_vector:JSON NOTNULL, default_budget:FLOAT NOTNULL, veto_tags:JSON NOTNULL, preferred_cuisines:JSON NOTNULL, favorite_dish_ids:JSON NOTNULL, blacklist_dish_ids:JSON NOTNULL, blacklist_restaurant_ids:JSON NOTNULL
+[users] rows=4 cols=7
+  id:INTEGER NOTNULL, username:VARCHAR(64) NOTNULL, nickname:VARCHAR(64) NOTNULL, avatar:VARCHAR(255), persona_title:VARCHAR(128), is_demo_persona:BOOLEAN NOTNULL, created_at:DATETIME NOTNULL
+
+=== backend/eatwhat_batch4.db
+size: 6316032 sha256: 315eb3da1b7775db6fdfc4f6ed72c304de15b66e78c97e843005528976918c28 schema_fingerprint: 8f6487768cffda322c05afab9b8f64b5a4d014a6f32b332d956a90a87d86b7aa
+[algo_configs] rows=0 cols=9
+  id:INTEGER NOTNULL, config_name:VARCHAR(64) NOTNULL, lambda_decay:FLOAT NOTNULL, omega_group:FLOAT NOTNULL, alpha_taste:FLOAT NOTNULL, beta_weather:FLOAT NOTNULL, gamma_budget:FLOAT NOTNULL, delta_status:FLOAT NOTNULL, benchmark_json:JSON
+[dishes_and_recipes] rows=6400 cols=24
+  id:INTEGER NOTNULL, name:VARCHAR(128) NOTNULL, mode_type:VARCHAR(16) NOTNULL, restaurant_id:INTEGER, cuisine_type:VARCHAR(64), dish_role:VARCHAR(16) NOTNULL, price_or_cost:FLOAT, cook_minutes:INTEGER, appliance_tag:JSON NOTNULL, ingredients_main:JSON NOTNULL, ingredients_aux:JSON NOTNULL, recipe_steps:TEXT, feature_vector:JSON, image_url:VARCHAR(255), allergen_tags:JSON, tagging_status:VARCHAR(16), tagging_error:TEXT, llm_meta:JSON, source_dataset:VARCHAR(64), source_record_id:VARCHAR(64), source_url:VARCHAR(255), data_version:VARCHAR(64), is_synthetic:BOOLEAN, deleted_at:DATETIME
+[eating_logs] rows=0 cols=8
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, dish_id:INTEGER NOTNULL, mode_type:VARCHAR(16) NOTNULL, cost_amount:FLOAT, weather_snapshot:VARCHAR(64), status_bubbles:JSON NOTNULL, eaten_at:DATETIME NOTNULL
+[fridge_inventory] rows=0 cols=7
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, ingredient_name:VARCHAR(64) NOTNULL, category:VARCHAR(32) NOTNULL, quantity_desc:VARCHAR(32), expire_days:INTEGER, created_at:DATETIME NOTNULL
+[group_rooms] rows=0 cols=15
+  id:INTEGER NOTNULL, room_code:VARCHAR(10) NOTNULL, host_user_id:INTEGER NOTNULL, mode_type:VARCHAR(16) NOTNULL, status:VARCHAR(16) NOTNULL, member_user_ids:JSON NOTNULL, candidate_dish_ids:JSON NOTNULL, winner_dish_id:INTEGER, consensus_report:JSON, budget:FLOAT, algo_params:JSON, deadline_at:DATETIME, settled_at:DATETIME, created_at:DATETIME NOTNULL, campus:VARCHAR(32)
+[restaurants] rows=7664 cols=17
+  id:INTEGER NOTNULL, name:VARCHAR(128) NOTNULL, source_type:VARCHAR(32) NOTNULL, category:VARCHAR(64), avg_price:FLOAT, rating:FLOAT, longitude:FLOAT, latitude:FLOAT, distance_meters:INTEGER, address:VARCHAR(255), source_dataset:VARCHAR(64), source_record_id:VARCHAR(64), source_url:VARCHAR(255), data_version:VARCHAR(64), is_synthetic:BOOLEAN, deleted_at:DATETIME, campus:VARCHAR(32)
+[room_votes] rows=0 cols=6
+  id:INTEGER NOTNULL, room_code:VARCHAR(10) NOTNULL, user_id:INTEGER NOTNULL, dish_id:INTEGER NOTNULL, vote_type:VARCHAR(16) NOTNULL, voted_at:DATETIME NOTNULL
+[user_preferences] rows=0 cols=9
+  id:INTEGER NOTNULL, user_id:INTEGER NOTNULL, base_vector:JSON NOTNULL, default_budget:FLOAT NOTNULL, veto_tags:JSON NOTNULL, preferred_cuisines:JSON NOTNULL, favorite_dish_ids:JSON NOTNULL, blacklist_dish_ids:JSON NOTNULL, blacklist_restaurant_ids:JSON NOTNULL
+[users] rows=0 cols=7
+  id:INTEGER NOTNULL, username:VARCHAR(64) NOTNULL, nickname:VARCHAR(64) NOTNULL, avatar:VARCHAR(255), persona_title:VARCHAR(128), is_demo_persona:BOOLEAN NOTNULL, created_at:DATETIME NOTNULL
+
+frontend package.json sha256: 66e998266810536f52272b26eb5d9de1a66c6d9fa6f633b70d24ba0bfe48c49b
+frontend package-lock.json sha256: adc87fc76e27d41e04f92df8e31520055c0e388ad6283163e2d18d1b5e20c297
+requirements.txt sha256: 842533ee44021c3cd35a655ebac73e5b88c557996c40132a59165626c10f1c73
+pytest.ini sha256: e317b4ea9380c31b982e3e43cd60ba7103515d0bcf4f21c57d005ca8fd0f8bb3
+deps: {"dependencies": {"@formkit/auto-animate": "^0.8.2", "@vueuse/core": "^12.5.0", "@vueuse/motion": "^2.2.6", "canvas-confetti": "^1.9.3", "daisyui": "^4.12.24", "echarts": "^5.6.0", "gsap": "^3.12.7", "lottie-web": "^5.12.2", "ogl": "^1.0.11", "pinia": "^2.3.1", "vue": "^3.5.13", "vue-echarts": "^7.0.3", "vue-router": "^4.5.0"}, "devDependencies": {"@vitejs/plugin-vue": "^5.2.1", "autoprefixer": "^10.4.20", "postcss": "^8.5.1", "tailwindcss": "^3.4.17", "vite": "^6.0.11"}}
+
+wrote data/baseline.json

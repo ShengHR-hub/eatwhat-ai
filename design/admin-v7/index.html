@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>食刻 EatWhat · 管理后台 v7（冷色 / 三视图）</title>
+<link rel="stylesheet" href="app.css" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span class="brand__copy"><span class="brand__name">食刻 EatWhat</span><span class="brand__sub">Admin</span></span>
+    </div>
+    <nav class="nav">
+      <p class="nav__label">数据</p>
+      <button class="nav__item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>数据管理</button>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5h9M9 12h9M9 19h9M4 5h1M4 12h1M4 19h1"/></svg>审计日志<span class="nav__tag">NEW</span></button>
+      <p class="nav__label">分析</p>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>实验大屏</button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="who">
+        <span class="who__avatar">测</span>
+        <span class="who__copy"><span class="who__name">测试账号</span><span class="who__role">ADMIN</span></span>
+      </div>
+      <button class="logout">退出登录</button>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span>后台</span><span>/</span><b>数据管理</b></div>
+      <label class="search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input placeholder="搜菜品名、门店名或 ID" />
+      </label>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <h1>数据管理</h1>
+          <p>7,704 家门店 · 6,560 道菜 · 24 道待打标</p>
+        </div>
+        <div class="page-head__actions">
+          <div class="viewswitch" id="viewswitch">
+            <button data-view="board" class="is-on">看板</button>
+            <button data-view="table">表格</button>
+            <button data-view="grid">质检</button>
+          </div>
+          <button class="btn">导出</button>
+          <button class="btn btn--primary">新增菜品</button>
+        </div>
+      </div>
+
+      <div class="toolbar2">
+        <div class="chipfilters">
+          <button class="chipf is-on"><i></i>全部 6,560</button>
+          <button class="chipf"><i></i>思源 3,862</button>
+          <button class="chipf"><i></i>建大 3,842</button>
+          <button class="chipf"><i></i>外食 120</button>
+          <button class="chipf"><i></i>下厨 6,440</button>
+          <button class="chipf"><i></i>缺维度 24</button>
+        </div>
+        <div class="legend" id="legend" hidden>
+          <span><i class="dot-ok"></i>已填</span>
+          <span><i class="dot-miss"></i>缺值</span>
+        </div>
+        <button class="btn btn--sm">排序：缺口优先 ▾</button>
+      </div>
+
+      <!-- 视图 1：看板 -->
+      <section id="view-board">
+        <div class="board">
+          <div class="col">
+            <header class="col__head">
+              <span class="col__dot" style="background: var(--warn)"></span>
+              <span class="col__title">待打标</span>
+              <span class="col__count">24</span>
+            </header>
+            <div class="col__body">
+              <article class="kcard">
+                <div class="kcard__name">孜然木耳黄瓜</div>
+                <div class="kcard__meta">三食堂 · 凉菜窗口 · 建大</div>
+                <div class="kcard__foot"><span class="kcard__price">¥12</span><span class="kcard__tag">缺 烫</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">酸辣粉</div>
+                <div class="kcard__meta">一食堂 · 小吃窗口 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥9</span><span class="kcard__tag">缺 烫</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">手撕包菜</div>
+                <div class="kcard__meta">二食堂 · 素菜窗口 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥11</span><span class="kcard__tag">缺菜系</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">红烧茄子</div>
+                <div class="kcard__meta">教工食堂 · 家常 · 建大</div>
+                <div class="kcard__foot"><span class="kcard__price">¥14</span><span class="kcard__tag">缺 烫</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">冬瓜排骨汤</div>
+                <div class="kcard__meta">三食堂 · 汤品 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥8</span><span class="kcard__tag">缺 油</span></div>
+              </article>
+            </div>
+            <button class="col__add">＋ 从这里新增</button>
+          </div>
+
+          <div class="col">
+            <header class="col__head">
+              <span class="col__dot" style="background: var(--ok)"></span>
+              <span class="col__title">已完成</span>
+              <span class="col__count">6,512</span>
+            </header>
+            <div class="col__body">
+              <article class="kcard">
+                <div class="kcard__name">砂锅豆腐</div>
+                <div class="kcard__meta">教工食堂 · 砂锅炖菜 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥22</span><span class="kcard__tag">8 维齐全</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">红烧牛肉面</div>
+                <div class="kcard__meta">二食堂 · 牛肉面 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥18</span><span class="kcard__tag">8 维齐全</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">麻辣香锅</div>
+                <div class="kcard__meta">一食堂 · 川湘窗口 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥32</span><span class="kcard__tag">8 维齐全</span></div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">清蒸鲈鱼</div>
+                <div class="kcard__meta">教工食堂 · 蒸菜 · 建大</div>
+                <div class="kcard__foot"><span class="kcard__price">¥38</span><span class="kcard__tag">8 维齐全</span></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="col">
+            <header class="col__head">
+              <span class="col__dot" style="background: var(--bad)"></span>
+              <span class="col__title">失败</span>
+              <span class="col__count">24</span>
+            </header>
+            <div class="col__body">
+              <article class="kcard">
+                <div class="kcard__name">番茄鸡蛋面</div>
+                <div class="kcard__meta">家常菜谱 · 下厨 · 15 分钟</div>
+                <div class="kcard__foot"><span class="kcard__price">—</span><span class="kcard__tag">重试 2 次</span></div>
+                <div class="kcard__why">模型返回缺「烫」维度，格式校验未通过</div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">鸡胸肉沙拉</div>
+                <div class="kcard__meta">轻食窗口 · 建大</div>
+                <div class="kcard__foot"><span class="kcard__price">¥26</span><span class="kcard__tag">超时</span></div>
+                <div class="kcard__why">调用超时 20s，未返回结果</div>
+              </article>
+              <article class="kcard">
+                <div class="kcard__name">奶油蘑菇汤</div>
+                <div class="kcard__meta">西餐窗口 · 思源</div>
+                <div class="kcard__foot"><span class="kcard__price">¥15</span><span class="kcard__tag">余额不足</span></div>
+                <div class="kcard__why">视觉模型账户余额不足，充值后重试</div>
+              </article>
+            </div>
+            <button class="col__add">批量重试失败项</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 视图 2：表格 -->
+      <section id="view-table" hidden>
+        <div class="panel">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:64px">ID</th>
+                <th style="width:196px">名称</th>
+                <th>推荐理由</th>
+                <th style="width:104px">模式 / 校区</th>
+                <th style="width:114px">菜系 / 角色</th>
+                <th style="width:64px">价格</th>
+                <th style="width:88px">打标</th>
+                <th style="width:104px">更新时间</th>
+                <th style="width:92px">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-id">#1</td>
+                <td class="cell-name">砂锅豆腐<small>教工食堂 · 砂锅炖菜</small></td>
+                <td class="cell-reason">天气转凉，砂锅类热食更对味；最近没吃豆制品</td>
+                <td>外食 · 思源</td>
+                <td>家常 <span class="chip chip--plain">主菜</span></td>
+                <td class="tabular">¥22</td>
+                <td><span class="chip chip--ok">SUCCESS</span></td>
+                <td class="cell-time">10-29 14:22</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#2</td>
+                <td class="cell-name">红烧牛肉面<small>二食堂 · 牛肉面</small></td>
+                <td class="cell-reason">出餐快，18 元在预算内，适合赶时间</td>
+                <td>外食 · 思源</td>
+                <td>面食 <span class="chip chip--plain">主食</span></td>
+                <td class="tabular">¥18</td>
+                <td><span class="chip chip--ok">SUCCESS</span></td>
+                <td class="cell-time">10-29 13:05</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#3</td>
+                <td class="cell-name">麻辣香锅<small>一食堂 · 川湘窗口</small></td>
+                <td class="cell-reason">辣度够、分量足，适合想吃重口的时候</td>
+                <td>外食 · 思源</td>
+                <td>川湘菜 <span class="chip chip--plain">主菜</span></td>
+                <td class="tabular">¥32</td>
+                <td><span class="chip chip--ok">SUCCESS</span></td>
+                <td class="cell-time">10-28 19:41</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#4</td>
+                <td class="cell-name">孜然木耳黄瓜<small>三食堂 · 凉菜窗口</small></td>
+                <td class="cell-reason">清爽解腻，热量低，适合搭配主菜</td>
+                <td>外食 · 建大</td>
+                <td>凉菜 <span class="chip chip--plain">配菜</span></td>
+                <td class="tabular">¥12</td>
+                <td><span class="chip chip--warn">PENDING</span></td>
+                <td class="cell-time">10-27 09:18</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#5</td>
+                <td class="cell-name">番茄鸡蛋面<small>家常菜谱 · 15 分钟</small></td>
+                <td class="cell-reason">15 分钟出锅，食材冰箱里都有</td>
+                <td>下厨 · 共享</td>
+                <td>家常 <span class="chip chip--plain">主食</span></td>
+                <td class="tabular">—</td>
+                <td><span class="chip chip--bad">FAILED</span></td>
+                <td class="cell-time">10-26 21:07</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#6</td>
+                <td class="cell-name">蒜蓉西兰花<small>二食堂 · 素菜窗口</small></td>
+                <td class="cell-reason">低卡、口感清爽，适合搭配重口主菜</td>
+                <td>外食 · 思源</td>
+                <td>素菜 <span class="chip chip--plain">配菜</span></td>
+                <td class="tabular">¥10</td>
+                <td><span class="chip chip--ok">SUCCESS</span></td>
+                <td class="cell-time">10-26 17:32</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#7</td>
+                <td class="cell-name">酸辣粉<small>一食堂 · 小吃窗口</small></td>
+                <td class="cell-reason">酸辣开胃，天冷时来一碗很舒服</td>
+                <td>外食 · 思源</td>
+                <td>小吃 <span class="chip chip--plain">主食</span></td>
+                <td class="tabular">¥9</td>
+                <td><span class="chip chip--warn">PENDING</span></td>
+                <td class="cell-time">10-26 11:20</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+              <tr>
+                <td class="cell-id">#8</td>
+                <td class="cell-name">清蒸鲈鱼<small>教工食堂 · 蒸菜</small></td>
+                <td class="cell-reason">清淡少油，蛋白质高，适合想吃轻的时候</td>
+                <td>外食 · 建大</td>
+                <td>粤菜 <span class="chip chip--plain">主菜</span></td>
+                <td class="tabular">¥38</td>
+                <td><span class="chip chip--ok">SUCCESS</span></td>
+                <td class="cell-time">10-25 18:44</td>
+                <td><div class="row-actions"><button>编辑</button><button class="is-danger">删除</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+          <footer class="panel__foot">
+            <span>每页 20 条 · 已显示 8 条</span>
+            <div class="pager">
+              <button disabled>上一页</button><button class="is-active">1</button><button>2</button><button>3</button><button>下一页</button>
+            </div>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 视图 3：质检 -->
+      <section id="view-grid" hidden>
+        <div class="grid" id="grid"></div>
+        <div class="gridfoot">
+          <span>共 6,560 道 · 每页 12 · 第 1 / 547 页</span>
+          <div class="pager">
+            <button disabled>上一页</button><button class="is-active">1</button><button>2</button><button>3</button><button>下一页</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── 视图切换 ─────────────────────────────────────────────── */
+  const views = { board: 'view-board', table: 'view-table', grid: 'view-grid' };
+  const legend = document.getElementById('legend');
+
+  function showView(v) {
+    if (!views[v]) return;
+    document.querySelectorAll('#viewswitch button[data-view]').forEach((b) => {
+      b.classList.toggle('is-on', b.dataset.view === v);
+    });
+    Object.entries(views).forEach(([key, id]) => {
+      document.getElementById(id).hidden = key !== v;
+    });
+    legend.hidden = v !== 'grid';
+    // 只读 hash、不回写：replaceState 改 hash 会触发浏览器锚点恢复，
+    // 把 .page 的滚动位置又拉回中段，压不住。
+    setTimeout(() => {
+      const page = document.querySelector('.page');
+      if (page) page.scrollTop = 0;
+    }, 60);
+  }
+
+  document.getElementById('viewswitch').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-view]');
+    if (!btn) return;
+    showView(btn.dataset.view);
+  });
+
+  // 支持 index.html#grid / #table / #board 直达。
+  // 必须等首帧布局完成再切：同步切 hidden 会触发重排，浏览器把 .page 的
+  // 滚动位置补偿到中段（标题与筛选条被顶出视口）。
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const initialView = location.hash.replace('#', '');
+  requestAnimationFrame(() => {
+    showView(views[initialView] ? initialView : 'board');
+    requestAnimationFrame(() => {
+      const page = document.querySelector('.page');
+      if (page) page.scrollTop = 0;
+    });
+  });
+
+  /* ── 质检视图：八维雷达 ───────────────────────────────────── */
+  const AXES = ['酸', '甜', '苦', '辣', '咸', '鲜', '油', '烫'];
+  const DISHES = [
+    { name: '砂锅豆腐', meta: '教工食堂 · 砂锅炖菜 · 思源', price: '¥22', status: 'SUCCESS', vec: [.3,.2,.1,.2,.6,.7,.4,.8] },
+    { name: '红烧牛肉面', meta: '二食堂 · 牛肉面 · 思源', price: '¥18', status: 'SUCCESS', vec: [.2,.3,.1,.2,.7,.7,.5,.7] },
+    { name: '麻辣香锅', meta: '一食堂 · 川湘窗口 · 思源', price: '¥32', status: 'SUCCESS', vec: [.4,.2,.1,.9,.7,.6,.8,.6] },
+    { name: '孜然木耳黄瓜', meta: '三食堂 · 凉菜窗口 · 建大', price: '¥12', status: 'PENDING', vec: [.6,.2,.2,.2,.5,.4,.2,null] },
+    { name: '番茄鸡蛋面', meta: '家常菜谱 · 下厨 · 15 分钟', price: '—', status: 'FAILED', vec: [.5,.4,.1,.1,.5,.6,.3,null] },
+    { name: '蒜蓉西兰花', meta: '二食堂 · 素菜窗口 · 思源', price: '¥10', status: 'SUCCESS', vec: [.2,.2,.3,.1,.5,.5,.4,.6] },
+    { name: '酸辣粉', meta: '一食堂 · 小吃窗口 · 思源', price: '¥9', status: 'PENDING', vec: [.8,.2,.1,.7,.6,.5,.5,null] },
+    { name: '清蒸鲈鱼', meta: '教工食堂 · 蒸菜 · 建大', price: '¥38', status: 'SUCCESS', vec: [.1,.2,.1,.1,.6,.9,.2,.7] },
+    { name: '蛋炒饭', meta: '二食堂 · 主食窗口 · 思源', price: '¥8', status: 'SUCCESS', vec: [.1,.2,.1,.1,.6,.5,.6,.5] },
+    { name: '黄焖鸡米饭', meta: '一食堂 · 快餐 · 建大', price: '¥20', status: 'SUCCESS', vec: [.2,.3,.1,.4,.8,.6,.7,.7] },
+    { name: '紫菜蛋花汤', meta: '三食堂 · 汤品 · 思源', price: '¥4', status: 'SUCCESS', vec: [.2,.1,.1,.1,.7,.5,.1,.9] },
+    { name: '鸡胸肉沙拉', meta: '轻食窗口 · 建大 · 待补向量', price: '¥26', status: 'FAILED', vec: [.4,.2,.2,.1,.4,.4,null,null] }
+  ];
+  const TONE = { SUCCESS: 'ok', PENDING: 'warn', FAILED: 'bad' };
+
+  function radarSVG(vec, idx) {
+    const S = 132, cx = 66, cy = 66, R = 45, LR = 61;
+    const missing = vec.map((v, i) => (v == null ? i : -1)).filter((i) => i >= 0);
+    const angle = (i) => (-Math.PI / 2) + (i * 2 * Math.PI) / 8;
+    const pt = (i, ratio) => [cx + Math.cos(angle(i)) * R * ratio, cy + Math.sin(angle(i)) * R * ratio];
+    const poly = (ratio) => AXES.map((_, i) => pt(i, ratio).map((n) => n.toFixed(1)).join(',')).join(' ');
+
+    let svg = `<svg viewBox="0 0 ${S} ${S}" role="img" aria-label="八维风味雷达">`;
+    // 每张卡一组独立渐变：填充从上方 28% 蓝渐隐到 5%，避免纯色块的"塑料感"
+    svg += `<defs>
+      <linearGradient id="rg${idx}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2f6bff" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#2f6bff" stop-opacity=".05"/>
+      </linearGradient>
+      <radialGradient id="glow${idx}">
+        <stop offset="0%" stop-color="#2f6bff" stop-opacity=".1"/>
+        <stop offset="62%" stop-color="#2f6bff" stop-opacity=".05"/>
+        <stop offset="100%" stop-color="#2f6bff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>`;
+    // 雷达底下一圈极淡的蓝光，让它从卡片底色里"浮"出来
+    svg += `<circle cx="${cx}" cy="${cy}" r="${R + 12}" fill="url(#glow${idx})"/>`;
+
+    [0.33, 0.66, 1].forEach((r, ring) => {
+      svg += `<polygon points="${poly(r)}" fill="none" stroke="rgba(23,26,31,${ring === 2 ? .14 : .07})" stroke-width="1"/>`;
+    });
+    AXES.forEach((_, i) => {
+      const [x, y] = pt(i, 1);
+      const miss = missing.includes(i);
+      svg += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
+        stroke="rgba(23,26,31,${miss ? .1 : .07})" stroke-width="1" ${miss ? 'stroke-dasharray="2 3"' : ''}/>`;
+    });
+    const pts = vec.map((v, i) => pt(i, v == null ? 0 : v).map((n) => n.toFixed(1)).join(',')).join(' ');
+    svg += `<polygon class="radar-data" points="${pts}" fill="url(#rg${idx})" stroke="rgba(47,107,255,.75)" stroke-width="1.6" stroke-linejoin="round"/>`;
+    vec.forEach((v, i) => {
+      if (v == null) return;
+      const [x, y] = pt(i, v);
+      svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.8" fill="#2f6bff"/>`;
+    });
+    missing.forEach((i) => {
+      const [x, y] = pt(i, 0);
+      svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#c0392b"/>`;
+    });
+    AXES.forEach((label, i) => {
+      const [x, y] = pt(i, LR / R);
+      const miss = missing.includes(i);
+      svg += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
+        font-size="9" fill="${miss ? '#c0392b' : '#8d959f'}" font-weight="${miss ? 600 : 400}">${label}</text>`;
+    });
+    svg += '</svg>';
+    return { svg, missing };
+  }
+
+  document.getElementById('grid').innerHTML = DISHES.map((d, i) => {
+    const { svg, missing } = radarSVG(d.vec, i);
+    const flag = missing.length ? `缺 ${missing.map((i) => AXES[i]).join(' · ')}` : '8 维齐全';
+    return `
+      <article class="card" data-tone="${TONE[d.status]}" style="--i:${i}">
+        <div class="card__bar">
+          <span class="card__dot"></span>
+          <span>${d.status}</span>
+          <span class="card__flag">${flag}</span>
+        </div>
+        <div class="card__viz">
+          ${svg}
+        </div>
+        <div class="card__body">
+          <div class="card__name">${d.name}</div>
+          <div class="card__meta">${d.meta}</div>
+          <div class="card__row">
+            <span class="card__price tabular">${d.price}</span>
+            <span class="card__ops"><button>编辑</button><button class="is-danger">删除</button></span>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+</script>
+</body>
+</html>

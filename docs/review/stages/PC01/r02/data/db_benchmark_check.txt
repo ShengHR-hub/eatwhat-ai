@@ -1,0 +1,38 @@
+=== db benchmark check ===
+checked_at: 2026-10-24T09:45:56.088363+00:00
+config_name: default_production
+top_level_keys: ['duplication_rate_curve', 'generated_at', 'group_satisfaction_bars', 'sample']
+sample: {'personas': 200, 'days': 60, 'meals_per_day': 2, 'rooms': 1000, 'members_per_room': 4}
+days_count: 14 ours_count: 14 base_count: 14
+days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+ours_lambda_0.5: [0.0175, 0.0988, 0.125, 0.1375, 0.143, 0.1512, 0.1554, 0.1584, 0.1586, 0.1628, 0.1645, 0.1673, 0.169, 0.1696]
+baseline_no_decay: [0.0525, 0.1588, 0.1875, 0.2037, 0.2145, 0.2229, 0.2268, 0.2331, 0.2361, 0.237, 0.2389, 0.2419, 0.2421, 0.2441]
+strategies: ['mixed_omega_0.5', 'average_omega_1.0', 'random']
+avg_scores: [85.92, 86.37, 73.4]
+least_misery_scores: [77.07, 75.85, 57.15]
+group_rooms: 1000
+room_votes: 37999
+vote_types: {'LIKE': 11382, 'PASS': 15161, 'SUPER_LIKE': 7636, 'VETO': 3820}
+members_per_room(min,max): (4, 4)
+cards_per_room(min,max): (10, 10)
+demo_db_untouched_rooms: 0
+exit code : 0
+elapsed   : 0.24s
+checked_at: 2026-10-24T09:46:02.431637+00:00
+config_name: default_production
+top_level_keys: ['duplication_rate_curve', 'generated_at', 'group_satisfaction_bars', 'sample']
+sample: {'personas': 200, 'days': 60, 'meals_per_day': 2, 'rooms': 1000, 'members_per_room': 4}
+days_count: 14 ours_count: 14 base_count: 14
+days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+ours_lambda_0.5: [0.01, 0.0187, 0.0158, 0.0131, 0.012, 0.0129, 0.0121, 0.0106, 0.01, 0.01, 0.0091, 0.0085, 0.009, 0.0091]
+baseline_no_decay: [0.1575, 0.2375, 0.2583, 0.2744, 0.283, 0.2846, 0.2868, 0.2956, 0.3, 0.2975, 0.2957, 0.2973, 0.2962, 0.2927]
+strategies: ['mixed_omega_0.5', 'average_omega_1.0', 'random']
+avg_scores: [93.81, 94.12, 81.13]
+least_misery_scores: [74.68, 73.47, 61.76]
+group_rooms: 1000
+room_votes: 37999
+vote_types: {'LIKE': 11382, 'PASS': 15161, 'SUPER_LIKE': 7636, 'VETO': 3820}
+members_per_room(min,max): (4, 4)
+cards_per_room(min,max): (10, 10)
+demo_db_untouched_rooms: 0
+rerun exit=0

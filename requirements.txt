@@ -1,0 +1,12 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+SQLAlchemy>=2.0,<3.0
+# backend/config.py 无条件 `from dotenv import load_dotenv`，缺它后端 import 就失败
+python-dotenv>=1.0
+# PostgreSQL 运行库驱动（DATABASE_URL=postgresql+psycopg://…）
+psycopg[binary]>=3.1
+# backend/migrations/env.py 用 alembic 管生产库结构
+alembic>=1.13
+pydantic>=2.8,<3.0
+httpx>=0.28
+pytest>=8.0

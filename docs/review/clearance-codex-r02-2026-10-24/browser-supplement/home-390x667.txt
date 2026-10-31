@@ -1,0 +1,130 @@
+- banner:
+  - paragraph: 养生阿明，想吃点什么？
+  - button "打开算法沙盒":
+  - button "天气与演示天气切换":
+    - generic: 22°
+    - generic: 晴
+    - generic: 离线
+- radiogroup "外食 / 下厨":
+  - generic "附近门店点单":
+    - radio "外食" [checked]
+    - generic: 🍜
+    - generic: 外食
+  - generic "家常菜谱":
+    - radio "下厨"
+    - generic: 🍳
+    - generic: 下厨
+- group "此刻的状态":
+  - button "累瘫"
+  - button "月底"
+  - button "重口"
+  - button "清淡"
+  - button "热汤"
+  - button "一锅出" [disabled]
+- generic: 预算
+- slider "预算": "120"
+- generic: 不限
+- button "开始决策":
+  - generic: 开始决策
+- article
+- article
+- button "查看这道菜的五维解释":
+  - article:
+    - img "肠粉"
+    - heading "肠粉" [level=3]
+    - paragraph:
+      - generic: 三食堂·粥粉面
+      - generic: ·
+      - generic: ¥9
+      - generic: ·
+      - generic: 粥粉面
+    - generic: 匹配度
+    - generic: 83.1%
+    - paragraph: 口味契合 85.8；天气适配 88.0；预算友好 95.5；防腻新鲜度 100.0；状态匹配 60.0
+  - generic: 换一个
+  - generic: 就吃这个
+- list "全部候选，点任意一条置顶该卡":
+  - generic: "1"
+  - generic: 肠粉
+  - generic: "83.1"
+  - generic: "2"
+  - generic: 西红柿炒蛋
+  - generic: "82.8"
+  - generic: "3"
+  - generic: 番茄鸡蛋面
+  - generic: "82.4"
+  - generic: "4"
+  - generic: 牛肉炒面片
+  - generic: "81.6"
+  - generic: "5"
+  - generic: 番茄麻辣烫
+  - generic: "81.3"
+  - generic: "6"
+  - generic: 麻婆豆腐
+  - generic: "80.6"
+  - generic: "7"
+  - generic: 低脂鸡胸饭
+  - generic: "80.3"
+  - generic: "8"
+  - generic: 南瓜浓汤
+  - generic: "80.2"
+  - generic: "9"
+  - generic: 鱼香肉丝
+  - generic: "80.2"
+  - generic: "10"
+  - generic: 清汤牛肉面
+  - generic: "79.7"
+  - generic: "11"
+  - generic: 全麦鸡肉卷
+  - generic: "79.7"
+  - generic: "12"
+  - generic: 青椒肉丝
+  - generic: "79.4"
+  - generic: "13"
+  - generic: 酸菜牛肉面
+  - generic: "79.4"
+  - generic: "14"
+  - generic: 骨汤麻辣烫
+  - generic: "79.3"
+  - generic: "15"
+  - generic: 烤蔬菜拼盘
+  - generic: "79.2"
+  - generic: "16"
+  - generic: 干炒牛河
+  - generic: "79.1"
+  - generic: "17"
+  - generic: 麻辣烫套餐
+  - generic: "79.0"
+  - generic: "18"
+  - generic: 皮蛋瘦肉粥
+  - generic: "78.9"
+  - generic: "19"
+  - generic: 宫保鸡丁
+  - generic: "78.8"
+  - generic: "20"
+  - generic: 红烧牛肉面
+  - generic: "78.7"
+  - generic: "21"
+  - generic: 招牌牛腩面
+  - generic: "78.1"
+  - generic: "22"
+  - generic: 羊肉串
+  - generic: "77.9"
+  - generic: "23"
+  - generic: 酸辣土豆丝
+  - generic: "77.9"
+  - generic: "24"
+  - generic: 部队锅
+  - generic: "77.9"
+- button "换一个"
+- button "就吃这个"
+- navigation:
+  - link "首页" [active]:
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹":
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的":
+    - /url: /m/profile
+    - generic: 我的

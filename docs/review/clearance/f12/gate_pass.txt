@@ -1,0 +1,1 @@
+✓ check-colors: 31 个文件无裸 hex / rgb / hsl，颜色只从令牌出口取

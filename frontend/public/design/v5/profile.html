@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>食刻 · 我的</title>
+<style>
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --ink: #1d1c19;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(29, 28, 25, .12);
+    --line-strong: rgba(29, 28, 25, .2);
+    --accent: #b85c2e;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  .stage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; }
+  .stage-note { position: fixed; left: 42px; top: 40px; width: 220px; }
+  .stage-note__eyebrow { margin: 0 0 8px; font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+  .stage-note__title { margin: 0 0 12px; font-size: 18px; font-weight: 500; line-height: 1.4; }
+  .stage-note__body { margin: 0; font-size: 12px; line-height: 1.75; color: var(--muted); }
+  .stage-note__meta { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 10px; line-height: 1.7; color: var(--faint); }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid rgba(255, 255, 255, .7);
+    box-shadow: 0 32px 90px rgba(38, 31, 23, .16), 0 2px 8px rgba(38, 31, 23, .08);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("./assets/paper-grain.png");
+    background-size: 180px 180px;
+    opacity: .52;
+    mix-blend-mode: multiply;
+  }
+  .status { position: relative; z-index: 2; height: 34px; padding: 11px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; }
+  .status__right { display: flex; gap: 4px; align-items: center; }
+  .battery { width: 16px; height: 7px; border: 1px solid var(--ink); border-radius: 2px; position: relative; opacity: .75; }
+  .battery::after { content: ""; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: var(--ink); border-radius: 0 1px 1px 0; }
+  .battery i { position: absolute; inset: 1px; width: 70%; background: var(--ink); border-radius: 1px; }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink); opacity: .6; }
+
+  .top { position: relative; z-index: 2; padding: 10px 22px 0; display: flex; justify-content: space-between; align-items: flex-end; }
+  .top h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -.04em; }
+  .top__meta { margin: 6px 0 0; font-size: 10px; color: var(--faint); }
+  .edit { padding: 0 0 3px; font-size: 10px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 14px 22px 6px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px;
+    border-radius: 20px;
+    background: rgba(251, 249, 244, .64);
+    border: 1px solid rgba(255, 255, 255, .8);
+    box-shadow: 0 10px 28px rgba(38, 31, 23, .06);
+  }
+  .avatar { width: 58px; height: 58px; flex: 0 0 58px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-size: 20px; font-weight: 500; }
+  .profile__copy { flex: 1; min-width: 0; }
+  .profile__name { margin: 0 0 3px; font-size: 17px; font-weight: 500; letter-spacing: -.02em; }
+  .profile__title { margin: 0 0 7px; font-size: 9.5px; color: var(--muted); }
+  .profile__chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { padding: 3px 6px; border-radius: 6px; background: rgba(29, 28, 25, .055); font-size: 8.5px; color: var(--muted); }
+  .switch { flex: 0 0 auto; padding: 6px 9px; border-radius: 9px; border: 1px solid var(--line); font-size: 8.5px; color: var(--muted); }
+
+  .section { padding: 15px 0; border-bottom: 1px solid var(--line); }
+  .section:last-of-type { border-bottom: 0; }
+  .section__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; }
+  .section__head h2 { margin: 0; font-size: 11.5px; font-weight: 500; }
+  .section__head span { font-size: 9px; color: var(--faint); }
+
+  .gene { display: grid; grid-template-columns: 1fr 132px; gap: 10px; align-items: center; }
+  .radar { width: 100%; height: 176px; display: flex; align-items: center; justify-content: center; }
+  .radar svg { width: 176px; height: 176px; overflow: visible; }
+  .gene__side { display: flex; flex-direction: column; gap: 9px; }
+  .gene__item { display: flex; flex-direction: column; gap: 2px; }
+  .gene__label { font-size: 8.5px; color: var(--faint); }
+  .gene__value { font-size: 12px; font-weight: 500; }
+  .gene__value small { font-size: 8.5px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag { padding: 3px 6px; border-radius: 6px; border: 1px solid var(--line); font-size: 8px; color: var(--muted); }
+
+  .achievements { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .achievement { padding: 9px 8px; border-radius: 10px; background: rgba(29, 28, 25, .04); }
+  .achievement b { display: block; margin-bottom: 3px; font-size: 16px; font-weight: 500; letter-spacing: -.03em; }
+  .achievement span { font-size: 8px; line-height: 1.4; color: var(--muted); }
+
+  .list { display: flex; flex-direction: column; gap: 7px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row__left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .row__name { font-size: 10px; }
+  .row__meta { font-size: 8.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row__count { font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+  .settings { display: flex; flex-direction: column; }
+  .setting { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 10px; }
+  .setting:last-child { border-bottom: 0; }
+  .setting span:last-child { font-size: 9px; color: var(--faint); }
+
+  .tabbar {
+    position: relative;
+    z-index: 3;
+    height: 58px;
+    margin: 0 12px 10px;
+    padding: 5px 7px calc(4px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    background: rgba(251, 249, 244, .74);
+    -webkit-backdrop-filter: blur(24px) saturate(1.16);
+    backdrop-filter: blur(24px) saturate(1.16);
+    border: 1px solid rgba(255, 255, 255, .76);
+    border-radius: 22px;
+    box-shadow: 0 8px 26px rgba(38, 31, 23, .08);
+  }
+  .tab { position: relative; height: 46px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--faint); font-size: 9px; transition: color .18s ease, opacity .18s ease; }
+  .tab svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .tab.is-active { color: var(--ink); font-weight: 500; }
+  .tab.is-active svg { stroke-width: 1.75; }
+  .tab.is-active::after { content: ""; position: absolute; bottom: 4px; width: 3px; height: 3px; border-radius: 50%; background: var(--ink); }
+  .tab:active { opacity: .58; }
+
+  .overlay { position: absolute; inset: 0; z-index: 10; background: rgba(20, 18, 15, .25); opacity: 0; pointer-events: none; transition: opacity .28s ease; }
+  .overlay.is-open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 11;
+    max-height: 62%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(251, 249, 244, .7);
+    -webkit-backdrop-filter: blur(36px) saturate(1.3);
+    backdrop-filter: blur(36px) saturate(1.3);
+    border-top: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -24px 70px rgba(38, 31, 23, .18);
+    transform: translateY(102%);
+    transition: transform .36s cubic-bezier(.32, .72, 0, 1);
+  }
+  .sheet.is-open { transform: translateY(0); }
+  .sheet__handle { width: 38px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 10px auto 0; }
+  .sheet__head { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 22px 8px; }
+  .sheet__eyebrow { margin: 0 0 3px; font-size: 9px; letter-spacing: .16em; color: var(--faint); }
+  .sheet__title { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; }
+  .sheet__close { width: 30px; height: 30px; border-radius: 50%; background: rgba(29, 28, 25, .06); display: grid; place-items: center; font-size: 17px; color: var(--muted); }
+  .sheet__body { overflow-y: auto; padding: 0 22px 20px; }
+  .sheet--background { max-height: 82%; }
+  .bg-upload { display: flex; align-items: center; justify-content: center; height: 36px; margin-top: 10px; border-radius: 10px; border: 1px dashed var(--line-strong); background: rgba(255,255,255,.32); font-size: 10px; color: var(--muted); cursor: pointer; }
+  .bg-preview { display: flex; gap: 9px; align-items: center; margin-top: 9px; }
+  .bg-preview img { width: 46px; height: 46px; border-radius: 9px; object-fit: cover; border: 1px solid var(--line); background: rgba(29,28,25,.06); }
+  .bg-preview__copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .bg-preview__name { font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+  .bg-preview__meta { font-size: 8.5px; color: var(--faint); }
+  .bg-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border-radius: 12px; background: rgba(29,28,25,.055); }
+  .bg-mode button { height: 32px; border-radius: 9px; font-size: 10.5px; color: var(--muted); }
+  .bg-mode button.is-active { background: rgba(255,255,255,.8); color: var(--ink); box-shadow: 0 1px 3px rgba(38,31,23,.06); }
+  .bg-slider { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .bg-slider span { font-size: 9px; color: var(--muted); }
+  .bg-slider input { flex: 1; accent-color: var(--ink); }
+  .bg-slider b { font-size: 9px; font-weight: 500; color: var(--muted); min-width: 30px; text-align: right; }
+  .bg-text-modes { display: flex; gap: 5px; margin-top: 9px; flex-wrap: wrap; }
+  .bg-text-modes button { padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: rgba(255,255,255,.36); font-size: 8.5px; color: var(--muted); }
+  .bg-text-modes button.is-active { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .bg-save { width: 100%; height: 42px; margin-top: 14px; border-radius: 12px; background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 500; }
+  .bg-note { margin: 8px 0 0; font-size: 8.5px; line-height: 1.55; color: var(--faint); }
+  .persona-option { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .persona-option:last-child { border-bottom: 0; }
+  .persona-option .avatar { width: 34px; height: 34px; flex-basis: 34px; font-size: 11px; }
+  .persona-option__copy { display: flex; flex-direction: column; gap: 2px; }
+  .persona-option__copy b { font-size: 11px; font-weight: 500; }
+  .persona-option__copy span { font-size: 9px; color: var(--faint); }
+  .persona-option__check { margin-left: auto; color: var(--accent); font-size: 11px; }
+
+  .toast { position: absolute; left: 50%; bottom: 76px; z-index: 20; transform: translate(-50%, 14px); padding: 9px 14px; border-radius: 12px; background: rgba(29, 28, 25, .9); color: var(--paper); font-size: 10px; opacity: 0; pointer-events: none; transition: opacity .22s ease, transform .22s ease; white-space: nowrap; }
+  .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stage-note { display: none; }
+    .stage { padding: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <aside class="stage-note" aria-label="设计说明">
+    <p class="stage-note__eyebrow">EATWHAT · V5 / 05</p>
+    <h1 class="stage-note__title">“我的”不是设置页，是饮食身份</h1>
+    <p class="stage-note__body">饮食基因、成就、红黑榜和角色切换放在前面；通知、隐私和关于退到后面。</p>
+    <div class="stage-note__meta">390 × 844<br>静态设计原型<br>不连接数据库与后端</div>
+  </aside>
+
+  <section class="phone" aria-label="食刻我的页面">
+    <div class="status"><span>9:41</span><span class="status__right"><span class="dot"></span><span class="dot"></span><span class="battery"><i></i></span></span></div>
+
+    <header class="top">
+      <div><h1>我的</h1><p class="top__meta">你的饮食基因与记录</p></div>
+      <button class="edit" type="button" data-toast="编辑资料：设计入口">编辑资料</button>
+    </header>
+
+    <div class="content">
+      <section class="profile">
+        <span class="avatar" id="avatar">赵</span>
+        <div class="profile__copy">
+          <h2 class="profile__name" id="personaName">辣妹小赵</h2>
+          <p class="profile__title" id="personaTitle">川渝无辣不欢星人</p>
+          <div class="profile__chips"><span class="chip" id="budgetChip">预算 ¥28</span><span class="chip" id="vetoChip">忌口 折耳根</span><span class="chip">演示角色</span></div>
+        </div>
+        <button class="switch" type="button" id="switchPersona">切换</button>
+      </section>
+
+      <section class="section">
+        <div class="section__head"><h2>饮食基因</h2><span>八维风味偏好</span></div>
+        <div class="gene">
+          <div class="radar"><svg id="personaRadar" viewBox="0 0 180 180" role="img" aria-label="饮食基因八维雷达"></svg></div>
+          <div class="gene__side">
+            <div class="gene__item"><span class="gene__label">预算</span><span class="gene__value" id="geneBudget">¥28<small>/ 餐</small></span></div>
+            <div class="gene__item"><span class="gene__label">绝对忌口</span><span class="gene__value" id="geneVeto">折耳根</span></div>
+            <div class="gene__item"><span class="gene__label">偏好</span><div class="tags" id="geneTags"><span class="tag">重辣</span><span class="tag">重油</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head"><h2>干饭成就</h2><span>本周</span></div>
+        <div class="achievements">
+          <div class="achievement"><b>3</b><span>天没有超预算</span></div>
+          <div class="achievement"><b>2</b><span>种新菜尝试</span></div>
+          <div class="achievement"><b>5</b><span>顿按时吃饭</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head"><h2>美食红黑榜</h2><span>3 红 · 2 黑</span></div>
+        <div class="list">
+          <div class="row"><div class="row__left"><span class="row__name">红榜</span><span class="row__meta">麻辣香锅 · 番茄牛腩汤面 · 菌菇鸡汤面</span></div><span class="row__count">3 道</span></div>
+          <div class="row"><div class="row__left"><span class="row__name">黑榜菜品</span><span class="row__meta">香菜拌牛肉 · 折耳根炒腊肉</span></div><span class="row__count">2 道</span></div>
+          <div class="row"><div class="row__left"><span class="row__name">黑榜门店</span><span class="row__meta">二食堂 · 某麻辣烫</span></div><span class="row__count">1 家</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head"><h2>外观与设置</h2><span>本地</span></div>
+        <div class="settings">
+          <button class="setting" type="button" id="backgroundSetting"><span>背景图与配色</span><span id="backgroundSummary">默认水彩 →</span></button>
+          <button class="setting" type="button" data-toast="通知设置：设计入口"><span>通知</span><span>仅重要提醒 →</span></button>
+          <button class="setting" type="button" data-toast="隐私设置：设计入口"><span>隐私与数据</span><span>仅本机 →</span></button>
+          <button class="setting" type="button" data-toast="关于食刻：毕业设计演示版"><span>关于食刻</span><span>v5.0 →</span></button>
+        </div>
+      </section>
+    </div>
+
+    <nav class="tabbar" aria-label="主导航">
+      <a class="tab" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5.5h5V20"/></svg><span>首页</span></a>
+      <a class="tab" href="footprint.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4.5l3 1.8"/></svg><span>足迹</span></a>
+      <a class="tab" href="fridge.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M5 10h14M9 6.5v1.8M9 13v2.2"/></svg><span>冰箱</span></a>
+      <a class="tab" href="room.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.8 19c.5-3 2.5-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 14.8c2.7-.4 5.1.8 6 3.4"/></svg><span>房间</span></a>
+      <a class="tab is-active" href="profile.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"/></svg><span>我的</span></a>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+    <aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="切换演示角色" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head"><div><p class="sheet__eyebrow">DEMO PERSONA</p><h2 class="sheet__title">切换演示角色</h2></div><button class="sheet__close" type="button" id="closeSheet" aria-label="关闭">×</button></header>
+      <div class="sheet__body" id="personaList"></div>
+    </aside>
+
+    <aside class="sheet sheet--background" id="backgroundSheet" role="dialog" aria-modal="true" aria-label="背景图与配色" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head"><div><p class="sheet__eyebrow">APPEARANCE</p><h2 class="sheet__title">背景图与配色</h2></div><button class="sheet__close" type="button" id="closeBackground" aria-label="关闭">×</button></header>
+      <div class="sheet__body">
+        <div class="bg-mode" id="backgroundModeGroup">
+          <button type="button" data-bgmode="default" class="is-active">默认水彩</button>
+          <button type="button" data-bgmode="image">使用图片</button>
+        </div>
+        <div id="backgroundPanel" style="display:none;">
+          <label class="bg-upload">选择一张背景图<input type="file" id="backgroundInput" accept="image/*" hidden></label>
+          <div class="bg-preview"><img id="backgroundThumb" alt="背景图预览"><div class="bg-preview__copy"><span class="bg-preview__name" id="backgroundName">未选择</span><span class="bg-preview__meta" id="backgroundMeta">自动选择浅色或深色文字</span></div></div>
+          <div class="bg-slider"><span>遮罩</span><input id="backgroundOverlay" type="range" min="0" max="80" step="1" value="42"><b id="backgroundOverlayValue">42%</b></div>
+          <div class="bg-text-modes" id="backgroundTextMode">
+            <button type="button" data-textmode="auto" class="is-active">自动文字</button>
+            <button type="button" data-textmode="light">浅色文字</button>
+            <button type="button" data-textmode="dark">深色文字</button>
+          </div>
+          <p class="bg-note">图片只在浏览器本地处理；保存后首页读取同一份配置。</p>
+        </div>
+        <button class="bg-save" type="button" id="saveBackground">保存到本机</button>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+  const PERSONAS = [
+    { id: 'zhao', name: '辣妹小赵', title: '川渝无辣不欢星人', avatar: '赵', budget: 28, veto: '折耳根', tags: ['重辣', '重油'], vector: [.95,.85,.35,.5,.7,.6,.7,.8] },
+    { id: 'ming', name: '养生阿明', title: '广东清淡养生党', avatar: '明', budget: 30, veto: '海鲜 · 香菜', tags: ['清淡', '汤水'], vector: [.05,.15,.85,.45,.5,.5,.5,.6] },
+    { id: 'wang', name: '吃土小王', title: '月底吃土党', avatar: '王', budget: 12, veto: '海鲜', tags: ['便宜', '管饱'], vector: [.5,.5,.5,.5,.9,.8,.4,.5] },
+    { id: 'zhou', name: '减脂小周', title: '健身减脂自律党', avatar: '周', budget: 20, veto: '花生', tags: ['低油', '高蛋白'], vector: [.2,.1,.3,.5,.3,.8,.3,.3] },
+  ];
+  const AXES = ['辣', '油', '汤', '温', '饱', '快', '社交', '抚慰'];
+  let current = PERSONAS[0];
+
+  const BG_KEY = 'eatwhat.v5.background';
+  let bgState = { mode: 'default', url: '', name: '', overlay: 42, textMode: 'auto', luminance: .5, avg: '#808080' };
+  try {
+    const saved = JSON.parse(localStorage.getItem(BG_KEY) || 'null');
+    if (saved) bgState = { ...bgState, ...saved };
+  } catch {
+    // 本地配置损坏时使用默认水彩。
+  }
+
+  function hexToRgb(hex) {
+    const value = hex.replace('#', '');
+    const full = value.length === 3 ? value.split('').map((c) => c + c).join('') : value;
+    const n = parseInt(full, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+
+  function luminance(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const channel = (v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  }
+
+  function renderBackgroundUI() {
+    document.querySelectorAll('[data-bgmode]').forEach((button) => button.classList.toggle('is-active', button.dataset.bgmode === bgState.mode));
+    document.getElementById('backgroundPanel').style.display = bgState.mode === 'image' ? '' : 'none';
+    document.getElementById('backgroundSummary').textContent = bgState.mode === 'image' ? '自定义图片 →' : '默认水彩 →';
+    document.getElementById('backgroundOverlay').value = bgState.overlay;
+    document.getElementById('backgroundOverlayValue').textContent = `${bgState.overlay}%`;
+    document.querySelectorAll('[data-textmode]').forEach((button) => button.classList.toggle('is-active', button.dataset.textmode === bgState.textMode));
+    if (bgState.url) {
+      document.getElementById('backgroundThumb').src = bgState.url;
+      document.getElementById('backgroundName').textContent = bgState.name || '已保存的背景图';
+      document.getElementById('backgroundMeta').textContent = `平均亮度 ${Math.round(bgState.luminance * 100)}% · 自动${bgState.luminance < .48 ? '浅色' : '深色'}文字`;
+    } else {
+      document.getElementById('backgroundThumb').removeAttribute('src');
+      document.getElementById('backgroundName').textContent = '未选择';
+      document.getElementById('backgroundMeta').textContent = '自动选择浅色或深色文字';
+    }
+  }
+
+  function openBackground() {
+    closeSheet();
+    document.getElementById('overlay').classList.add('is-open');
+    document.getElementById('backgroundSheet').classList.add('is-open');
+    document.getElementById('backgroundSheet').setAttribute('aria-hidden', 'false');
+    renderBackgroundUI();
+  }
+
+  function closeBackground() {
+    document.getElementById('overlay').classList.remove('is-open');
+    document.getElementById('backgroundSheet').classList.remove('is-open');
+    document.getElementById('backgroundSheet').setAttribute('aria-hidden', 'true');
+  }
+
+  function readBackground(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const scale = Math.min(1, 1024 / Math.max(image.width, image.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const thumb = document.createElement('canvas');
+        thumb.width = 48;
+        thumb.height = 48;
+        const thumbContext = thumb.getContext('2d');
+        thumbContext.drawImage(image, 0, 0, 48, 48);
+        const data = thumbContext.getImageData(0, 0, 48, 48).data;
+        let r = 0, g = 0, b = 0;
+        for (let index = 0; index < data.length; index += 4) {
+          r += data[index]; g += data[index + 1]; b += data[index + 2];
+        }
+        const count = data.length / 4;
+        const avg = `#${[r / count, g / count, b / count].map((value) => Math.round(value).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+        bgState = { mode: 'image', url: canvas.toDataURL('image/jpeg', .72), name: file.name, overlay: bgState.overlay, textMode: bgState.textMode, luminance: luminance(avg), avg };
+        renderBackgroundUI();
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function drawRadar(values) {
+    const center = 90;
+    const radius = 55;
+    const point = (index, ratio) => {
+      const angle = (-90 + index * 45) * Math.PI / 180;
+      return { x: center + Math.cos(angle) * radius * ratio, y: center + Math.sin(angle) * radius * ratio };
+    };
+    const polygon = (ratio) => AXES.map((_, index) => {
+      const p = point(index, ratio);
+      return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+    }).join(' ');
+    const grid = [0.25, 0.5, 0.75, 1].map((ratio) => `<polygon points="${polygon(ratio)}" fill="none" stroke="rgba(29,28,25,.12)" stroke-width="1"/>`).join('');
+    const lines = AXES.map((_, index) => {
+      const p = point(index, 1);
+      return `<line x1="${center}" y1="${center}" x2="${p.x.toFixed(2)}" y2="${p.y.toFixed(2)}" stroke="rgba(29,28,25,.1)" stroke-width="1"/>`;
+    }).join('');
+    const shape = values.map((value, index) => {
+      const p = point(index, value);
+      return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+    }).join(' ');
+    const labels = AXES.map((label, index) => {
+      const p = point(index, 1.28);
+      const anchor = p.x < center - 3 ? 'end' : p.x > center + 3 ? 'start' : 'middle';
+      return `<text x="${p.x.toFixed(2)}" y="${p.y.toFixed(2)}" text-anchor="${anchor}" dominant-baseline="middle" fill="#6e6256" font-size="7.5" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif">${label}</text>`;
+    }).join('');
+    document.getElementById('personaRadar').innerHTML = `${grid}${lines}<polygon points="${shape}" fill="rgba(29,28,25,.075)" stroke="#1d1c19" stroke-width="1.5" stroke-linejoin="round"/><circle cx="${center}" cy="${center}" r="2" fill="#1d1c19"/>${labels}`;
+  }
+
+  function renderPersona(persona) {
+    current = persona;
+    document.getElementById('avatar').textContent = persona.avatar;
+    document.getElementById('personaName').textContent = persona.name;
+    document.getElementById('personaTitle').textContent = persona.title;
+    document.getElementById('budgetChip').textContent = `预算 ¥${persona.budget}`;
+    document.getElementById('vetoChip').textContent = `忌口 ${persona.veto}`;
+    document.getElementById('geneBudget').innerHTML = `¥${persona.budget}<small>/ 餐</small>`;
+    document.getElementById('geneVeto').textContent = persona.veto;
+    document.getElementById('geneTags').innerHTML = persona.tags.map((tag) => `<span class="tag">${tag}</span>`).join('');
+    drawRadar(persona.vector);
+    document.getElementById('personaList').innerHTML = PERSONAS.map((item) => `
+      <button class="persona-option" type="button" data-persona="${item.id}">
+        <span class="avatar">${item.avatar}</span>
+        <span class="persona-option__copy"><b>${item.name}</b><span>${item.title}</span></span>
+        <span class="persona-option__check">${item.id === persona.id ? '✓' : ''}</span>
+      </button>
+    `).join('');
+    document.querySelectorAll('[data-persona]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const next = PERSONAS.find((item) => item.id === button.dataset.persona);
+        if (next) {
+          renderPersona(next);
+          closeSheet();
+          showToast(`已切换：${next.name}`);
+        }
+      });
+    });
+  }
+
+  function openSheet() {
+    closeBackground();
+    document.getElementById('overlay').classList.add('is-open');
+    document.getElementById('sheet').classList.add('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeSheet() {
+    document.getElementById('overlay').classList.remove('is-open');
+    document.getElementById('sheet').classList.remove('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'true');
+  }
+
+  let timer;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('is-show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('is-show'), 2200);
+  }
+
+  document.getElementById('switchPersona').addEventListener('click', openSheet);
+  document.getElementById('backgroundSetting').addEventListener('click', openBackground);
+  document.getElementById('closeSheet').addEventListener('click', closeSheet);
+  document.getElementById('closeBackground').addEventListener('click', closeBackground);
+  document.getElementById('overlay').addEventListener('click', () => { closeSheet(); closeBackground(); });
+  document.querySelectorAll('[data-toast]').forEach((button) => button.addEventListener('click', () => showToast(button.dataset.toast)));
+
+  document.getElementById('backgroundModeGroup').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-bgmode]');
+    if (!button) return;
+    bgState.mode = button.dataset.bgmode;
+    renderBackgroundUI();
+  });
+  document.getElementById('backgroundInput').addEventListener('change', (event) => readBackground(event.target.files?.[0]));
+  document.getElementById('backgroundOverlay').addEventListener('input', (event) => {
+    bgState.overlay = Number(event.target.value);
+    renderBackgroundUI();
+  });
+  document.getElementById('backgroundTextMode').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-textmode]');
+    if (!button) return;
+    bgState.textMode = button.dataset.textmode;
+    renderBackgroundUI();
+  });
+  document.getElementById('saveBackground').addEventListener('click', () => {
+    if (bgState.mode === 'image' && !bgState.url) {
+      showToast('先选择一张背景图');
+      return;
+    }
+    try {
+      localStorage.setItem(BG_KEY, JSON.stringify(bgState.mode === 'image' ? bgState : { mode: 'default' }));
+      closeBackground();
+      showToast(bgState.mode === 'image' ? '背景已保存，首页生效' : '已恢复默认水彩');
+    } catch {
+      showToast('图片太大，保存失败');
+    }
+  });
+
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeSheet(); closeBackground(); } });
+  renderPersona(current);
+  renderBackgroundUI();
+  if (new URLSearchParams(location.search).has('personas')) openSheet();
+  if (new URLSearchParams(location.search).has('background')) openBackground();
+</script>
+</body>
+</html>

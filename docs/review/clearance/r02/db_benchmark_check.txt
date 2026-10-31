@@ -1,0 +1,8 @@
+keys: ['duplication_rate_curve', 'generated_at', 'group_satisfaction_bars', 'sample']
+sample: {'personas': 200, 'days': 60, 'meals_per_day': 2, 'rooms': 1000, 'members_per_room': 4}
+days len: 14
+ours d14: 0.1696
+base d14: 0.2441
+strategies: ['mixed_omega_0.5', 'average_omega_1.0', 'random']
+avg: [85.92, 86.37, 73.4]
+least: [77.07, 75.85, 57.15]

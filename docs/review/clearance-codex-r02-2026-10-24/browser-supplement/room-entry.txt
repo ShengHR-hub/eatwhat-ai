@@ -1,0 +1,21 @@
+- banner:
+  - paragraph: 多人干饭房间
+  - heading "一起决定吃什么" [level=1]
+  - paragraph: 建房等室友进来，或输入房间码加入
+- heading "开一间新房" [level=2]
+- button "外食"
+- button "下厨"
+- button "创建房间"
+- heading "加入室友的房间" [level=2]
+- textbox "输入 6 位房间码"
+- button "加入"
+- navigation:
+  - link "首页":
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹":
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的":
+    - /url: /m/profile
+    - generic: 我的

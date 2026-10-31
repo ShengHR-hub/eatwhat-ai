@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>食刻 · 冰箱</title>
+<style>
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --ink: #1d1c19;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(29, 28, 25, .12);
+    --line-strong: rgba(29, 28, 25, .2);
+    --accent: #b85c2e;
+    --glass: rgba(251, 249, 244, .74);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  .stage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; }
+  .stage-note { position: fixed; left: 42px; top: 40px; width: 220px; }
+  .stage-note__eyebrow { margin: 0 0 8px; font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+  .stage-note__title { margin: 0 0 12px; font-size: 18px; font-weight: 500; line-height: 1.4; }
+  .stage-note__body { margin: 0; font-size: 12px; line-height: 1.75; color: var(--muted); }
+  .stage-note__meta { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 10px; line-height: 1.7; color: var(--faint); }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid rgba(255, 255, 255, .7);
+    box-shadow: 0 32px 90px rgba(38, 31, 23, .16), 0 2px 8px rgba(38, 31, 23, .08);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("./assets/paper-grain.png");
+    background-size: 180px 180px;
+    opacity: .52;
+    mix-blend-mode: multiply;
+  }
+  .status { position: relative; z-index: 2; height: 34px; padding: 11px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; }
+  .status__right { display: flex; gap: 4px; align-items: center; }
+  .battery { width: 16px; height: 7px; border: 1px solid var(--ink); border-radius: 2px; position: relative; opacity: .75; }
+  .battery::after { content: ""; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: var(--ink); border-radius: 0 1px 1px 0; }
+  .battery i { position: absolute; inset: 1px; width: 70%; background: var(--ink); border-radius: 1px; }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink); opacity: .6; }
+
+  .top { position: relative; z-index: 2; padding: 10px 22px 0; }
+  .eyebrow { margin: 0 0 5px; font-size: 10px; letter-spacing: .14em; color: var(--faint); }
+  .title-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .title-row h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -.04em; line-height: 1.15; }
+  .title-actions { display: flex; align-items: center; gap: 9px; padding-bottom: 2px; }
+  .scan-link { height: 27px; padding: 0 10px; border-radius: 14px; background: var(--ink); color: var(--paper); font-size: 9.5px; font-weight: 500; }
+  .add-link { padding: 0; font-size: 9.5px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .top__meta { margin: 7px 0 0; font-size: 10.5px; color: var(--muted); }
+
+  .summary { position: relative; z-index: 2; display: flex; gap: 17px; align-items: baseline; margin: 14px 22px 0; padding: 11px 0 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 9.5px; color: var(--muted); }
+  .summary b { font-size: 16px; font-weight: 500; color: var(--ink); margin-right: 2px; letter-spacing: -.02em; }
+  .summary span:last-child { margin-left: auto; color: var(--faint); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 22px 4px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  .block { padding: 15px 0; border-bottom: 1px solid var(--line); }
+  .block:last-of-type { border-bottom: 0; }
+  .block__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; }
+  .block__title { margin: 0; font-size: 12px; font-weight: 500; }
+  .block__hint { font-size: 9.5px; color: var(--faint); }
+
+  .expiring { display: flex; flex-direction: column; gap: 11px; }
+  .exp { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: baseline; }
+  .exp__name { font-size: 11.5px; }
+  .exp__name i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 2px; }
+  .exp__days { font-size: 9px; color: var(--accent); }
+  .exp__bar { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: rgba(29, 28, 25, .08); overflow: hidden; }
+  .exp__bar span { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+
+  .inventory { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 14px; }
+  .item { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
+  .item__name { font-size: 10px; }
+  .item__meta { font-size: 8.5px; color: var(--faint); white-space: nowrap; }
+
+  .dishes { display: flex; flex-direction: column; gap: 9px; }
+  .dish { display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .dish:last-child { border-bottom: 0; }
+  .check { width: 19px; height: 19px; border-radius: 6px; border: 1px solid var(--line-strong); display: grid; place-items: center; color: transparent; font-size: 11px; }
+  .dish.is-picked .check { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .dish__name { font-size: 10.5px; }
+  .dish__meta { margin: 2px 0 0; font-size: 8.5px; color: var(--faint); }
+  .dish__missing { font-size: 8.5px; color: var(--accent); white-space: nowrap; }
+  .dish__missing.is-ready { color: var(--faint); }
+
+  .cta { position: relative; z-index: 3; padding: 7px 22px 5px; }
+  .cta button {
+    width: 100%;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+  }
+  .cta button span:last-child { font-size: 16px; opacity: .7; }
+
+  .tabbar {
+    position: relative;
+    z-index: 3;
+    height: 58px;
+    margin: 0 12px 10px;
+    padding: 5px 7px calc(4px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    background: rgba(251, 249, 244, .74);
+    -webkit-backdrop-filter: blur(24px) saturate(1.16);
+    backdrop-filter: blur(24px) saturate(1.16);
+    border: 1px solid rgba(255, 255, 255, .76);
+    border-radius: 22px;
+    box-shadow: 0 8px 26px rgba(38, 31, 23, .08);
+  }
+  .tab { position: relative; height: 46px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--faint); font-size: 9px; transition: color .18s ease, opacity .18s ease; }
+  .tab svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .tab.is-active { color: var(--ink); font-weight: 500; }
+  .tab.is-active svg { stroke-width: 1.75; }
+  .tab.is-active::after { content: ""; position: absolute; bottom: 4px; width: 3px; height: 3px; border-radius: 50%; background: var(--ink); }
+  .tab:active { opacity: .58; }
+
+  .overlay { position: absolute; inset: 0; z-index: 10; background: rgba(20, 18, 15, .25); opacity: 0; pointer-events: none; transition: opacity .28s ease; }
+  .overlay.is-open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 11;
+    max-height: 70%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(251, 249, 244, .68);
+    -webkit-backdrop-filter: blur(36px) saturate(1.3);
+    backdrop-filter: blur(36px) saturate(1.3);
+    border-top: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -24px 70px rgba(38, 31, 23, .18);
+    transform: translateY(102%);
+    transition: transform .36s cubic-bezier(.32, .72, 0, 1);
+  }
+  .sheet.is-open { transform: translateY(0); }
+  .sheet__handle { width: 38px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 10px auto 0; }
+  .sheet__head { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 22px 10px; }
+  .sheet__eyebrow { margin: 0 0 3px; font-size: 9px; letter-spacing: .16em; color: var(--faint); }
+  .sheet__title { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; }
+  .sheet__close { width: 30px; height: 30px; border-radius: 50%; background: rgba(29, 28, 25, .06); display: grid; place-items: center; font-size: 17px; color: var(--muted); }
+  .sheet__body { overflow-y: auto; padding: 0 22px 20px; scrollbar-width: none; }
+  .sheet__body::-webkit-scrollbar { display: none; }
+  .list-head { display: flex; justify-content: space-between; align-items: baseline; margin: 8px 0 8px; font-size: 10px; color: var(--muted); }
+  .list-head b { color: var(--ink); font-weight: 500; }
+  .shop-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .shop-item { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 10px; }
+  .shop-item span:last-child { color: var(--faint); }
+  .sheet-note { margin: 4px 0 0; font-size: 9.5px; line-height: 1.55; color: var(--faint); }
+
+  .sheet--scan { max-height: 88%; }
+  .scan-body { overflow-y: auto; padding: 0 22px 18px; scrollbar-width: none; }
+  .scan-body::-webkit-scrollbar { display: none; }
+  .scan-view { position: relative; height: 232px; border-radius: 18px; overflow: hidden; background: #171a17; border: 1px solid rgba(255, 255, 255, .12); }
+  .scan-illustration { width: 100%; height: 100%; display: block; }
+  .scan-corner { position: absolute; width: 17px; height: 17px; border-color: rgba(240, 243, 246, .82); border-style: solid; }
+  .scan-corner--tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+  .scan-corner--tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
+  .scan-corner--bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; }
+  .scan-corner--br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+  .scan-line { position: absolute; left: 7%; right: 7%; top: 12%; height: 1px; background: rgba(240, 243, 246, .7); box-shadow: 0 0 10px rgba(240, 243, 246, .45); opacity: 0; }
+  .scan-view.is-scanning .scan-line { opacity: 1; animation: scan 1.15s ease-in-out infinite; }
+  @keyframes scan { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(150px); } }
+  .scan-box { position: absolute; border: 1px solid rgba(240, 243, 246, .86); border-radius: 6px; opacity: 0; transition: opacity .25s ease; }
+  .scan-view.is-result .scan-box { opacity: 1; }
+  .scan-box span { position: absolute; top: -17px; left: -1px; padding: 2px 5px; border-radius: 4px; background: rgba(15, 17, 15, .86); color: #f0f3f6; font-size: 8px; white-space: nowrap; }
+  .scan-box--tomato { left: 8%; top: 42%; width: 20%; height: 25%; }
+  .scan-box--greens { left: 35%; top: 34%; width: 20%; height: 34%; }
+  .scan-box--beef { left: 61%; top: 44%; width: 20%; height: 24%; }
+  .scan-box--egg { left: 82%; top: 37%; width: 13%; height: 27%; }
+  .scan-status { position: absolute; left: 50%; bottom: 9px; transform: translateX(-50%); padding: 4px 8px; border-radius: 8px; background: rgba(15, 17, 15, .7); color: rgba(240, 243, 246, .8); font-size: 8.5px; white-space: nowrap; }
+  .scan-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 10px 0 0; }
+  .scan-actions button { height: 34px; padding: 0 13px; border-radius: 10px; background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 500; }
+  .scan-actions span { font-size: 8.5px; color: var(--faint); }
+  .scan-results { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .scan-result-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; font-size: 9.5px; color: var(--muted); }
+  .scan-result-head b { color: var(--ink); font-weight: 500; }
+  .result-list { display: flex; flex-direction: column; gap: 7px; }
+  .result-row { width: 100%; display: grid; grid-template-columns: 20px 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; }
+  .result-row:last-child { border-bottom: 0; }
+  .result-check { width: 17px; height: 17px; border-radius: 5px; border: 1px solid var(--line-strong); display: grid; place-items: center; color: transparent; font-size: 10px; }
+  .result-row.is-on .result-check { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .result-name { font-size: 10px; }
+  .result-meta { margin: 2px 0 0; font-size: 8.5px; color: var(--faint); }
+  .result-conf { font-size: 8.5px; color: var(--muted); white-space: nowrap; }
+  .scan-confirm { width: 100%; height: 40px; margin-top: 11px; border-radius: 12px; background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 500; }
+  .scan-retake { display: block; margin: 8px auto 0; padding: 0; font-size: 9px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+  .toast { position: absolute; left: 50%; bottom: 78px; z-index: 20; transform: translate(-50%, 14px); padding: 9px 14px; border-radius: 12px; background: rgba(29, 28, 25, .9); color: var(--paper); font-size: 10px; opacity: 0; pointer-events: none; transition: opacity .22s ease, transform .22s ease; white-space: nowrap; }
+  .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stage-note { display: none; }
+    .stage { padding: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <aside class="stage-note" aria-label="设计说明">
+    <p class="stage-note__eyebrow">EATWHAT · V5 / 03</p>
+    <h1 class="stage-note__title">冰箱不是库存表，是今晚能做什么</h1>
+    <p class="stage-note__body">先看临期，再看全部库存，最后把“能做的菜”和“还要买的菜”连起来。</p>
+    <div class="stage-note__meta">390 × 844<br>静态设计原型<br>不连接数据库与后端</div>
+  </aside>
+
+  <section class="phone" aria-label="食刻冰箱页">
+    <div class="status"><span>9:41</span><span class="status__right"><span class="dot"></span><span class="dot"></span><span class="battery"><i></i></span></span></div>
+
+    <header class="top">
+      <p class="eyebrow">FRIDGE · 8 种食材</p>
+      <div class="title-row">
+        <h1>冰箱</h1>
+        <div class="title-actions">
+          <button class="scan-link" type="button" id="scanButton">拍照入库</button>
+          <button class="add-link" type="button" data-toast="手动添加：设计入口，暂未接后端">手动添加</button>
+        </div>
+      </div>
+      <p class="top__meta">3 样临期 · 今晚优先用掉</p>
+    </header>
+
+    <div class="summary"><span><b>8</b>种食材</span><span><b>3</b>样临期</span><span><b>4</b>道可做</span><span>冷藏 · 冷冻 · 常备</span></div>
+
+    <div class="content">
+      <section class="block">
+        <div class="block__head"><h2 class="block__title">先用这些</h2><span class="block__hint">按到期时间</span></div>
+        <div class="expiring">
+          <div class="exp">
+            <span class="exp__name"><i></i>牛腩 300g</span><span class="exp__days">今天到期</span>
+            <div class="exp__bar"><span style="width:92%"></span></div>
+          </div>
+          <div class="exp">
+            <span class="exp__name"><i></i>青菜 1 把</span><span class="exp__days">明天到期</span>
+            <div class="exp__bar"><span style="width:74%"></span></div>
+          </div>
+          <div class="exp">
+            <span class="exp__name"><i></i>番茄 2 个</span><span class="exp__days">明天到期</span>
+            <div class="exp__bar"><span style="width:62%"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="block__head"><h2 class="block__title">全部食材</h2><span class="block__hint">8 种</span></div>
+        <div class="inventory">
+          <div class="item"><span class="item__name">牛腩</span><span class="item__meta">300g · 今天</span></div>
+          <div class="item"><span class="item__name">番茄</span><span class="item__meta">2 个 · 明天</span></div>
+          <div class="item"><span class="item__name">青菜</span><span class="item__meta">1 把 · 明天</span></div>
+          <div class="item"><span class="item__name">香菇</span><span class="item__meta">150g · 2 天</span></div>
+          <div class="item"><span class="item__name">鸡蛋</span><span class="item__meta">6 个 · 5 天</span></div>
+          <div class="item"><span class="item__name">鸡胸肉</span><span class="item__meta">200g · 3 天</span></div>
+          <div class="item"><span class="item__name">虾仁</span><span class="item__meta">150g · 2 天</span></div>
+          <div class="item"><span class="item__name">面条</span><span class="item__meta">半袋 · 常备</span></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="block__head"><h2 class="block__title">今晚能做什么</h2><span class="block__hint">按库存匹配</span></div>
+        <div class="dishes">
+          <button class="dish is-picked" type="button" data-dish="beef">
+            <span class="check">✓</span>
+            <span><span class="dish__name">番茄牛腩汤面</span><p class="dish__meta">已有 5/6 种 · 还差葱</p></span>
+            <span class="dish__missing">差 1 样</span>
+          </button>
+          <button class="dish is-picked" type="button" data-dish="chicken">
+            <span class="check">✓</span>
+            <span><span class="dish__name">香菇滑鸡饭</span><p class="dish__meta">已有 4/5 种 · 还差鸡腿肉</p></span>
+            <span class="dish__missing">差 1 样</span>
+          </button>
+          <button class="dish" type="button" data-dish="shrimp">
+            <span class="check">✓</span>
+            <span><span class="dish__name">虾仁炒蛋</span><p class="dish__meta">已有 3/4 种 · 还差葱</p></span>
+            <span class="dish__missing is-ready">差 1 样</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="cta">
+      <button type="button" id="shoppingButton"><span>生成买菜清单 · 2 道</span><span>→</span></button>
+    </div>
+
+    <nav class="tabbar" aria-label="主导航">
+      <a class="tab" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5.5h5V20"/></svg><span>首页</span></a>
+      <a class="tab" href="footprint.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4.5l3 1.8"/></svg><span>足迹</span></a>
+      <a class="tab is-active" href="fridge.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M5 10h14M9 6.5v1.8M9 13v2.2"/></svg><span>冰箱</span></a>
+      <button class="tab" type="button" data-toast="房间页设计待开始"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.8 19c.5-3 2.5-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 14.8c2.7-.4 5.1.8 6 3.4"/></svg><span>房间</span></button>
+      <button class="tab" type="button" data-toast="我的页设计待开始"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"/></svg><span>我的</span></button>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+    <aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="买菜清单" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head"><div><p class="sheet__eyebrow">SHOPPING LIST</p><h2 class="sheet__title">买菜清单</h2></div><button class="sheet__close" type="button" id="closeSheet" aria-label="关闭">×</button></header>
+      <div class="sheet__body">
+        <div class="list-head"><span>冰箱已有</span><b>7 样</b></div>
+        <div class="shop-list">
+          <div class="shop-item"><span>牛腩 · 番茄 · 面条</span><span>今晚用</span></div>
+          <div class="shop-item"><span>香菇 · 鸡胸肉 · 鸡蛋</span><span>本周内</span></div>
+        </div>
+        <div class="list-head"><span>还要买</span><b>3 样</b></div>
+        <div class="shop-list">
+          <div class="shop-item"><span>葱</span><span>1 根</span></div>
+          <div class="shop-item"><span>鸡腿肉</span><span>200g</span></div>
+          <div class="shop-item"><span>姜</span><span>1 块</span></div>
+        </div>
+        <p class="sheet-note">清单已按菜品合并同类项；先消耗临期食材，再补缺口。</p>
+      </div>
+    </aside>
+
+    <aside class="sheet sheet--scan" id="scanSheet" role="dialog" aria-modal="true" aria-label="拍照入库" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head">
+        <div><p class="sheet__eyebrow">VISION · CLOUD</p><h2 class="sheet__title">拍照入库</h2></div>
+        <button class="sheet__close" type="button" id="closeScan" aria-label="关闭">×</button>
+      </header>
+      <div class="scan-body">
+        <div class="scan-view" id="scanView">
+          <svg class="scan-illustration" viewBox="0 0 340 232" aria-label="冰箱食材识别示意画面">
+            <rect width="340" height="232" fill="#171a17"/>
+            <rect x="0" y="158" width="340" height="8" fill="#30342d"/>
+            <rect x="0" y="198" width="340" height="5" fill="#262a24"/>
+            <circle cx="48" cy="132" r="17" fill="#9e4f3a"/>
+            <circle cx="72" cy="137" r="13" fill="#b25b42"/>
+            <path d="M130 142c-8-24 7-38 24-38 4 18 0 34-12 43-5 3-9 1-12-5Z" fill="#5e7558"/>
+            <path d="M155 145c2-22 15-34 29-31-1 17-8 31-21 39-5 2-8-2-8-8Z" fill="#718766"/>
+            <rect x="220" y="112" width="40" height="38" rx="8" fill="#754638"/>
+            <rect x="225" y="117" width="30" height="28" rx="5" fill="#8c5542"/>
+            <ellipse cx="291" cy="126" rx="13" ry="17" fill="#d9d1c0"/>
+            <ellipse cx="310" cy="130" rx="12" ry="16" fill="#e7e0d1"/>
+            <ellipse cx="300" cy="148" rx="10" ry="7" fill="#bdb5a5"/>
+          </svg>
+          <span class="scan-corner scan-corner--tl"></span>
+          <span class="scan-corner scan-corner--tr"></span>
+          <span class="scan-corner scan-corner--bl"></span>
+          <span class="scan-corner scan-corner--br"></span>
+          <span class="scan-line"></span>
+          <span class="scan-box scan-box--tomato"><span>番茄 91%</span></span>
+          <span class="scan-box scan-box--greens"><span>青菜 78%</span></span>
+          <span class="scan-box scan-box--beef"><span>牛腩 84%</span></span>
+          <span class="scan-box scan-box--egg"><span>鸡蛋 72%</span></span>
+          <span class="scan-status" id="scanStatus">示意画面 · 对准食材后拍一张</span>
+        </div>
+        <div class="scan-actions">
+          <button type="button" id="shutter">拍照识别</button>
+          <span>云端识别 · 约 3 秒 · 结果需确认</span>
+        </div>
+
+        <div class="scan-results" id="scanResults" hidden>
+          <div class="scan-result-head"><span><b>识别到 4 样</b> · 可取消勾选</span><span>置信度</span></div>
+          <div class="result-list">
+            <button class="result-row is-on" type="button" data-result="番茄">
+              <span class="result-check">✓</span>
+              <span><span class="result-name">番茄</span><p class="result-meta">2 个 · 保质期 3 天</p></span>
+              <span class="result-conf">91%</span>
+            </button>
+            <button class="result-row is-on" type="button" data-result="牛腩">
+              <span class="result-check">✓</span>
+              <span><span class="result-name">牛腩</span><p class="result-meta">300g · 保质期 2 天</p></span>
+              <span class="result-conf">84%</span>
+            </button>
+            <button class="result-row is-on" type="button" data-result="青菜">
+              <span class="result-check">✓</span>
+              <span><span class="result-name">青菜</span><p class="result-meta">1 把 · 保质期 2 天</p></span>
+              <span class="result-conf">78%</span>
+            </button>
+            <button class="result-row is-on" type="button" data-result="鸡蛋">
+              <span class="result-check">✓</span>
+              <span><span class="result-name">鸡蛋</span><p class="result-meta">6 个 · 保质期 7 天</p></span>
+              <span class="result-conf">72%</span>
+            </button>
+          </div>
+          <button class="scan-confirm" type="button" id="confirmScan">确认入库 · 4 样</button>
+          <button class="scan-retake" type="button" id="retakeScan">重新拍摄</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+  let timer;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('is-show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('is-show'), 2200);
+  }
+  function openSheet() {
+    document.getElementById('overlay').classList.add('is-open');
+    document.getElementById('sheet').classList.add('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeSheet() {
+    document.getElementById('overlay').classList.remove('is-open');
+    document.getElementById('sheet').classList.remove('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'true');
+  }
+
+  function openScan() {
+    closeSheet();
+    document.getElementById('overlay').classList.add('is-open');
+    document.getElementById('scanSheet').classList.add('is-open');
+    document.getElementById('scanSheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeScan() {
+    document.getElementById('overlay').classList.remove('is-open');
+    document.getElementById('scanSheet').classList.remove('is-open');
+    document.getElementById('scanSheet').setAttribute('aria-hidden', 'true');
+  }
+
+  const scanView = document.getElementById('scanView');
+  const scanResults = document.getElementById('scanResults');
+  const scanStatus = document.getElementById('scanStatus');
+  const shutter = document.getElementById('shutter');
+  const confirmScan = document.getElementById('confirmScan');
+  const resultRows = [...document.querySelectorAll('[data-result]')];
+
+  function updateScanCount() {
+    const selected = resultRows.filter((row) => row.classList.contains('is-on'));
+    confirmScan.textContent = `确认入库 · ${selected.length} 样`;
+    return selected;
+  }
+
+  shutter.addEventListener('click', () => {
+    scanView.classList.remove('is-result');
+    scanView.classList.add('is-scanning');
+    scanResults.hidden = true;
+    scanStatus.textContent = '云端识别中…';
+    shutter.disabled = true;
+    setTimeout(() => {
+      scanView.classList.remove('is-scanning');
+      scanView.classList.add('is-result');
+      scanStatus.textContent = '识别完成 · 4 样食材';
+      scanResults.hidden = false;
+      shutter.disabled = false;
+      updateScanCount();
+    }, 1100);
+  });
+
+  resultRows.forEach((row) => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('is-on');
+      updateScanCount();
+    });
+  });
+
+  confirmScan.addEventListener('click', () => {
+    const selected = updateScanCount();
+    if (!selected.length) {
+      showToast('至少选择一样食材');
+      return;
+    }
+    closeScan();
+    showToast(`已加入冰箱：${selected.map((row) => row.dataset.result).join('、')}`);
+  });
+
+  document.getElementById('retakeScan').addEventListener('click', () => {
+    scanView.classList.remove('is-result', 'is-scanning');
+    scanResults.hidden = true;
+    scanStatus.textContent = '示意画面 · 对准食材后拍一张';
+    shutter.disabled = false;
+  });
+
+  const dishButtons = [...document.querySelectorAll('[data-dish]')];
+  const shoppingButton = document.getElementById('shoppingButton');
+  function updateShoppingCount() {
+    const count = dishButtons.filter((button) => button.classList.contains('is-picked')).length;
+    shoppingButton.querySelector('span').textContent = `生成买菜清单 · ${count} 道`;
+  }
+  dishButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      button.classList.toggle('is-picked');
+      updateShoppingCount();
+    });
+  });
+  shoppingButton.addEventListener('click', openSheet);
+  document.getElementById('scanButton').addEventListener('click', openScan);
+  document.getElementById('closeSheet').addEventListener('click', closeSheet);
+  document.getElementById('closeScan').addEventListener('click', closeScan);
+  document.getElementById('overlay').addEventListener('click', () => { closeSheet(); closeScan(); });
+  document.querySelectorAll('[data-toast]').forEach((button) => button.addEventListener('click', () => showToast(button.dataset.toast)));
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeSheet(); closeScan(); } });
+  if (new URLSearchParams(location.search).has('list')) openSheet();
+  const scanParam = new URLSearchParams(location.search).get('scan');
+  if (scanParam) {
+    openScan();
+    if (scanParam === 'result') {
+      scanView.classList.add('is-result');
+      scanStatus.textContent = '识别完成 · 4 样食材';
+      scanResults.hidden = false;
+      updateScanCount();
+    }
+  }
+</script>
+</body>
+</html>

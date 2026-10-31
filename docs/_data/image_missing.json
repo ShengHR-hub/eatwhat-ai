@@ -1,0 +1,145 @@
+[
+  {
+    "name": "酸辣土豆丝",
+    "cuisine": "川湘菜",
+    "file": "005-hot-and-sour-shredded-pota.jpg",
+    "query": "hot and sour shredded potato",
+    "tried": [
+      "Commons 自动检索（hot and sour shredded potato）无合格成品图",
+      "自动命中为米饭拼盘，Commons 无合格成品图"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "番茄麻辣烫",
+    "cuisine": "麻辣烫",
+    "file": "016-tomato-malatang.jpg",
+    "query": "tomato malatang",
+    "tried": [
+      "Commons 自动检索（tomato malatang）无合格成品图",
+      "与「麻辣烫套餐」同图，避免重复，等确认是否复用"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "骨汤麻辣烫",
+    "cuisine": "麻辣烫",
+    "file": "017-malatang-bone-broth.jpg",
+    "query": "malatang bone broth",
+    "tried": [
+      "Commons 自动检索（malatang bone broth）无合格成品图",
+      "与「麻辣烫套餐」同图，避免重复，等确认是否复用"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "凉拌折耳根",
+    "cuisine": "川湘菜",
+    "file": "042-houttuynia-salad.jpg",
+    "query": "houttuynia salad",
+    "tried": [
+      "Commons 自动检索（houttuynia salad）无合格成品图",
+      "只检索到生鲜植株图，无凉拌成品图"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "青椒土豆丝",
+    "cuisine": "家常菜",
+    "file": "062-shredded-potato-green-pepp.jpg",
+    "query": "shredded potato green pepper",
+    "tried": [
+      "Commons 自动检索（shredded potato green pepper）无合格成品图",
+      "只检索到牛肉/生土豆丝，无成品图"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "洋葱炒蛋",
+    "cuisine": "家常菜",
+    "file": "074-onion-scrambled-eggs.jpg",
+    "query": "onion scrambled eggs",
+    "tried": [
+      "Commons 自动检索（onion scrambled eggs）无合格成品图",
+      "命中的是得州 Migas，非中式洋葱炒蛋"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "韭菜炒鸡蛋",
+    "cuisine": "家常菜",
+    "file": "075-chive-scrambled-eggs.jpg",
+    "query": "chive scrambled eggs",
+    "tried": [
+      "Commons 自动检索（chive scrambled eggs）无合格成品图",
+      "命中的是热狗图，非本菜"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "酸辣白菜",
+    "cuisine": "家常菜",
+    "file": "076-hot-and-sour-cabbage.jpg",
+    "query": "hot and sour cabbage",
+    "tried": [
+      "Commons 自动检索（hot and sour cabbage）无合格成品图",
+      "命中的是腌菜罐照片，非成品菜"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "玉米排骨汤",
+    "cuisine": "家常菜",
+    "file": "083-corn-pork-rib-soup.jpg",
+    "query": "corn pork rib soup",
+    "tried": [
+      "Commons 自动检索（corn pork rib soup）无合格成品图",
+      "命中的是尼日利亚玉米糊汤，非本菜"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "腊肠煲仔饭",
+    "cuisine": "粤菜",
+    "file": "086-claypot-rice-chinese-sausa.jpg",
+    "query": "claypot rice chinese sausage",
+    "tried": [
+      "Commons 自动检索（claypot rice chinese sausage）无合格成品图",
+      "与「电饭煲焖饭」同图且无腊肠，避免误导"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "凉拌木耳",
+    "cuisine": "家常菜",
+    "file": "095-wood-ear-mushroom-salad.jpg",
+    "query": "wood ear mushroom salad",
+    "tried": [
+      "Commons 自动检索（wood ear mushroom salad）无合格成品图",
+      "命中的是木耳生长照，非凉拌成品"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "一锅出番茄牛腩",
+    "cuisine": "家常菜",
+    "file": "098-tomato-beef-brisket-stew.jpg",
+    "query": "tomato beef brisket stew",
+    "tried": [
+      "Commons 自动检索（tomato beef brisket stew）无合格成品图",
+      "只有清汤排骨图，不是番茄牛腩，退回缺失"
+    ],
+    "candidates": 0
+  },
+  {
+    "name": "一锅出土豆炖鸡",
+    "cuisine": "家常菜",
+    "file": "099-potato-chicken-stew.jpg",
+    "query": "potato chicken stew",
+    "tried": [
+      "Commons 自动检索（potato chicken stew）无合格成品图",
+      "命中的是肉末碟，不是炖鸡，退回缺失"
+    ],
+    "candidates": 0
+  }
+]

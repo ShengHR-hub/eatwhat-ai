@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>食刻 EatWhat · 管理后台（设计稿 v6）</title>
+<style>
+  /* ── 令牌：全部沿用移动端「燕麦暖食」，后台不另起一套色 ───────────── */
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --paper-strong: #fffdf8;
+    --ink: #241e18;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(36, 30, 24, .12);
+    --line-soft: rgba(36, 30, 24, .07);
+    --line-strong: rgba(36, 30, 24, .2);
+    --accent: #b85c2e;
+    --accent-soft: rgba(184, 92, 46, .1);
+    --shadow-sm: 0 1px 2px rgba(38, 31, 23, .05);
+    --shadow-md: 0 8px 24px rgba(38, 31, 23, .1);
+    --shadow-lg: 0 24px 60px rgba(38, 31, 23, .18);
+    --ok: #3f6b4f;      --ok-bg: #e8efe9;
+    --warn: #8a6a2a;    --warn-bg: #f5ecd9;
+    --bad: #8c3a2a;     --bad-bg: #f6e6e1;
+    /* 中文优先：先定中文字体，拉丁字符跟着同一族走，避免中英混排两套字形。
+       --font-cjk 由调试条切换（html[data-font]），生产版本会固定成一个。 */
+    --font-cjk: "Microsoft YaHei UI", "Microsoft YaHei";
+    --font: var(--font-cjk), "Segoe UI", sans-serif;
+    --body-size: 13.5px;
+    --body-lh: 1.58;
+    --row-py: 11px;
+    --th-py: 10px;
+    --mono: "SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--bg);
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  /* 纸感颗粒：和移动端同一张纹理，只是压得更淡 */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background: url("../v5-minimal/assets/paper-grain.png") repeat;
+    background-size: 220px;
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  input, select { font: inherit; color: inherit; }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* ── 骨架 ─────────────────────────────────────────────────────── */
+  .app { position: relative; z-index: 1; display: flex; height: 100vh; }
+
+  /* 侧栏 */
+  .sidebar {
+    width: 224px; flex: 0 0 224px;
+    background: var(--paper-strong);
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    padding: 22px 14px 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 22px; }
+  .brand__mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--ink); color: var(--paper-strong);
+    display: grid; place-items: center;
+    font-size: 15px; font-weight: 600; letter-spacing: .02em;
+    box-shadow: var(--shadow-sm);
+  }
+  .brand__copy { display: flex; flex-direction: column; gap: 1px; }
+  .brand__name { font-size: 13px; font-weight: 600; letter-spacing: .01em; }
+  .brand__sub { font-size: 9px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav__label {
+    font-size: 10.5px; letter-spacing: .02em; color: var(--faint);
+    padding: 14px 10px 6px; text-transform: uppercase;
+  }
+  .nav__item {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px; border-radius: 9px;
+    font-size: 13px; color: var(--muted);
+    position: relative; transition: background .15s ease, color .15s ease;
+  }
+  .nav__item svg { width: 15px; height: 15px; flex: 0 0 15px; opacity: .8; }
+  .nav__item:hover { background: rgba(36, 30, 24, .04); color: var(--ink); }
+  .nav__item.is-active { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+  .nav__item.is-active::before {
+    content: ""; position: absolute; left: -14px; top: 9px;
+    width: 3px; height: 18px; border-radius: 0 3px 3px 0; background: var(--accent);
+  }
+  .nav__item.is-active svg { opacity: 1; }
+  .nav__tag {
+    margin-left: auto; font-size: 8.5px; letter-spacing: .08em;
+    padding: 1px 5px; border-radius: 4px;
+    background: rgba(36, 30, 24, .06); color: var(--faint);
+  }
+
+  .sidebar__foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+  .who { display: flex; align-items: center; gap: 9px; padding: 6px 6px 10px; }
+  .who__avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; font-size: 12px; font-weight: 600;
+  }
+  .who__copy { display: flex; flex-direction: column; min-width: 0; }
+  .who__name { font-size: 12px; font-weight: 500; }
+  .who__role {
+    font-size: 8.5px; letter-spacing: .1em; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .who__role::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+  }
+  .logout {
+    width: 100%; height: 30px; border-radius: 8px;
+    font-size: 11.5px; color: var(--muted);
+    border: 1px solid var(--line); background: transparent;
+    transition: background .15s ease;
+  }
+  .logout:hover { background: rgba(36, 30, 24, .04); color: var(--ink); }
+
+  /* 主区 */
+  .workspace { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    height: 56px; flex: 0 0 56px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 0 26px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 253, 248, .72);
+    backdrop-filter: blur(12px);
+  }
+  .crumb { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--faint); }
+  .crumb b { color: var(--ink); font-weight: 500; }
+  .crumb span { opacity: .5; }
+
+  .search {
+    margin-left: auto; display: flex; align-items: center; gap: 8px;
+    width: 240px; height: 32px; padding: 0 11px;
+    border-radius: 9px; border: 1px solid var(--line);
+    background: rgba(255, 253, 248, .8);
+    color: var(--faint); font-size: 11.5px;
+  }
+  .search input { border: 0; background: none; outline: none; width: 100%; color: var(--ink); }
+  .search kbd {
+    font-family: var(--mono); font-size: 9px; color: var(--faint);
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px;
+  }
+
+  .page { flex: 1; overflow-y: auto; padding: 24px 26px 96px; }
+  .page::-webkit-scrollbar { width: 10px; }
+  .page::-webkit-scrollbar-thumb {
+    background: rgba(36, 30, 24, .14); border-radius: 6px;
+    border: 3px solid transparent; background-clip: content-box;
+  }
+
+  .page-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
+  .page-head h1 { font-size: 21px; font-weight: 600; letter-spacing: 0; }
+  .page-head p { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .page-head__actions { margin-left: auto; display: flex; gap: 8px; }
+
+  /* 按钮 */
+  .btn {
+    height: 34px; padding: 0 14px; border-radius: 9px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--line); background: var(--paper-strong);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { background: #fff; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: scale(.985); }
+  .btn--primary { background: var(--ink); color: var(--paper-strong); border-color: var(--ink); }
+  .btn--primary:hover { background: #332b23; }
+  .btn--ghost { background: transparent; }
+  .btn--danger { color: var(--bad); border-color: rgba(140, 58, 42, .28); }
+  .btn--danger:hover { background: var(--bad-bg); }
+  .btn--sm { height: 28px; padding: 0 10px; font-size: 11px; border-radius: 7px; }
+
+  /* KPI 条 */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi {
+    background: var(--paper-strong); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 15px; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .kpi__label { font-size: 10.5px; letter-spacing: .02em; color: var(--faint); }
+  .kpi__value { font-size: 24px; font-weight: 500; letter-spacing: -.03em; line-height: 1.1; }
+  .kpi__value small { font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: 0; margin-left: 3px; }
+  .kpi__foot { font-size: 10.5px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .kpi__foot i { width: 5px; height: 5px; border-radius: 50%; background: var(--faint); }
+  .kpi--alert .kpi__value { color: var(--accent); }
+  .kpi--alert .kpi__foot i { background: var(--accent); }
+
+  /* 面板 */
+  .panel {
+    background: var(--paper-strong); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  .panel__head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; border-bottom: 1px solid var(--line-soft);
+  }
+  .tabs { display: flex; gap: 2px; padding: 3px; border-radius: 9px; background: rgba(36, 30, 24, .05); }
+  .tabs button {
+    height: 28px; padding: 0 13px; border-radius: 7px;
+    font-size: 12px; color: var(--muted); transition: all .15s ease;
+  }
+  .tabs button.is-active {
+    background: var(--paper-strong); color: var(--ink);
+    font-weight: 500; box-shadow: var(--shadow-sm);
+  }
+  .panel__count { font-size: 11px; color: var(--faint); }
+
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;
+    padding: 12px 16px; border-bottom: 1px solid var(--line-soft);
+    background: rgba(244, 241, 234, .5);
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field span { font-size: 10.5px; letter-spacing: .02em; color: var(--faint); }
+  .field select, .field input {
+    height: 30px; min-width: 118px; padding: 0 9px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--paper-strong); font-size: 11.5px; outline: none;
+  }
+  .field select:focus, .field input:focus { border-color: var(--line-strong); }
+  .filters__actions { margin-left: auto; display: flex; gap: 8px; }
+
+  /* 表格 */
+  .bulkbar {
+    display: none; align-items: center; gap: 10px;
+    padding: 9px 16px; background: var(--accent-soft);
+    border-bottom: 1px solid rgba(184, 92, 46, .18);
+    font-size: 11.5px; color: var(--accent);
+  }
+  .bulkbar.is-open { display: flex; }
+  .bulkbar b { font-weight: 600; }
+  .bulkbar .btn { margin-left: auto; }
+
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  thead th {
+    text-align: left; font-size: 10.5px; letter-spacing: .02em;
+    color: var(--faint); font-weight: 500;
+    padding: var(--th-py) 14px; border-bottom: 1px solid var(--line);
+    background: rgba(244, 241, 234, .6); white-space: nowrap;
+  }
+  tbody td { padding: var(--row-py) 14px; border-bottom: 1px solid var(--line-soft); font-size: calc(var(--body-size) - 1px); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: rgba(244, 241, 234, .55); }
+  tbody tr.is-selected { background: rgba(184, 92, 46, .06); }
+  .cell-id { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+  .cell-name { font-weight: 500; }
+  .cell-reason { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 11px; }
+  .cell-time { font-family: var(--mono); font-size: 10.5px; color: var(--faint); white-space: nowrap; }
+  .cell-name small { display: block; font-size: 10px; color: var(--faint); font-weight: 400; margin-top: 1px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 20px; padding: 0 7px; border-radius: 5px;
+    font-size: 10px; letter-spacing: .02em;
+  }
+  .chip::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+  .chip--ok { color: var(--ok); background: var(--ok-bg); }
+  .chip--warn { color: var(--warn); background: var(--warn-bg); }
+  .chip--bad { color: var(--bad); background: var(--bad-bg); }
+  .chip--plain { color: var(--muted); background: rgba(36, 30, 24, .05); }
+  .chip--plain::before { display: none; }
+  .row-actions { display: flex; gap: 10px; white-space: nowrap; }
+  .row-actions button { font-size: 11px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .row-actions button:hover { color: var(--ink); }
+  .row-actions .is-danger:hover { color: var(--bad); }
+  input[type="checkbox"] { accent-color: var(--accent); width: 13px; height: 13px; cursor: pointer; }
+
+  .panel__foot {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 16px; border-top: 1px solid var(--line-soft);
+    font-size: 11px; color: var(--muted);
+  }
+  .pager { margin-left: auto; display: flex; gap: 6px; }
+  .pager button {
+    height: 27px; min-width: 27px; padding: 0 8px; border-radius: 7px;
+    border: 1px solid var(--line); font-size: 11px; background: var(--paper-strong);
+  }
+  .pager button.is-active { background: var(--ink); color: var(--paper-strong); border-color: var(--ink); }
+  .pager button:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* 抽屉 */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(24, 19, 14, .32);
+    opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s;
+    z-index: 40; backdrop-filter: blur(2px);
+  }
+  .scrim.is-open { opacity: 1; visibility: visible; }
+
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 452px;
+    background: var(--paper-strong); z-index: 50;
+    transform: translateX(100%); transition: transform .26s cubic-bezier(.32, .72, 0, 1);
+    display: flex; flex-direction: column;
+    box-shadow: var(--shadow-lg);
+  }
+  .drawer.is-open { transform: translateX(0); }
+  .drawer__head { padding: 20px 22px 14px; border-bottom: 1px solid var(--line-soft); }
+  .drawer__eyebrow { font-size: 9px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; }
+  .drawer__head h2 { font-size: 17px; font-weight: 600; margin-top: 4px; letter-spacing: -.01em; }
+  .drawer__head p { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .drawer__body { flex: 1; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 15px; }
+  .drawer__foot {
+    padding: 14px 22px; border-top: 1px solid var(--line-soft);
+    display: flex; gap: 9px; justify-content: flex-end;
+    background: rgba(244, 241, 234, .45);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field label { font-size: 10.5px; color: var(--muted); }
+  .form-field input, .form-field select, .form-field textarea {
+    height: 34px; padding: 0 10px; border-radius: 8px;
+    border: 1px solid var(--line); background: #fff;
+    font-size: 12px; outline: none; transition: border-color .15s ease;
+  }
+  .form-field textarea { height: 76px; padding: 9px 10px; resize: vertical; line-height: 1.6; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--line-strong); }
+  .form-hint { font-size: 10px; color: var(--faint); }
+  .form-section {
+    font-size: 10.5px; letter-spacing: .02em; color: var(--faint); padding-top: 4px; border-top: 1px solid var(--line-soft); margin-top: 4px;
+  }
+
+  /* 二次确认 */
+  .dialog {
+    position: fixed; inset: 0; z-index: 60;
+    display: grid; place-items: center;
+    background: rgba(24, 19, 14, .34);
+    backdrop-filter: blur(2px);
+    opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility .18s;
+  }
+  .dialog.is-open { opacity: 1; visibility: visible; }
+  .dialog__card {
+    width: 396px; background: var(--paper-strong);
+    border-radius: 14px; padding: 22px;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(6px) scale(.99); transition: transform .18s ease;
+  }
+  .dialog.is-open .dialog__card { transform: none; }
+  .dialog__icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--bad-bg); color: var(--bad);
+    display: grid; place-items: center; margin-bottom: 12px;
+  }
+  .dialog h3 { font-size: 15px; font-weight: 600; }
+  .dialog p { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.65; }
+  .dialog__warn {
+    margin-top: 12px; padding: 9px 11px; border-radius: 8px;
+    background: var(--warn-bg); color: var(--warn);
+    font-size: 11px; line-height: 1.6;
+  }
+  .dialog__actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 18px; }
+
+  /* 提示条 */
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 12px);
+    background: var(--ink); color: var(--paper-strong);
+    padding: 9px 16px; border-radius: 9px; font-size: 12px;
+    opacity: 0; visibility: hidden; transition: all .22s ease; z-index: 70;
+    box-shadow: var(--shadow-md);
+  }
+  .toast.is-open { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+  /* ── 设计调试：字体 / 疏密 ───────────────────────────────── */
+  html[data-font="source"] { --font-cjk: "Source Han Sans CN", "Source Han Sans SC", "Noto Sans SC"; }
+  html[data-font="deng"]   { --font-cjk: DengXian, "DengXian Light", "Microsoft YaHei UI"; }
+  html[data-density="cozy"]  { --body-size: 14px; --body-lh: 1.68; --row-py: 15px; --th-py: 12px; }
+  html[data-density="tight"] { --body-size: 13px; --body-lh: 1.5; --row-py: 8px;  --th-py: 8px; }
+
+  .tuner {
+    position: fixed; left: 246px; bottom: 18px;
+    z-index: 80; display: flex; align-items: center; gap: 14px;
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(36, 30, 24, .92); color: #f4f1ea;
+    box-shadow: var(--shadow-md);
+    font-size: 11.5px; backdrop-filter: blur(10px);
+  }
+  .tuner__group { display: flex; align-items: center; gap: 4px; }
+  .tuner__label { font-size: 10px; letter-spacing: .06em; color: rgba(244, 241, 234, .5); margin-right: 2px; }
+  .tuner button {
+    height: 24px; padding: 0 9px; border-radius: 999px;
+    font-size: 11px; color: rgba(244, 241, 234, .72);
+    transition: background .15s ease, color .15s ease;
+  }
+  .tuner button:hover { background: rgba(244, 241, 234, .1); color: #fffdf8; }
+  .tuner button.is-on { background: #f4f1ea; color: #241e18; font-weight: 500; }
+  .tuner__sep { width: 1px; height: 16px; background: rgba(244, 241, 234, .18); }
+
+  /* ── 布局 B：左侧竖排筛选 ─────────────────────────────────── */
+  html[data-layout="b"] .panel {
+    display: grid;
+    grid-template-columns: 214px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+    align-items: start;
+  }
+  /* 显式指定区域：auto-placement 在「filters 跨行」时会算错，必须写死 */
+  html[data-layout="b"] .panel__head { grid-area: 1 / 1 / 2 / 3; }
+  html[data-layout="b"] .filters {
+    grid-area: 2 / 1 / 5 / 2;
+    flex-direction: column; align-items: stretch; gap: 12px;
+    border-bottom: 0; border-right: 1px solid var(--line);
+    background: rgba(244, 241, 234, .38);
+    padding: 14px 14px 20px; align-self: stretch;
+  }
+  /* 左栏占宽后表格放不下 10 列，隐藏「推荐理由」（详情在编辑抽屉里） */
+  html[data-layout="b"] th:nth-child(4),
+  html[data-layout="b"] td:nth-child(4) { display: none; }
+  html[data-layout="b"] th:nth-child(3) { width: 176px; }
+  html[data-layout="b"] .filters::before {
+    content: "筛选条件"; font-size: 10.5px; letter-spacing: .02em;
+    color: var(--faint); padding-bottom: 2px;
+  }
+  html[data-layout="b"] .filters .field { width: 100%; }
+  html[data-layout="b"] .filters .field select,
+  html[data-layout="b"] .filters .field input { width: 100%; }
+  html[data-layout="b"] .filters__actions {
+    margin-left: 0; margin-top: 4px;
+    flex-direction: column; gap: 8px;
+  }
+  html[data-layout="b"] .filters__actions .btn { width: 100%; justify-content: center; }
+  html[data-layout="b"] .bulkbar { grid-area: 2 / 2 / 3 / 3; }
+  html[data-layout="b"] table { grid-area: 3 / 2 / 4 / 3; }
+  html[data-layout="b"] .panel__foot { grid-area: 4 / 2 / 5 / 3; }
+
+  /* ── 布局 C：筛选折叠 + KPI 压成细条 ───────────────────────── */
+  html[data-layout="c"] .filters { display: none; }
+  html[data-layout="c"] .filters.is-open { display: flex; }
+  html[data-layout="c"] .kpi { padding: 9px 13px; gap: 2px; }
+  html[data-layout="c"] .kpi__value { font-size: 18px; }
+  html[data-layout="c"] .kpi__foot { font-size: 10px; }
+  html[data-layout="c"] .kpis { margin-bottom: 12px; }
+  .filter-toggle { display: none; margin-left: auto; }
+  html[data-layout="c"] .filter-toggle { display: inline-flex; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<!-- 设计调试条：仅用于评审，复刻到 Vue 时删掉 -->
+<div class="tuner">
+  <div class="tuner__group">
+    <span class="tuner__label">字体</span>
+    <button data-font="yahei" class="is-on">雅黑 UI</button>
+    <button data-font="source">思源黑体</button>
+    <button data-font="deng">等线</button>
+  </div>
+  <span class="tuner__sep"></span>
+  <div class="tuner__group">
+    <span class="tuner__label">疏密</span>
+    <button data-density="cozy">舒适</button>
+    <button data-density="std" class="is-on">标准</button>
+    <button data-density="tight">紧凑</button>
+  </div>
+  <span class="tuner__sep"></span>
+  <div class="tuner__group">
+    <span class="tuner__label">布局</span>
+    <button data-layout="a" class="is-on">上下</button>
+    <button data-layout="b">左筛选</button>
+    <button data-layout="c">折叠</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- ── 侧栏 ─────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span class="brand__copy">
+        <span class="brand__name">食刻 EatWhat</span>
+        <span class="brand__sub">Admin Console</span>
+      </span>
+    </div>
+
+    <nav class="nav">
+      <p class="nav__label">数据</p>
+      <button class="nav__item is-active" data-nav="data">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        数据管理
+      </button>
+      <button class="nav__item" data-nav="audit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5h9M9 12h9M9 19h9M4 5h1M4 12h1M4 19h1"/></svg>
+        审计日志
+        <span class="nav__tag">NEW</span>
+      </button>
+
+      <p class="nav__label">分析</p>
+      <button class="nav__item" data-nav="dash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>
+        实验大屏
+      </button>
+
+      <p class="nav__label">出口</p>
+      <button class="nav__item" data-nav="mobile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></svg>
+        返回移动端
+      </button>
+    </nav>
+
+    <div class="sidebar__foot">
+      <div class="who">
+        <span class="who__avatar">测</span>
+        <span class="who__copy">
+          <span class="who__name">测试账号</span>
+          <span class="who__role">ADMIN</span>
+        </span>
+      </div>
+      <button class="logout" data-toast="已退出登录（设计稿演示）">退出登录</button>
+    </div>
+  </aside>
+
+  <!-- ── 主区 ─────────────────────────────────────────────── -->
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span>后台</span><span>/</span><b>数据管理</b></div>
+      <label class="search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input placeholder="搜菜品名、门店名或 ID" />
+        <kbd>⌘K</kbd>
+      </label>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <h1>数据管理</h1>
+          <p>门店与菜品是推荐的唯一事实来源，改动会立即影响线上结果。</p>
+        </div>
+        <div class="page-head__actions">
+          <button class="btn" data-toast="导出 CSV（设计稿演示）">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
+            导出
+          </button>
+          <button class="btn btn--primary" id="createBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            新增菜品
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <section class="kpis">
+        <article class="kpi">
+          <span class="kpi__label">门店总数</span>
+          <span class="kpi__value tabular">7,704<span>家</span></span>
+          <span class="kpi__foot"><i></i>思源 3,862 · 建大 3,842</span>
+        </article>
+        <article class="kpi">
+          <span class="kpi__label">菜品 / 菜谱</span>
+          <span class="kpi__value tabular">6,560<span>道</span></span>
+          <span class="kpi__foot"><i></i>外食 120 · 下厨 6,440</span>
+        </article>
+        <article class="kpi kpi--alert">
+          <span class="kpi__label">数据异常</span>
+          <span class="kpi__value tabular">18<span>行</span></span>
+          <span class="kpi__foot"><i></i>缺特征向量 12 · 缺菜系 6</span>
+        </article>
+        <article class="kpi">
+          <span class="kpi__label">待打标</span>
+          <span class="kpi__value tabular">24<span>道</span></span>
+          <span class="kpi__foot"><i></i>批量上限 20 道 / 次</span>
+        </article>
+      </section>
+
+      <!-- 主面板 -->
+      <section class="panel">
+        <div class="panel__head">
+          <div class="tabs" role="tablist">
+            <button class="is-active" data-tab="dishes" role="tab">菜品 / 菜谱</button>
+            <button data-tab="restaurants" role="tab">门店 / 食堂</button>
+          </div>
+          <span class="panel__count" id="panelCount">共 6,560 条 · 第 1 / 328 页</span>
+          <button class="btn btn--sm filter-toggle" id="filterToggle">筛选 ▾</button>
+        </div>
+
+        <form class="filters" onsubmit="return false">
+          <label class="field"><span>校区</span>
+            <select><option>全部 / 含共享</option><option>思源</option><option>建大雁塔</option><option>仅共享下厨</option></select>
+          </label>
+          <label class="field"><span>模式</span>
+            <select><option>全部</option><option>外食</option><option>下厨</option></select>
+          </label>
+          <label class="field"><span>菜系</span>
+            <select><option>全部</option><option>川湘菜</option><option>粤菜</option><option>轻食</option></select>
+          </label>
+          <label class="field"><span>打标状态</span>
+            <select><option>全部</option><option>SUCCESS</option><option>PENDING</option><option>FAILED</option></select>
+          </label>
+          <div class="filters__actions">
+            <button class="btn btn--ghost btn--sm" type="button" data-toast="已重置筛选">重置</button>
+            <button class="btn btn--primary btn--sm" type="button" data-toast="已按条件筛选（设计稿演示）">筛选</button>
+          </div>
+        </form>
+
+        <div class="bulkbar" id="bulkbar">
+          已选 <b id="bulkCount">0</b> 项
+          <button class="btn btn--sm" data-toast="批量打标（设计稿演示）">批量打标</button>
+          <button class="btn btn--sm" data-toast="批量下架（设计稿演示）">批量下架</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:34px"><input type="checkbox" id="checkAll" aria-label="全选本页" /></th>
+              <th style="width:64px">ID</th>
+              <th style="width:206px">名称</th>
+              <th>推荐理由</th>
+              <th style="width:106px">模式 / 校区</th>
+              <th style="width:118px">菜系 / 角色</th>
+              <th style="width:66px">价格</th>
+              <th style="width:92px">打标</th>
+              <th style="width:108px">更新时间</th>
+              <th style="width:106px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="dishRows">
+            <tr data-id="1" data-name="砂锅豆腐" data-price="22" data-restaurant="教工食堂·砂锅炖菜">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#1</td>
+              <td class="cell-name">砂锅豆腐<small>教工食堂 · 砂锅炖菜</small></td>
+              <td class="cell-reason">天气转凉，砂锅类热食更对味；最近没吃豆制品</td>
+              <td>外食 · 思源</td>
+              <td>家常 <span class="chip chip--plain">主菜</span></td>
+              <td class="tabular">¥22</td>
+              <td><span class="chip chip--ok">SUCCESS</span></td>
+              <td class="cell-time">10-29 14:22</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>软删除</button></div></td>
+            </tr>
+            <tr data-id="2" data-name="红烧牛肉面" data-price="18" data-restaurant="二食堂·牛肉面">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#2</td>
+              <td class="cell-name">红烧牛肉面<small>二食堂 · 牛肉面</small></td>
+              <td class="cell-reason">牛肉面出餐快，18 元在预算内，适合赶时间</td>
+              <td>外食 · 思源</td>
+              <td>面食 <span class="chip chip--plain">主食</span></td>
+              <td class="tabular">¥18</td>
+              <td><span class="chip chip--ok">SUCCESS</span></td>
+              <td class="cell-time">10-29 13:05</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>软删除</button></div></td>
+            </tr>
+            <tr data-id="3" data-name="麻辣香锅" data-price="32" data-restaurant="一食堂·川湘窗口">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#3</td>
+              <td class="cell-name">麻辣香锅<small>一食堂 · 川湘窗口</small></td>
+              <td class="cell-reason">辣度够、分量足，适合想吃重口的时候</td>
+              <td>外食 · 思源</td>
+              <td>川湘菜 <span class="chip chip--plain">主菜</span></td>
+              <td class="tabular">¥32</td>
+              <td><span class="chip chip--ok">SUCCESS</span></td>
+              <td class="cell-time">10-28 19:41</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>软删除</button></div></td>
+            </tr>
+            <tr data-id="4" data-name="孜然木耳黄瓜" data-price="12" data-restaurant="三食堂·凉菜">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#4</td>
+              <td class="cell-name">孜然木耳黄瓜<small>三食堂 · 凉菜窗口</small></td>
+              <td class="cell-reason">清爽解腻，热量低，适合搭配主菜</td>
+              <td>外食 · 建大</td>
+              <td>凉菜 <span class="chip chip--plain">配菜</span></td>
+              <td class="tabular">¥12</td>
+              <td><span class="chip chip--warn">PENDING</span></td>
+              <td class="cell-time">10-27 09:18</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>软删除</button></div></td>
+            </tr>
+            <tr data-id="5" data-name="番茄鸡蛋面" data-price="0" data-restaurant="家常菜谱">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#5</td>
+              <td class="cell-name">番茄鸡蛋面<small>家常菜谱 · 15 分钟</small></td>
+              <td class="cell-reason">15 分钟出锅，食材冰箱里都有</td>
+              <td>下厨 · 共享</td>
+              <td>家常 <span class="chip chip--plain">主食</span></td>
+              <td class="tabular">—</td>
+              <td><span class="chip chip--bad">FAILED</span></td>
+              <td class="cell-time">10-26 21:07</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>软删除</button></div></td>
+            </tr>
+          </tbody>
+          <tbody id="restaurantRows" hidden>
+            <tr data-id="1" data-name="教工食堂·砂锅炖菜" data-price="" data-restaurant="">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#1</td>
+              <td class="cell-name">教工食堂 · 砂锅炖菜<small>思源 · CANTEEN</small></td>
+              <td class="cell-reason">思源校区 · 食堂档口 · 人均 24 元</td>
+              <td>思源</td>
+              <td>食堂</td>
+              <td class="tabular">¥24 人均</td>
+              <td><span class="chip chip--ok">在架</span></td>
+              <td class="cell-time">10-29 11:30</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>下架</button></div></td>
+            </tr>
+            <tr data-id="2" data-name="二食堂·牛肉面" data-price="" data-restaurant="">
+              <td><input type="checkbox" class="row-check" /></td>
+              <td class="cell-id">#2</td>
+              <td class="cell-name">二食堂 · 牛肉面<small>思源 · CANTEEN</small></td>
+              <td class="cell-reason">思源校区 · 食堂档口 · 人均 24 元</td>
+              <td>思源</td>
+              <td>食堂</td>
+              <td class="tabular">¥18 人均</td>
+              <td><span class="chip chip--ok">在架</span></td>
+              <td class="cell-time">10-29 11:30</td>
+              <td><div class="row-actions"><button data-edit>编辑</button><button class="is-danger" data-del>下架</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <footer class="panel__foot">
+          <span>每页 20 条 · 已显示 5 条</span>
+          <div class="pager">
+            <button disabled>上一页</button>
+            <button class="is-active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>下一页</button>
+          </div>
+        </footer>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ── 编辑抽屉 ───────────────────────────────────────────── -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="编辑菜品">
+  <header class="drawer__head">
+    <p class="drawer__eyebrow">EDIT RECORD</p>
+    <h2 id="drawerTitle">编辑菜品</h2>
+    <p>改动保存后立即生效，并写入审计日志。</p>
+  </header>
+  <div class="drawer__body">
+    <div class="form-field">
+      <label>名称</label>
+      <input id="fName" value="砂锅豆腐" />
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>模式</label>
+        <select><option>外食</option><option>下厨</option></select>
+      </div>
+      <div class="form-field"><label>所属门店</label>
+        <select><option>教工食堂·砂锅炖菜</option><option>二食堂·牛肉面</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>价格（元）</label><input type="number" value="22" /></div>
+      <div class="form-field"><label>菜系</label>
+        <select><option>家常</option><option>川湘菜</option><option>粤菜</option><option>轻食</option></select>
+      </div>
+    </div>
+    <p class="form-section">风味向量</p>
+    <div class="form-row">
+      <div class="form-field"><label>酸</label><input type="number" step="0.1" value="0.3" /></div>
+      <div class="form-field"><label>辣</label><input type="number" step="0.1" value="0.2" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>咸</label><input type="number" step="0.1" value="0.6" /></div>
+      <div class="form-field"><label>鲜</label><input type="number" step="0.1" value="0.7" /></div>
+    </div>
+    <p class="form-hint">向量决定雷达图与匹配分，缺值会导致该菜品无法进入推荐。</p>
+    <p class="form-section">说明</p>
+    <div class="form-field">
+      <label>推荐理由（用户可见）</label>
+      <textarea>天气转凉，砂锅类热食更对味；你最近没吃过豆制品，换个口味。</textarea>
+    </div>
+  </div>
+  <footer class="drawer__foot">
+    <button class="btn btn--ghost" data-close-drawer>取消</button>
+    <button class="btn btn--primary" data-save>保存并写入审计</button>
+  </footer>
+</aside>
+
+<!-- ── 二次确认 ───────────────────────────────────────────── -->
+<div class="dialog" id="dialog" role="dialog" aria-modal="true">
+  <div class="dialog__card">
+    <div class="dialog__icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <h3 id="dlgTitle">确定软删除这道菜？</h3>
+    <p id="dlgBody">「砂锅豆腐」将从推荐候选中移除，历史足迹保留。</p>
+    <div class="dialog__warn" id="dlgWarn">删除门店会连带下线其下全部菜品。此操作记录在审计日志，可追溯但不可一键撤销。</div>
+    <div class="dialog__actions">
+      <button class="btn btn--ghost" data-close-dialog>取消</button>
+      <button class="btn btn--danger" data-confirm>确认删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // 字体 / 疏密 / 布局切换（仅设计稿）
+  const root = document.documentElement;
+  const DEFAULTS = { font: 'yahei', density: 'std', layout: 'a' };
+
+  function bindTuner() {
+    $$('.tuner__group').forEach((group) => {
+      const buttons = $$('button', group);
+      const first = buttons[0]?.dataset;
+      if (!first) return;
+      const attr = first.font ? 'font' : first.density ? 'density' : 'layout';
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          buttons.forEach((b) => b.classList.toggle('is-on', b === btn));
+          const v = btn.dataset[attr];
+          if (v === DEFAULTS[attr]) root.removeAttribute(`data-${attr}`);
+          else root.setAttribute(`data-${attr}`, v);
+        });
+      });
+    });
+  }
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  // 提示条
+  let toastTimer = 0;
+  function toast(text) {
+    const el = $('#toast');
+    el.textContent = text;
+    el.classList.add('is-open');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('is-open'), 2200);
+  }
+  $$('[data-toast]').forEach((b) => b.addEventListener('click', () => toast(b.dataset.toast)));
+
+  // Tab 切换
+  $$('.tabs button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      $$('.tabs button').forEach((b) => b.classList.toggle('is-active', b === btn));
+      const isDish = btn.dataset.tab === 'dishes';
+      $('#dishRows').hidden = !isDish;
+      $('#restaurantRows').hidden = isDish;
+      $('#panelCount').textContent = isDish ? '共 6,560 条 · 第 1 / 328 页' : '共 7,704 条 · 第 1 / 386 页';
+      $('#createBtn').lastChild.textContent = isDish ? ' 新增菜品' : ' 新增门店';
+      syncBulk();
+    });
+  });
+
+  // 侧栏切换（纯视觉）
+  $$('.nav__item').forEach((item) => {
+    item.addEventListener('click', () => {
+      $$('.nav__item').forEach((b) => b.classList.toggle('is-active', b === item));
+      if (item.dataset.nav !== 'data') toast('该页在下一轮设计稿中提供');
+    });
+  });
+
+  // 勾选与批量条
+  function syncBulk() {
+    const checked = $$('.row-check:checked').length;
+    $('#bulkCount').textContent = checked;
+    $('#bulkbar').classList.toggle('is-open', checked > 0);
+    $$('tbody tr').forEach((tr) => tr.classList.toggle('is-selected', !!$('.row-check', tr)?.checked));
+  }
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'checkAll') {
+      const visible = $$('tbody:not([hidden]) .row-check');
+      visible.forEach((c) => (c.checked = e.target.checked));
+    }
+    if (e.target.classList.contains('row-check')) syncBulk();
+  });
+
+  // 抽屉
+  const scrim = $('#scrim');
+  const drawer = $('#drawer');
+  function openDrawer(row, mode) {
+    $('#drawerTitle').textContent = mode === 'create' ? '新增菜品' : `编辑菜品 · #${row?.dataset.id ?? ''}`;
+    $('#fName').value = mode === 'create' ? '' : (row?.dataset.name ?? '');
+    drawer.classList.add('is-open');
+    scrim.classList.add('is-open');
+  }
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    scrim.classList.remove('is-open');
+  }
+  $('#createBtn').addEventListener('click', () => openDrawer(null, 'create'));
+  $$('[data-edit]').forEach((b) => b.addEventListener('click', () => openDrawer(b.closest('tr'), 'edit')));
+  $$('[data-close-drawer]').forEach((b) => b.addEventListener('click', closeDrawer));
+  $$('[data-save]').forEach((b) => b.addEventListener('click', () => {
+    closeDrawer();
+    toast('已保存，并写入审计日志');
+  }));
+  scrim.addEventListener('click', closeDrawer);
+
+  // 二次确认
+  const dialog = $('#dialog');
+  let pendingRow = null;
+  $$('[data-del]').forEach((b) => b.addEventListener('click', () => {
+    pendingRow = b.closest('tr');
+    const isRestaurant = !$('#restaurantRows').hidden;
+    const name = pendingRow.dataset.name;
+    $('#dlgTitle').textContent = isRestaurant ? `确定下架「${name}」？` : `确定软删除「${name}」？`;
+    $('#dlgBody').textContent = isRestaurant
+      ? '该门店将从外食推荐中移除，其下菜品同时下线。'
+      : '该菜品将从推荐候选中移除，历史足迹保留。';
+    $('#dlgWarn').style.display = isRestaurant ? 'block' : 'none';
+    dialog.classList.add('is-open');
+  }));
+  $$('[data-close-dialog]').forEach((b) => b.addEventListener('click', () => dialog.classList.remove('is-open')));
+  $('[data-confirm]').addEventListener('click', () => {
+    dialog.classList.remove('is-open');
+    if (pendingRow) pendingRow.style.opacity = '.4';
+    toast('已删除，记录已写入审计日志');
+  });
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('is-open'); });
+
+  bindTuner();
+
+  // 布局 C 的筛选折叠
+  $('#filterToggle')?.addEventListener('click', () => {
+    const f = $('.filters');
+    const open = f.classList.toggle('is-open');
+    $('#filterToggle').textContent = open ? '收起 ▴' : '筛选 ▾';
+  });
+
+  // Esc 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    dialog.classList.remove('is-open');
+    closeDrawer();
+  });
+</script>
+</body>
+</html>

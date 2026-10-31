@@ -1,0 +1,69 @@
+generated_at: 2026-10-25T13:58:57+08:00
+workspace: D:\eatwhat
+python: 3.13.9 node: v24.19.0 npm: 11.17.0
+pkg fastapi: 0.115.0
+pkg sqlalchemy: 2.0.35
+pkg pydantic: 2.13.3
+pkg httpx: 0.28.1
+pkg uvicorn: 0.30.0
+pkg pytest: 9.0.3
+git: {"branch": "master", "head": null, "commit_count": 0, "staged": 280, "unstaged": 130, "untracked": 53, "staged_diff_sha256": "cbfeb1e84ea5a38053d2b0fa67bd897b69a9aa988e16426e2ccc437e13a630cb"}
+
+=== backend/eatwhat.db
+sha256=775da775ce8dbd5f078d61d5c05db175d8f10d4224fd41755435ac864bd3a60b size=217088 schema_fp=b708e1d2ef826dcb6d61a2e3e51e27d33b9ce5bae4ffc959b0881763d9e5228f
+  [algo_configs] rows=1 cols=9 indexes=[]
+  [dishes_and_recipes] rows=100 cols=14 indexes=['ix_dishes_and_recipes_name', 'ix_dishes_and_recipes_cuisine_type', 'ix_dishes_and_recipes_mode_type']
+  [eating_logs] rows=9 cols=8 indexes=['ix_eating_logs_eaten_at', 'ix_eating_logs_user_id']
+  [fridge_inventory] rows=12 cols=7 indexes=['ix_fridge_inventory_user_id']
+  [group_rooms] rows=0 cols=14 indexes=['ix_group_rooms_room_code']
+  [restaurants] rows=20 cols=10 indexes=['ix_restaurants_name']
+  [room_votes] rows=0 cols=6 indexes=['ix_room_votes_room_code']
+  [user_preferences] rows=4 cols=9 indexes=['sqlite_autoindex_user_preferences_1']
+  [users] rows=4 cols=7 indexes=['ix_users_username']
+
+=== backend/eatwhat_batch4.db
+sha256=315eb3da1b7775db6fdfc4f6ed72c304de15b66e78c97e843005528976918c28 size=6316032 schema_fp=ed2a27c840b12575d7fb7c5f8ec0f364ededd98aa04832af66ef39de0f866759
+  [algo_configs] rows=0 cols=9 indexes=[]
+  [dishes_and_recipes] rows=6400 cols=24 indexes=['ux_dishes_source', 'ix_dishes_and_recipes_mode_type', 'ix_dishes_and_recipes_cuisine_type', 'ix_dishes_and_recipes_name']
+  [eating_logs] rows=0 cols=8 indexes=['ix_eating_logs_eaten_at', 'ix_eating_logs_user_id']
+  [fridge_inventory] rows=0 cols=7 indexes=['ix_fridge_inventory_user_id']
+  [group_rooms] rows=0 cols=15 indexes=['ix_group_rooms_room_code']
+  [restaurants] rows=7664 cols=17 indexes=['ux_restaurants_source', 'ix_restaurants_name']
+  [room_votes] rows=0 cols=6 indexes=['ix_room_votes_room_code']
+  [user_preferences] rows=0 cols=9 indexes=['sqlite_autoindex_user_preferences_1']
+  [users] rows=0 cols=7 indexes=['ix_users_username']
+
+=== backend/eatwhat_dev_pre00_r02.db
+sha256=b965e73ee318a2b07e89f08eac8aa7bd7cfacf84b87f5c4446c1938bf706a579 size=217088 schema_fp=82f1b327dcd220dacf055cf57354454f03b2cfe7fa1809336bc3b4c036ccaeb7
+  [algo_configs] rows=1 cols=9 indexes=[]
+  [dishes_and_recipes] rows=100 cols=24 indexes=['ix_dishes_and_recipes_cuisine_type', 'ix_dishes_and_recipes_mode_type', 'ix_dishes_and_recipes_name']
+  [eating_logs] rows=9 cols=8 indexes=['ix_eating_logs_eaten_at', 'ix_eating_logs_user_id']
+  [fridge_inventory] rows=12 cols=7 indexes=['ix_fridge_inventory_user_id']
+  [group_rooms] rows=0 cols=15 indexes=['ix_group_rooms_room_code']
+  [restaurants] rows=20 cols=17 indexes=['ix_restaurants_name']
+  [room_votes] rows=0 cols=6 indexes=['ix_room_votes_room_code']
+  [user_preferences] rows=4 cols=9 indexes=['sqlite_autoindex_user_preferences_1']
+  [users] rows=4 cols=7 indexes=['ix_users_username']
+
+sidecars: {"backend/eatwhat.db-*": [], "backend/eatwhat_batch4.db-*": [], "backend/eatwhat_dev_pre00_r02.db-*": []}
+
+key file hashes:
+  d1a6e9466e1890787ac3925c29dbbf8405f33cb594634f834399c59887493e2c AGENTS.md
+  5463f88f8cb73c77dd6115adcce93b81382b259092a9da9a39cd68716ef2c8b3 MASTER_SPEC.md
+  a3e21506f84170ee4756d2d5012ff8296bbda003dcb2c5937b8fb14f355bccfe docs/AGENT_MEMORY.md
+  6c95dfe49bbae8bb48eb7a75245167dda057d229b7a3f54ced3fb546d6d14fba BATCH4_PLAN.md
+  f9857dab1f07fe3eaf899f558632de7302267add5017065b9b9eef0f047c9f05 docs/REVIEW_RULES.md
+  a4bf33c6e1b80648955aa8aeb786b1cc3f88b657fbab14e62bfb3e6fa8cdf772 docs/review/STAGE_STATUS.md
+  177beb643d807341d261441502e53c5c5e0ba1eae20007b78ac935c4f3985943 docs/review/PRE_S10_REMEDIATION_PLAN.md
+  ba9da2a1e268ecb670bce6d7fcec001c3ab649c6e87306a278b2a8856fb0f71e docs/review/clearance-codex-pre00-r02/REPORT.md
+  842533ee44021c3cd35a655ebac73e5b88c557996c40132a59165626c10f1c73 requirements.txt
+  e317b4ea9380c31b982e3e43cd60ba7103515d0bcf4f21c57d005ca8fd0f8bb3 pytest.ini
+  66e998266810536f52272b26eb5d9de1a66c6d9fa6f633b70d24ba0bfe48c49b frontend/package.json
+  adc87fc76e27d41e04f92df8e31520055c0e388ad6283163e2d18d1b5e20c297 frontend/package-lock.json
+  a891e455c774394d3c3e140a640793e34b4683521eabcd14099b69e7b2ccee8f frontend/vite.config.js
+  c863a8e47c1a05f4838718e8c165749a46e36fb6db657b3fa1f00fb141c071af frontend/tailwind.config.js
+  1debd9f3a94659e5a1404561fa72fc144692405d6588769c96e9953082f9c5e6 backend/main.py
+  82c3f9b22882238be55903a43355d3d7418d39a7f1572151ffc360718b141ea6 backend/config.py
+  eec7026544f137cbc1c157627269a6e9044a6525e9f4976ecc2ded1c1c8c95cf backend/database.py
+
+wrote data/baseline.json

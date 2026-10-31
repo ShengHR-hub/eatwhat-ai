@@ -1,0 +1,32 @@
+generated_at: 2026-10-25T13:24:22+08:00
+cwd: D:\eatwhat
+python: 3.13.9
+pkg fastapi: 0.115.0
+pkg sqlalchemy: 2.0.35
+pkg pydantic: 2.13.3
+pkg httpx: 0.28.1
+pkg uvicorn: 0.30.0
+pkg pytest: 9.0.3
+node: v24.19.0
+npm: 11.17.0
+git HEAD exit: 128 (128 = no commit)
+git status entries: 332 staged: 280 unstaged: 130 untracked: 52
+staged diff sha256: cbfeb1e84ea5a38053d2b0fa67bd897b69a9aa988e16426e2ccc437e13a630cb
+
+=== backend/eatwhat.db
+size: 217088 sha256: 775da775ce8dbd5f078d61d5c05db175d8f10d4224fd41755435ac864bd3a60b
+rows: {'users': 4, 'restaurants': 20, 'algo_configs': 1, 'user_preferences': 4, 'dishes_and_recipes': 100, 'fridge_inventory': 12, 'group_rooms': 0, 'eating_logs': 9, 'room_votes': 0}
+
+=== backend/eatwhat_batch4.db
+size: 6316032 sha256: 315eb3da1b7775db6fdfc4f6ed72c304de15b66e78c97e843005528976918c28
+rows: {'users': 0, 'restaurants': 7664, 'algo_configs': 0, 'user_preferences': 0, 'dishes_and_recipes': 6400, 'fridge_inventory': 0, 'group_rooms': 0, 'eating_logs': 0, 'room_votes': 0}
+
+=== backend/eatwhat_dev_pre00_r02.db
+size: 217088 sha256: b965e73ee318a2b07e89f08eac8aa7bd7cfacf84b87f5c4446c1938bf706a579
+rows: {'users': 4, 'restaurants': 20, 'algo_configs': 1, 'user_preferences': 4, 'fridge_inventory': 12, 'group_rooms': 0, 'eating_logs': 9, 'room_votes': 0, 'dishes_and_recipes': 100}
+sha256: requirements.txt 842533ee44021c3cd35a655ebac73e5b88c557996c40132a59165626c10f1c73
+sha256: pytest.ini e317b4ea9380c31b982e3e43cd60ba7103515d0bcf4f21c57d005ca8fd0f8bb3
+sha256: frontend/package.json 66e998266810536f52272b26eb5d9de1a66c6d9fa6f633b70d24ba0bfe48c49b
+sha256: frontend/package-lock.json adc87fc76e27d41e04f92df8e31520055c0e388ad6283163e2d18d1b5e20c297
+sha256: backend/scripts/migrate_pre00_runtime_schema.py 4554358c8f0a458c8e334f1ffd2ec3eb380a1ff1570dbeab4950b8c97e624369
+sha256: backend/tests/test_pre00_runtime_migration.py 2c097b4f7166e895d0eed7d7078ef07fa36acc84c6097685fab1d5345026d09b

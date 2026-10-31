@@ -1,0 +1,47 @@
+- banner:
+  - paragraph: 饮食足迹
+  - heading "这周都吃了什么" [level=1]
+- generic: 本周打卡
+- generic: "3"
+- generic: 次
+- generic: 本周花费
+- generic: "72"
+- generic: 元
+- generic: 还在冷却
+- generic: "1"
+- generic: 道
+- heading "防腻冷却看板" [level=2]
+- generic: 吃完越近，权重压得越低
+- list:
+  - generic: 麻辣香锅
+  - generic: 冷却中
+  - img "已冷却 95%"
+  - generic: 今天 · 权重 0.05
+  - generic: 95%
+  - generic: 水煮鱼
+  - generic: 冷却中
+  - img "已冷却 53.4%"
+  - generic: 3 天前 · 权重 0.47
+  - generic: 53%
+  - generic: 兰州牛肉拉面
+  - generic: 已解禁
+  - img "已冷却 5%"
+  - generic: 6 天前 · 权重 0.95
+  - generic: 5%
+- heading "菜系分布" [level=2]
+- generic: 本周打卡按菜系聚合
+- list:
+  - generic: 川湘菜
+  - generic: 2 次
+  - generic: 面食
+  - generic: 1 次
+- navigation:
+  - link "首页":
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹" [active]:
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的":
+    - /url: /m/profile
+    - generic: 我的

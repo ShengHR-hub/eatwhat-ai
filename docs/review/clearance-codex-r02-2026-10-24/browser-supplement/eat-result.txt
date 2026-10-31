@@ -1,0 +1,128 @@
+- banner:
+  - paragraph: 养生阿明，想吃点什么？
+  - button "打开算法沙盒":
+  - button "天气与演示天气切换":
+    - generic: 22°
+    - generic: 晴
+    - generic: 离线
+- radiogroup "外食 / 下厨":
+  - generic "附近门店点单":
+    - radio "外食"
+    - generic: 🍜
+    - generic: 外食
+  - generic "家常菜谱":
+    - radio "下厨" [checked]
+    - generic: 🍳
+    - generic: 下厨
+- group "此刻的状态":
+  - button "累瘫"
+  - button "月底" [disabled]
+  - button "重口"
+  - button "清淡"
+  - button "热汤"
+  - button "一锅出"
+- generic: 预算
+- slider "预算": "120"
+- generic: 不限
+- button "开始决策":
+  - generic: 开始决策
+- article
+- article
+- button "查看这道菜的五维解释":
+  - article:
+    - img "洋葱炒蛋"
+    - heading "洋葱炒蛋" [level=3]
+    - paragraph:
+      - generic: ¥7
+      - generic: ·
+      - generic: 家常菜
+    - generic: 匹配度
+    - generic: 89.8%
+    - paragraph: 口味契合 82.7；天气适配 86.0；预算友好 96.5；防腻新鲜度 100.0；状态匹配 100.0
+  - generic: 换一个
+  - generic: 就吃这个
+- paragraph: 就吃 洋葱炒蛋 吗？
+- button "再想想"
+- button "确认就吃这个"
+- list "全部候选，点任意一条置顶该卡":
+  - generic: "1"
+  - generic: 洋葱炒蛋
+  - generic: "89.8"
+  - generic: "2"
+  - generic: 麻婆豆腐
+  - generic: "88.6"
+  - generic: "3"
+  - generic: 韭菜炒鸡蛋
+  - generic: "88.5"
+  - generic: "4"
+  - generic: 番茄蛋汤
+  - generic: "88.4"
+  - generic: "5"
+  - generic: 电饭煲茶叶蛋
+  - generic: "88.3"
+  - generic: "6"
+  - generic: 电饭煲青菜粥
+  - generic: "86.6"
+  - generic: "7"
+  - generic: 一锅出番茄牛腩
+  - generic: "78.3"
+  - generic: "8"
+  - generic: 香菇滑鸡
+  - generic: "71.8"
+  - generic: "9"
+  - generic: 一锅出咖喱饭
+  - generic: "71.6"
+  - generic: "10"
+  - generic: 蒜蓉西兰花
+  - generic: "69.3"
+  - generic: "11"
+  - generic: 一锅出土豆炖鸡
+  - generic: "69.0"
+  - generic: "12"
+  - generic: 空气炸锅薯条
+  - generic: "68.9"
+  - generic: "13"
+  - generic: 电饭煲焖饭
+  - generic: "68.9"
+  - generic: "14"
+  - generic: 空气炸锅烤茄子
+  - generic: "68.4"
+  - generic: "15"
+  - generic: 可乐鸡翅
+  - generic: "68.1"
+  - generic: "16"
+  - generic: 鱼香茄子
+  - generic: "67.9"
+  - generic: "17"
+  - generic: 西芹百合
+  - generic: "67.6"
+  - generic: "18"
+  - generic: 电饭煲红烧肉
+  - generic: "67.5"
+  - generic: "19"
+  - generic: 酸辣白菜
+  - generic: "67.1"
+  - generic: "20"
+  - generic: 空气炸锅鸡翅
+  - generic: "66.9"
+  - generic: "21"
+  - generic: 宫保鸡丁
+  - generic: "66.8"
+  - generic: "22"
+  - generic: 手撕包菜
+  - generic: "66.6"
+  - generic: "23"
+  - generic: 青椒土豆丝
+  - generic: "66.3"
+- button "换一个"
+- button "就吃这个" [active]
+- navigation:
+  - link "首页":
+    - /url: /m/home
+    - generic: 首页
+  - link "足迹":
+    - /url: /m/footprint
+    - generic: 足迹
+  - link "我的":
+    - /url: /m/profile
+    - generic: 我的

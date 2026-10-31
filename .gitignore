@@ -1,0 +1,70 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+*.db
+*.sqlite3
+.env
+.env.bak*
+*.env.bak*
+.env.local
+.secrets/
+.android-sdk/
+.android-home/
+.DS_Store
+dist/
+.idea/
+.vscode/
+.chrome-profile/
+
+# —— 2026-11-01 仓库整理新增 ——
+# 本地临时目录与测试基线
+.review_tmp*/
+.pytest-*/
+.tmp_*/
+.tmp_*
+*.log
+
+# 审查证据里的二进制/数据导出只留本地，仓库只保留 markdown 报告
+docs/review/**/*.png
+docs/review/**/*.jpg
+docs/review/**/*.jpeg
+docs/review/**/*.webp
+docs/review/**/*.json
+docs/review/**/*.jsonl
+docs/review/**/*.sqlite
+docs/review/**/*.db
+docs/review/**/*.har
+docs/review/**/*.mp4
+docs/review/**/*.webm
+docs/review/**/chrome-profile/
+docs/review/**/browser/
+
+# 安装包与 Android 构建产物
+*.apk
+*.aab
+frontend/android/**/build/
+
+# 用户上传（头像等隐私）
+backend/uploads/
+
+# 其他数据库形态
+*.sqlite
+*.db-wal
+*.db-shm
+*.db-journal
+
+# 本机工具与浏览器档案（含 cookie/缓存，绝不入库）
+.chrome-shot/
+.chrome-profile*/
+.codex-*/
+.workbuddy-ai/
+
+# 审查留下的缓存/临时目录（下划线命名形态，与上面的 .codex-*/ 不同）
+*_review_cache_*/
+*_review_tmp_*/
+docs/review/**/pytest-cache/
+docs/review/**/pytest-temp/
+docs/review/**/query-cache/

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>布局 D · 主从分栏 · 食刻 EatWhat 后台</title>
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* 变体 D：左边列表、右边详情常驻。改一条数据不用开抽屉。 */
+  :root {
+    --font-cjk: "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei UI";
+    --body-size: 14px; --body-lh: 1.66; --row-py: 13px; --th-py: 12px;
+  }
+  .statline {
+    display: flex; align-items: center; gap: 0;
+    background: var(--paper-strong); border: 1px solid var(--line);
+    border-radius: 12px; padding: 10px 4px; margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .statline__item { flex: 1; padding: 0 16px; border-right: 1px solid var(--line-soft); }
+  .statline__item:last-child { border-right: 0; }
+  .statline__k { font-size: 10.5px; color: var(--faint); }
+  .statline__v { font-size: 18px; font-weight: 500; letter-spacing: -.02em; margin-top: 1px; }
+  .statline__v small { font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+  .statline__v.is-alert { color: var(--accent); }
+
+  .split {
+    display: grid; grid-template-columns: 352px minmax(0, 1fr); gap: 14px;
+    height: calc(100vh - 232px); min-height: 420px;
+  }
+  .pane {
+    background: var(--paper-strong); border: 1px solid var(--line);
+    border-radius: 13px; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .pane__head { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 9px; }
+  .pane__search {
+    display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 10px;
+    border: 1px solid var(--line); border-radius: 8px; color: var(--faint); font-size: 12px;
+  }
+  .pane__search input { border: 0; background: none; outline: none; width: 100%; color: var(--ink); font-size: 12.5px; }
+  .pane__chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mini-chip {
+    height: 24px; padding: 0 9px; border-radius: 6px; font-size: 11px;
+    border: 1px solid var(--line); color: var(--muted); background: transparent;
+  }
+  .mini-chip.is-on { background: var(--ink); color: var(--paper-strong); border-color: var(--ink); }
+
+  .rowlist { list-style: none; flex: 1; overflow-y: auto; }
+  .rowlist li {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 10px;
+    padding: 11px 14px; border-bottom: 1px solid var(--line-soft);
+    cursor: pointer; position: relative; transition: background .13s ease;
+  }
+  .rowlist li:hover { background: rgba(244, 241, 234, .6); }
+  .rowlist li.is-on { background: var(--accent-soft); }
+  .rowlist li.is-on::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent);
+  }
+  /* 显式指定格子：只写 grid-row 会让 auto-placement 把价格排到第一列去 */
+  .rowlist__name { grid-column: 1; grid-row: 1; font-size: 13px; font-weight: 500; }
+  .rowlist__sub { grid-column: 1; grid-row: 2; font-size: 10.5px; color: var(--faint); }
+  .rowlist__price { grid-column: 2; grid-row: 1 / 3; align-self: center; justify-self: end;
+                    font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .detail { flex: 1; overflow-y: auto; }
+  .detail__head { padding: 16px 20px 12px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: flex-start; gap: 12px; }
+  .detail__title { font-size: 17px; font-weight: 600; }
+  .detail__meta { font-size: 11px; color: var(--faint); margin-top: 2px; }
+  .detail__badge { margin-left: auto; }
+  .detail__body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .detail__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .detail__foot {
+    padding: 13px 20px; border-top: 1px solid var(--line-soft);
+    display: flex; gap: 9px; justify-content: flex-end;
+    background: rgba(244, 241, 234, .45);
+  }
+  .vec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .vec .form-field input { text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span class="brand__copy"><span class="brand__name">食刻 EatWhat</span><span class="brand__sub">Admin Console</span></span>
+    </div>
+    <nav class="nav">
+      <p class="nav__label">数据</p>
+      <button class="nav__item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>数据管理</button>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5h9M9 12h9M9 19h9M4 5h1M4 12h1M4 19h1"/></svg>审计日志</button>
+      <p class="nav__label">分析</p>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>实验大屏</button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="who">
+        <span class="who__avatar">测</span>
+        <span class="who__copy"><span class="who__name">测试账号</span><span class="who__role">ADMIN</span></span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span>后台</span><span>/</span><b>数据管理 · 主从分栏</b></div>
+      <div class="search" style="margin-left:auto">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input placeholder="全局搜索" />
+      </div>
+    </header>
+
+    <div class="page" style="padding-bottom:26px">
+      <div class="page-head" style="margin-bottom:14px">
+        <div><h1>数据管理</h1><p>左边点一行，右边立刻改，不用开抽屉。</p></div>
+        <div class="page-head__actions">
+          <button class="btn">导出</button>
+          <button class="btn btn--primary">新增菜品</button>
+        </div>
+      </div>
+
+      <div class="statline">
+        <div class="statline__item"><div class="statline__k">门店总数</div><div class="statline__v tabular">7,704<small>家</small></div></div>
+        <div class="statline__item"><div class="statline__k">菜品 / 菜谱</div><div class="statline__v tabular">6,560<small>道</small></div></div>
+        <div class="statline__item"><div class="statline__k">数据异常</div><div class="statline__v tabular is-alert">18<small>行</small></div></div>
+        <div class="statline__item"><div class="statline__k">待打标</div><div class="statline__v tabular">24<small>道</small></div></div>
+      </div>
+
+      <div class="split">
+        <section class="pane">
+          <div class="pane__head">
+            <label class="pane__search">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input placeholder="搜菜品名或 ID" />
+            </label>
+            <div class="pane__chips">
+              <button class="mini-chip is-on">全部 6,560</button>
+              <button class="mini-chip">思源</button>
+              <button class="mini-chip">建大</button>
+              <button class="mini-chip">待打标 24</button>
+            </div>
+          </div>
+          <ul class="rowlist" id="rowlist">
+            <li class="is-on" data-name="砂锅豆腐" data-sub="教工食堂 · 砂锅炖菜 · 思源" data-price="22" data-status="SUCCESS">
+              <span class="rowlist__name">砂锅豆腐</span><span class="rowlist__price">¥22</span>
+              <span class="rowlist__sub">教工食堂 · 砂锅炖菜</span>
+            </li>
+            <li data-name="红烧牛肉面" data-sub="二食堂 · 牛肉面 · 思源" data-price="18" data-status="SUCCESS">
+              <span class="rowlist__name">红烧牛肉面</span><span class="rowlist__price">¥18</span>
+              <span class="rowlist__sub">二食堂 · 牛肉面</span>
+            </li>
+            <li data-name="麻辣香锅" data-sub="一食堂 · 川湘窗口 · 思源" data-price="32" data-status="SUCCESS">
+              <span class="rowlist__name">麻辣香锅</span><span class="rowlist__price">¥32</span>
+              <span class="rowlist__sub">一食堂 · 川湘窗口</span>
+            </li>
+            <li data-name="孜然木耳黄瓜" data-sub="三食堂 · 凉菜窗口 · 建大" data-price="12" data-status="PENDING">
+              <span class="rowlist__name">孜然木耳黄瓜</span><span class="rowlist__price">¥12</span>
+              <span class="rowlist__sub">三食堂 · 凉菜窗口</span>
+            </li>
+            <li data-name="番茄鸡蛋面" data-sub="家常菜谱 · 下厨 · 15 分钟" data-price="—" data-status="FAILED">
+              <span class="rowlist__name">番茄鸡蛋面</span><span class="rowlist__price">—</span>
+              <span class="rowlist__sub">家常菜谱 · 15 分钟</span>
+            </li>
+            <li data-name="蒜蓉西兰花" data-sub="二食堂 · 素菜窗口 · 思源" data-price="10" data-status="SUCCESS">
+              <span class="rowlist__name">蒜蓉西兰花</span><span class="rowlist__price">¥10</span>
+              <span class="rowlist__sub">二食堂 · 素菜窗口</span>
+            </li>
+            <li data-name="酸辣粉" data-sub="一食堂 · 小吃窗口 · 思源" data-price="9" data-status="PENDING">
+              <span class="rowlist__name">酸辣粉</span><span class="rowlist__price">¥9</span>
+              <span class="rowlist__sub">一食堂 · 小吃窗口</span>
+            </li>
+            <li data-name="清蒸鲈鱼" data-sub="教工食堂 · 蒸菜 · 建大" data-price="38" data-status="SUCCESS">
+              <span class="rowlist__name">清蒸鲈鱼</span><span class="rowlist__price">¥38</span>
+              <span class="rowlist__sub">教工食堂 · 蒸菜</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="pane">
+          <div class="detail">
+            <div class="detail__head">
+              <div>
+                <div class="detail__title" id="dTitle">砂锅豆腐</div>
+                <div class="detail__meta" id="dMeta">#1 · 教工食堂 · 砂锅炖菜 · 思源</div>
+              </div>
+              <span class="chip chip--ok detail__badge" id="dStatus">SUCCESS</span>
+            </div>
+            <div class="detail__body">
+              <div class="detail__grid">
+                <div class="form-field"><label>名称</label><input id="dName" value="砂锅豆腐" /></div>
+                <div class="form-field"><label>价格（元）</label><input type="number" value="22" /></div>
+              </div>
+              <div class="detail__grid">
+                <div class="form-field"><label>所属门店</label>
+                  <select><option>教工食堂·砂锅炖菜</option><option>二食堂·牛肉面</option></select>
+                </div>
+                <div class="form-field"><label>菜系</label>
+                  <select><option>家常</option><option>川湘菜</option><option>粤菜</option></select>
+                </div>
+              </div>
+              <p class="form-section">风味向量（决定雷达图与匹配分）</p>
+              <div class="vec">
+                <div class="form-field"><label>酸</label><input type="number" step="0.1" value="0.3" /></div>
+                <div class="form-field"><label>甜</label><input type="number" step="0.1" value="0.2" /></div>
+                <div class="form-field"><label>苦</label><input type="number" step="0.1" value="0.1" /></div>
+                <div class="form-field"><label>辣</label><input type="number" step="0.1" value="0.2" /></div>
+                <div class="form-field"><label>咸</label><input type="number" step="0.1" value="0.6" /></div>
+                <div class="form-field"><label>鲜</label><input type="number" step="0.1" value="0.7" /></div>
+                <div class="form-field"><label>油</label><input type="number" step="0.1" value="0.4" /></div>
+                <div class="form-field"><label>烫</label><input type="number" step="0.1" value="0.8" /></div>
+              </div>
+              <p class="form-section">推荐理由（用户可见）</p>
+              <div class="form-field">
+                <textarea>天气转凉，砂锅类热食更对味；你最近没吃过豆制品，换个口味。</textarea>
+              </div>
+            </div>
+            <div class="detail__foot">
+              <button class="btn btn--danger btn--sm">软删除</button>
+              <button class="btn btn--primary">保存并写入审计</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const list = document.getElementById('rowlist');
+  const statusMap = {
+    SUCCESS: ['chip--ok', 'SUCCESS'],
+    PENDING: ['chip--warn', 'PENDING'],
+    FAILED: ['chip--bad', 'FAILED'],
+  };
+  list.addEventListener('click', (e) => {
+    const li = e.target.closest('li');
+    if (!li) return;
+    [...list.children].forEach((x) => x.classList.toggle('is-on', x === li));
+    document.getElementById('dTitle').textContent = li.dataset.name;
+    document.getElementById('dName').value = li.dataset.name;
+    document.getElementById('dMeta').textContent = '#— · ' + li.dataset.sub;
+    const badge = document.getElementById('dStatus');
+    const [cls, text] = statusMap[li.dataset.status] || statusMap.SUCCESS;
+    badge.className = 'chip detail__badge ' + cls;
+    badge.textContent = text;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1987 @@
+[
+  {
+    "name": "麻辣香锅",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      1
+    ],
+    "file": "001-mala-xiang-guo-spicy-stir.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Mala_Xiangguo_with_a_bowl_of_rice_and_a_beverage.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/44/Mala_Xiangguo_with_a_bowl_of_rice_and_a_beverage.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Shwangtianyuan",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 73973,
+    "sha256": "8ab6a8f1d441df01",
+    "title": "File:Mala Xiangguo with a bowl of rice and a beverage.jpg"
+  },
+  {
+    "name": "水煮肉片",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      2
+    ],
+    "file": "002-sichuan-boiled-pork-slices.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Szechuan_beef_Sichuan_cuisine_%E5%9B%9B%E5%B7%9D%E8%8F%9C_Shuizhu_roupian_Red_braised_pork_belly_%E7%BA%A2%E7%83%A7%E8%82%89_h%C3%B3ngsh%C4%81or%C3%B2u_Fresh_Buffet_Solaire_23_January_2025_Filipinas3.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/df/Szechuan_beef_Sichuan_cuisine_%E5%9B%9B%E5%B7%9D%E8%8F%9C_Shuizhu_roupian_Red_braised_pork_belly_%E7%BA%A2%E7%83%A7%E8%82%89_h%C3%B3ngsh%C4%81or%C3%B2u_Fresh_Buffet_Solaire_23_January_2025_Filipinas3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "",
+    "src_size": [
+      1280,
+      504
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 66654,
+    "sha256": "1d4f69012f865707",
+    "title": "File:Szechuan beef Sichuan cuisine 四川菜 Shuizhu roupian Red braised pork belly 红烧肉 hóngshāoròu Fresh Buffet Solaire 23 January 2025 Filipinas3.jpg"
+  },
+  {
+    "name": "辣子鸡",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      3
+    ],
+    "file": "003-chongqing-spicy-chicken.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chongqing_chicken_(9322465494).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chongqing_chicken_%289322465494%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Charles Haynes",
+    "src_size": [
+      1024,
+      683
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 68731,
+    "sha256": "6cbffc51d723707d",
+    "title": "File:Chongqing chicken (9322465494).jpg"
+  },
+  {
+    "name": "干煸四季豆",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      4
+    ],
+    "file": "004-dry-fried-green-beans.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Sichuan-style-dried_fried_Green_Beans_with_Minced_Pork_-_Aberdeen_Seafood,_Brighton_2026-07-19.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Sichuan-style-dried_fried_Green_Beans_with_Minced_Pork_-_Aberdeen_Seafood%2C_Brighton_2026-07-19.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Andy Li",
+    "src_size": [
+      1280,
+      964
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 108320,
+    "sha256": "64052834c5d60c85",
+    "title": "File:Sichuan-style-dried fried Green Beans with Minced Pork - Aberdeen Seafood, Brighton 2026-07-19.jpg"
+  },
+  {
+    "name": "蜜汁叉烧饭",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      6
+    ],
+    "file": "006-char-siu-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_YTM_%E4%BD%90%E6%95%A6_Jordan_%E4%B8%8A%E6%B5%B7%E8%A1%97_Shanghai_Street_%E5%AF%A7%E6%B3%A2%E8%A1%97_Ning_Po_Street_food_shop_%E6%96%B0%E5%85%89%E6%98%8E%E7%87%92%E8%87%98_%E7%87%92%E5%91%B3%E5%BA%97_Siu_Mei_Char_Siu_Yuk_Rice_May_2024_R12S.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/e6/HK_YTM_%E4%BD%90%E6%95%A6_Jordan_%E4%B8%8A%E6%B5%B7%E8%A1%97_Shanghai_Street_%E5%AF%A7%E6%B3%A2%E8%A1%97_Ning_Po_Street_food_shop_%E6%96%B0%E5%85%89%E6%98%8E%E7%87%92%E8%87%98_%E7%87%92%E5%91%B3%E5%BA%97_Siu_Mei_Char_Siu_Yuk_Rice_May_2024_R12S.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Chayquo Shumo",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 85469,
+    "sha256": "d771d406fd1345de",
+    "title": "File:HK YTM 佐敦 Jordan 上海街 Shanghai Street 寧波街 Ning Po Street food shop 新光明燒臘 燒味店 Siu Mei Char Siu Yuk Rice May 2024 R12S.jpg"
+  },
+  {
+    "name": "白切鸡饭",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      7
+    ],
+    "file": "007-white-cut-chicken-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_food_%E7%99%BD%E5%88%87%E9%9B%9E_White_cut_chicken_%E5%A4%9A%E5%A4%9A%E9%A4%90%E5%BB%B3%E7%87%92%E8%85%8A%E9%A3%AF%E5%BA%97_More_%26_More_Restaurant_28-July-2011.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/53/HK_food_%E7%99%BD%E5%88%87%E9%9B%9E_White_cut_chicken_%E5%A4%9A%E5%A4%9A%E9%A4%90%E5%BB%B3%E7%87%92%E8%85%8A%E9%A3%AF%E5%BA%97_More_%26_More_Restaurant_28-July-2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Ma KM Cindra",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 57086,
+    "sha256": "403d2e9bc16edf87",
+    "title": "File:HK food 白切雞 White cut chicken 多多餐廳燒腊飯店 More & More Restaurant 28-July-2011.jpg"
+  },
+  {
+    "name": "烧鸭饭",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      8
+    ],
+    "file": "008-roast-duck-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HKU_food_canteen_lunch_rice_%E5%8F%89%E7%87%92_BbQ_pork_meat_%E7%87%92%E9%B4%A8_roast_duck_%E7%A2%9F%E9%A0%AD%E9%A3%AF_June_2017_Lnv1_01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/ac/HKU_food_canteen_lunch_rice_%E5%8F%89%E7%87%92_BbQ_pork_meat_%E7%87%92%E9%B4%A8_roast_duck_%E7%A2%9F%E9%A0%AD%E9%A3%AF_June_2017_Lnv1_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Tang Sze Mui Sugar 001",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 79979,
+    "sha256": "430d2b28b0458193",
+    "title": "File:HKU food canteen lunch rice 叉燒 BbQ pork meat 燒鴨 roast duck 碟頭飯 June 2017 Lnv1 01.jpg"
+  },
+  {
+    "name": "清炒菜心",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      9
+    ],
+    "file": "009-stir-fried-choy-sum.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_food_%E8%8F%9C%E5%BF%83_Choy_sum_vegetable_n_%E6%BD%AE%E5%B7%9E%E9%AD%9A%E6%97%A6_Chiu_Chow_fish_meat_balls_June-2013.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/7a/HK_food_%E8%8F%9C%E5%BF%83_Choy_sum_vegetable_n_%E6%BD%AE%E5%B7%9E%E9%AD%9A%E6%97%A6_Chiu_Chow_fish_meat_balls_June-2013.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Olasmmaz",
+    "src_size": [
+      1280,
+      956
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 69591,
+    "sha256": "9028921ba5bd904d",
+    "title": "File:HK food 菜心 Choy sum vegetable n 潮州魚旦 Chiu Chow fish meat balls June-2013.JPG"
+  },
+  {
+    "name": "例汤",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      10
+    ],
+    "file": "010-cantonese-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:A_Cantonese_Rice_Soup_with_Dried_Fish_and_pork.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/c7/A_Cantonese_Rice_Soup_with_Dried_Fish_and_pork.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Peachyeung316",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 39441,
+    "sha256": "254baf2e49ee1a45",
+    "title": "File:A Cantonese Rice Soup with Dried Fish and pork.jpg"
+  },
+  {
+    "name": "红烧牛肉面",
+    "cuisine": "面食",
+    "dish_ids": [
+      11
+    ],
+    "file": "011-braised-beef-noodle-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:202308_Henan_Red-Braised_Beef_Noodle_Soup_in_Shanghai.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/74/202308_Henan_Red-Braised_Beef_Noodle_Soup_in_Shanghai.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "MNXANL",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 102090,
+    "sha256": "bf0ad6b125e54157",
+    "title": "File:202308 Henan Red-Braised Beef Noodle Soup in Shanghai.jpg"
+  },
+  {
+    "name": "清汤牛肉面",
+    "cuisine": "面食",
+    "dish_ids": [
+      12
+    ],
+    "file": "012-beef-noodle-soup-clear-bro.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_Balls_Noodle_Soup,_Blanco_Court_Beef_Noodles,_Food_Republic_@_Suntec_City,_2023_(01).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Beef_Balls_Noodle_Soup%2C_Blanco_Court_Beef_Noodles%2C_Food_Republic_%40_Suntec_City%2C_2023_%2801%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Bahnfrend",
+    "src_size": [
+      1280,
+      720
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 117138,
+    "sha256": "60fc43594887d81f",
+    "title": "File:Beef Balls Noodle Soup, Blanco Court Beef Noodles, Food Republic @ Suntec City, 2023 (01).jpg"
+  },
+  {
+    "name": "番茄鸡蛋面",
+    "cuisine": "面食",
+    "dish_ids": [
+      13
+    ],
+    "file": "013-tomato-egg-noodle-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_%26_Scrambled_eggs_Noodles_in_Tomato_Soup.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Beef_%26_Scrambled_eggs_Noodles_in_Tomato_Soup.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Ceeseven",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 69988,
+    "sha256": "4ce6b19997c17e9c",
+    "title": "File:Beef & Scrambled eggs Noodles in Tomato Soup.jpg"
+  },
+  {
+    "name": "牛肉粉丝汤",
+    "cuisine": "面食",
+    "dish_ids": [
+      14
+    ],
+    "file": "014-beef-vermicelli-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_soup_vermicelli_-_panoramio.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/de/Beef_soup_vermicelli_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "Jiaqian AirplaneFan",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 64767,
+    "sha256": "7d43081288bd7851",
+    "title": "File:Beef soup vermicelli - panoramio.jpg"
+  },
+  {
+    "name": "麻辣烫套餐",
+    "cuisine": "麻辣烫",
+    "dish_ids": [
+      15
+    ],
+    "file": "015-malatang.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Bowl_of_YGF_Malatang.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Bowl_of_YGF_Malatang.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Fumikas Sagisavas",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 75713,
+    "sha256": "214542e1d6051ba8",
+    "title": "File:Bowl of YGF Malatang.jpg"
+  },
+  {
+    "name": "鸡胸肉沙拉",
+    "cuisine": "轻食",
+    "dish_ids": [
+      18
+    ],
+    "file": "018-chicken-breast-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chicken_breast,_fries,_and_salad_-_Boston,_MA.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Chicken_breast%2C_fries%2C_and_salad_-_Boston%2C_MA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Daderot",
+    "src_size": [
+      1280,
+      1271
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 84652,
+    "sha256": "97ab45a082459f4a",
+    "title": "File:Chicken breast, fries, and salad - Boston, MA.jpg"
+  },
+  {
+    "name": "低脂鸡胸饭",
+    "cuisine": "轻食",
+    "dish_ids": [
+      19
+    ],
+    "file": "019-grilled-chicken-rice-bowl.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Sour_cream_hen_house_bowl_marinated_grilled_chicken_rice_bowl_fried_egg,_Chinese_broccoli,_sour_cream_sambal,_Thai_basil,_toasted_sesame,_red_jalapeno_(26834348412).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Sour_cream_hen_house_bowl_marinated_grilled_chicken_rice_bowl_fried_egg%2C_Chinese_broccoli%2C_sour_cream_sambal%2C_Thai_basil%2C_toasted_sesame%2C_red_jalapeno_%2826834348412%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "T.Tseng",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 87666,
+    "sha256": "9ca214b3ed24ccee",
+    "title": "File:Sour cream hen house bowl marinated grilled chicken rice bowl fried egg, Chinese broccoli, sour cream sambal, Thai basil, toasted sesame, red jalapeno (26834348412).jpg"
+  },
+  {
+    "name": "南瓜浓汤",
+    "cuisine": "轻食",
+    "dish_ids": [
+      20
+    ],
+    "file": "020-pumpkin-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Preparing_pumpkin_soup_(16757496080).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/04/Preparing_pumpkin_soup_%2816757496080%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "sunny mama",
+    "src_size": [
+      590,
+      394
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 74778,
+    "sha256": "c9cbffd12b17c29c",
+    "title": "File:Preparing pumpkin soup (16757496080).jpg"
+  },
+  {
+    "name": "青椒肉丝",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      21
+    ],
+    "file": "021-shredded-pork-with-green-p.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Fish-flavoured_shredded_pork_at_Meizhou_Dongpo_Restaurant_Shangdi_(20190808185406).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/16/Fish-flavoured_shredded_pork_at_Meizhou_Dongpo_Restaurant_Shangdi_%2820190808185406%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "N509FZ",
+    "src_size": [
+      1280,
+      853
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 86686,
+    "sha256": "9f484df0ea01be23",
+    "title": "File:Fish-flavoured shredded pork at Meizhou Dongpo Restaurant Shangdi (20190808185406).jpg"
+  },
+  {
+    "name": "鱼香肉丝",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      22
+    ],
+    "file": "022-yuxiang-shredded-pork.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Fish-flavoured_shredded_pork_at_Meizhou_Dongpo_Restaurant_Shangdi_(20190808185406).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/16/Fish-flavoured_shredded_pork_at_Meizhou_Dongpo_Restaurant_Shangdi_%2820190808185406%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "N509FZ",
+    "src_size": [
+      1280,
+      853
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 86686,
+    "sha256": "9f484df0ea01be23",
+    "title": "File:Fish-flavoured shredded pork at Meizhou Dongpo Restaurant Shangdi (20190808185406).jpg"
+  },
+  {
+    "name": "宫保鸡丁",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      69,
+      23
+    ],
+    "file": "023-kung-pao-chicken.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Kung_Pao_Chicken_With_Rice.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/18/Kung_Pao_Chicken_With_Rice.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Miansari66",
+    "src_size": [
+      1920,
+      1874
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 79091,
+    "sha256": "1831d982934133d2",
+    "title": "File:Kung Pao Chicken With Rice.jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "麻婆豆腐",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      65,
+      24
+    ],
+    "file": "024-mapo-tofu.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Mapo_Tofu_(%E9%BA%BB%E5%A9%86%E8%B1%86%E8%85%90).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Mapo_Tofu_%28%E9%BA%BB%E5%A9%86%E8%B1%86%E8%85%90%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "NeoBatfreak",
+    "src_size": [
+      1920,
+      933
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 48890,
+    "sha256": "602be0194978a418",
+    "title": "File:Mapo Tofu (麻婆豆腐).jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "西红柿炒蛋",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      25
+    ],
+    "file": "025-tomato-scrambled-eggs.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Hunan_cuisine,_stir-fried_tomato_with_eggs.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hunan_cuisine%2C_stir-fried_tomato_with_eggs.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "Huangdan2060",
+    "src_size": [
+      1920,
+      1440
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 51722,
+    "sha256": "3f237e0d02ba9ad3",
+    "title": "File:Hunan cuisine, stir-fried tomato with eggs.jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "紫菜蛋花汤",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      82,
+      26
+    ],
+    "file": "026-seaweed-egg-drop-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Twice_cooked_pork,_carrot_and_egg_fritter,_wakame_seaweed_soup,_brown_rice_%E5%9B%9E%E9%8D%8B%E8%82%89%E3%80%81%E3%81%AB%E3%82%93%E3%81%98%E3%82%93%E3%81%97%E3%82%8A%E3%81%97%E3%82%8A%E3%80%81%E3%83%AF%E3%82%AB%E3%83%A1%E3%82%B9%E3%83%BC%E3%83%97%E3%80%81%E7%8E%84%E7%B1%B3.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Twice_cooked_pork%2C_carrot_and_egg_fritter%2C_wakame_seaweed_soup%2C_brown_rice_%E5%9B%9E%E9%8D%8B%E8%82%89%E3%80%81%E3%81%AB%E3%82%93%E3%81%98%E3%82%93%E3%81%97%E3%82%8A%E3%81%97%E3%82%8A%E3%80%81%E3%83%AF%E3%82%AB%E3%83%A1%E3%82%B9%E3%83%BC%E3%83%97%E3%80%81%E7%8E%84%E7%B1%B3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "naotakem",
+    "src_size": [
+      1080,
+      1080
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 69541,
+    "sha256": "a5553a6d52bbe8a8",
+    "title": "File:Twice cooked pork, carrot and egg fritter, wakame seaweed soup, brown rice 回鍋肉、にんじんしりしり、ワカメスープ、玄米.jpg"
+  },
+  {
+    "name": "皮蛋瘦肉粥",
+    "cuisine": "粥粉面",
+    "dish_ids": [
+      27
+    ],
+    "file": "027-century-egg-congee.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_Sheung_Wan_Daimond_Club_Restaurant_food_%E8%83%A1%E6%A4%92%E7%B2%89_White_pepper_%E7%9A%AE%E8%9B%8B%E7%98%A6%E8%82%89%E7%B2%A5_Century_Egg_Congee_May-2012.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/38/HK_Sheung_Wan_Daimond_Club_Restaurant_food_%E8%83%A1%E6%A4%92%E7%B2%89_White_pepper_%E7%9A%AE%E8%9B%8B%E7%98%A6%E8%82%89%E7%B2%A5_Century_Egg_Congee_May-2012.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Yausheungbon",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 77029,
+    "sha256": "c919934b79f850ef",
+    "title": "File:HK Sheung Wan Daimond Club Restaurant food 胡椒粉 White pepper 皮蛋瘦肉粥 Century Egg Congee May-2012.JPG"
+  },
+  {
+    "name": "肠粉",
+    "cuisine": "粥粉面",
+    "dish_ids": [
+      28
+    ],
+    "file": "028-rice-noodle-roll.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_Food_Rice_Noodle_Roll_with_Sesame.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/67/HK_Food_Rice_Noodle_Roll_with_Sesame.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "author": "Eukbimga",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 65877,
+    "sha256": "409450ad923fb138",
+    "title": "File:HK Food Rice Noodle Roll with Sesame.JPG"
+  },
+  {
+    "name": "云吞面",
+    "cuisine": "粥粉面",
+    "dish_ids": [
+      29
+    ],
+    "file": "029-wonton-noodles.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Taiwanese_food%EF%BC%9A_Jajang_noodles%EF%BC%8Cspicy_oil_wonton%EF%BC%8Ccucumber.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Taiwanese_food%EF%BC%9A_Jajang_noodles%EF%BC%8Cspicy_oil_wonton%EF%BC%8Ccucumber.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "一番多鄰國",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 66893,
+    "sha256": "76431c94564268a3",
+    "title": "File:Taiwanese food： Jajang noodles，spicy oil wonton，cucumber.jpg"
+  },
+  {
+    "name": "干炒牛河",
+    "cuisine": "粥粉面",
+    "dish_ids": [
+      30
+    ],
+    "file": "030-beef-chow-fun.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_chow_fun.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Beef_chow_fun.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "author": "RightCowLeftCoast",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 76591,
+    "sha256": "bbc3d88124a579f5",
+    "title": "File:Beef chow fun.jpg"
+  },
+  {
+    "name": "石锅拌饭",
+    "cuisine": "韩餐",
+    "dish_ids": [
+      31
+    ],
+    "file": "031-bibimbap.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Korean.food-Bibimbap-02.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Korean.food-Bibimbap-02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "abex (a flickr user)",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 93221,
+    "sha256": "bbe203695bb966cd",
+    "title": "File:Korean.food-Bibimbap-02.jpg"
+  },
+  {
+    "name": "部队锅",
+    "cuisine": "韩餐",
+    "dish_ids": [
+      32
+    ],
+    "file": "032-budae-jjigae-army-stew.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Korean_stew-Budae_jjigae-01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Korean_stew-Budae_jjigae-01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "by stuart_spivack (flickr)",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 83815,
+    "sha256": "efc3eb129edd8b35",
+    "title": "File:Korean stew-Budae jjigae-01.jpg"
+  },
+  {
+    "name": "兰州牛肉拉面",
+    "cuisine": "面食",
+    "dish_ids": [
+      33
+    ],
+    "file": "033-lanzhou-beef-noodles.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_noodles_set_in_Anning,_Lanzhou_(20171005085705).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Beef_noodles_set_in_Anning%2C_Lanzhou_%2820171005085705%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "N509FZ",
+    "src_size": [
+      1280,
+      853
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 93091,
+    "sha256": "e3d305191f0a2595",
+    "title": "File:Beef noodles set in Anning, Lanzhou (20171005085705).jpg"
+  },
+  {
+    "name": "牛肉炒面片",
+    "cuisine": "面食",
+    "dish_ids": [
+      34
+    ],
+    "file": "034-fried-noodle-pieces-beef.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_Stir-fried_Noodles_-_Frank%27s_Noodle_House.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/14/Beef_Stir-fried_Noodles_-_Frank%27s_Noodle_House.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "TurquoiseGoose",
+    "src_size": [
+      1280,
+      1177
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 76369,
+    "sha256": "98450e2ee5dbb923",
+    "title": "File:Beef Stir-fried Noodles - Frank's Noodle House.jpg"
+  },
+  {
+    "name": "羊肉串",
+    "cuisine": "烧烤",
+    "dish_ids": [
+      35
+    ],
+    "file": "035-lamb-skewers.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Freshippo_red_willow_twig_lamb_skewers.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/29/Freshippo_red_willow_twig_lamb_skewers.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Fumikas Sagisavas",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 107266,
+    "sha256": "557f5deea66438df",
+    "title": "File:Freshippo red willow twig lamb skewers.jpg"
+  },
+  {
+    "name": "排骨莲藕汤",
+    "cuisine": "炖菜",
+    "dish_ids": [
+      36
+    ],
+    "file": "036-lotus-root-pork-rib-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:JP_%E6%B2%96%E7%B9%A9_Okinawa_%E9%82%A3%E9%9C%B8%E5%B8%82_Naha_City_%E5%9C%8B%E9%9A%9B%E9%80%9A_Kokusai-dori_shop_%E6%B2%96%E7%B9%A9%E8%87%AA%E5%AE%B6%E8%A3%BD%E7%94%9F%E9%BA%B5_Yunami_Sakashita-ten_%E6%9D%BF%E4%B8%8B%E5%BA%97_Restaurant_food_%E8%B1%AC%E8%82%89_Pork_%E6%8E%92%E9%AA%A8%E9%BA%B5_rib_noodle_soup_bowl_February_2026_N13P_01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/75/JP_%E6%B2%96%E7%B9%A9_Okinawa_%E9%82%A3%E9%9C%B8%E5%B8%82_Naha_City_%E5%9C%8B%E9%9A%9B%E9%80%9A_Kokusai-dori_shop_%E6%B2%96%E7%B9%A9%E8%87%AA%E5%AE%B6%E8%A3%BD%E7%94%9F%E9%BA%B5_Yunami_Sakashita-ten_%E6%9D%BF%E4%B8%8B%E5%BA%97_Restaurant_food_%E8%B1%AC%E8%82%89_Pork_%E6%8E%92%E9%AA%A8%E9%BA%B5_rib_noodle_soup_bowl_February_2026_N13P_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "NORTLAUKAU 26088 JP",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 78236,
+    "sha256": "59dcb18ba00f1b26",
+    "title": "File:JP 沖繩 Okinawa 那霸市 Naha City 國際通 Kokusai-dori shop 沖繩自家製生麵 Yunami Sakashita-ten 板下店 Restaurant food 豬肉 Pork 排骨麵 rib noodle soup bowl February 2026 N13P 01.jpg"
+  },
+  {
+    "name": "砂锅豆腐",
+    "cuisine": "炖菜",
+    "dish_ids": [
+      37
+    ],
+    "file": "037-claypot-tofu.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Tofu_and_Vegetable_Claypot_Rice_-_Claypot_King_(353713343).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/24/Tofu_and_Vegetable_Claypot_Rice_-_Claypot_King_%28353713343%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Alpha from Melbourne, Australia",
+    "src_size": [
+      800,
+      600
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 59151,
+    "sha256": "b398d8c29eebd934",
+    "title": "File:Tofu and Vegetable Claypot Rice - Claypot King (353713343).jpg"
+  },
+  {
+    "name": "砂锅鸡",
+    "cuisine": "炖菜",
+    "dish_ids": [
+      38
+    ],
+    "file": "038-claypot-chicken.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chicken_Paws_and_Pork_Ribs_claypot_rice_from_SY_restaurant_in_Shenzhen.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Chicken_Paws_and_Pork_Ribs_claypot_rice_from_SY_restaurant_in_Shenzhen.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Peachyeung316",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 76698,
+    "sha256": "74054324c0930ccc",
+    "title": "File:Chicken Paws and Pork Ribs claypot rice from SY restaurant in Shenzhen.jpg"
+  },
+  {
+    "name": "毛血旺",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      39
+    ],
+    "file": "039-maoxuewang.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chongqing-style_boiled_blood_curd_(Mao_Xuewang).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/df/Chongqing-style_boiled_blood_curd_%28Mao_Xuewang%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Fumikas Sagisavas",
+    "src_size": [
+      1280,
+      896
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 139189,
+    "sha256": "fb4d2f07ca2b5499",
+    "title": "File:Chongqing-style boiled blood curd (Mao Xuewang).jpg"
+  },
+  {
+    "name": "水煮鱼",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      40
+    ],
+    "file": "040-sichuan-boiled-fish.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Shuizhufish2.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/47/Shuizhufish2.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "GFDL",
+    "license_url": "http://www.gnu.org/copyleft/fdl.html",
+    "author": "Jiaqing Pan, w:en:User:Princevegetam",
+    "src_size": [
+      600,
+      400
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 48423,
+    "sha256": "cb6e2185715b5e34",
+    "title": "File:Shuizhufish2.JPG"
+  },
+  {
+    "name": "回锅肉",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      70,
+      41
+    ],
+    "file": "041-twice-cooked-pork.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Twice-cooked_Pork_%E5%9B%9E%E9%94%85%E8%82%89_(1648213963).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/61/Twice-cooked_Pork_%E5%9B%9E%E9%94%85%E8%82%89_%281648213963%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Alpha from Melbourne, Australia",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 77054,
+    "sha256": "26c3a888d020f993",
+    "title": "File:Twice-cooked Pork 回锅肉 (1648213963).jpg"
+  },
+  {
+    "name": "虾饺皇",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      43
+    ],
+    "file": "043-har-gow-shrimp-dumpling.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:HK_TKO_%E5%AF%B6%E7%90%B3_Po_Lam_MCP_%E6%96%B0%E9%83%BD%E5%9F%8E%E4%B8%AD%E5%BF%83_Metro_City_Plaza_mall_One_shop_%E6%B5%B7%E6%B8%AF%E9%85%92%E5%AE%B6_Victoria_Harbour_Seafood_Restaurant_%E9%BB%9E%E5%BF%83_dim_sum_white_Shrimp_dumpling_%E8%9D%A6%E9%A4%83_Har_gow_January_2024_R12S_01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/46/HK_TKO_%E5%AF%B6%E7%90%B3_Po_Lam_MCP_%E6%96%B0%E9%83%BD%E5%9F%8E%E4%B8%AD%E5%BF%83_Metro_City_Plaza_mall_One_shop_%E6%B5%B7%E6%B8%AF%E9%85%92%E5%AE%B6_Victoria_Harbour_Seafood_Restaurant_%E9%BB%9E%E5%BF%83_dim_sum_white_Shrimp_dumpling_%E8%9D%A6%E9%A4%83_Har_gow_January_2024_R12S_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "LAUSP Leuwm GFEZA",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 36018,
+    "sha256": "fbf68cb1a5ee41e9",
+    "title": "File:HK TKO 寶琳 Po Lam MCP 新都城中心 Metro City Plaza mall One shop 海港酒家 Victoria Harbour Seafood Restaurant 點心 dim sum white Shrimp dumpling 蝦餃 Har gow January 2024 R12S 01.jpg"
+  },
+  {
+    "name": "白灼虾",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      72,
+      44
+    ],
+    "file": "044-boiled-shrimp.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:A_bowl_of_boiled_shrimp.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/87/A_bowl_of_boiled_shrimp.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Jud McCranie",
+    "src_size": [
+      1280,
+      854
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 69088,
+    "sha256": "8c8ae5b93903db42",
+    "title": "File:A bowl of boiled shrimp.jpg"
+  },
+  {
+    "name": "烧鹅拼饭",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      45
+    ],
+    "file": "045-roast-goose-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Roast_Goose_with_Rice_and_Choy_Sum.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Roast_Goose_with_Rice_and_Choy_Sum.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Ceeseven",
+    "src_size": [
+      1920,
+      1440
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 56754,
+    "sha256": "cf3fc1ac2eacb196",
+    "title": "File:Roast Goose with Rice and Choy Sum.JPG",
+    "picked_by": "manual"
+  },
+  {
+    "name": "老火靓汤",
+    "cuisine": "粤菜",
+    "dish_ids": [
+      46
+    ],
+    "file": "046-cantonese-slow-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:A_Cantonese_Rice_Soup_with_Dried_Fish_and_pork.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/c7/A_Cantonese_Rice_Soup_with_Dried_Fish_and_pork.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Peachyeung316",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 39441,
+    "sha256": "254baf2e49ee1a45",
+    "title": "File:A Cantonese Rice Soup with Dried Fish and pork.jpg"
+  },
+  {
+    "name": "招牌牛腩面",
+    "cuisine": "面食",
+    "dish_ids": [
+      47
+    ],
+    "file": "047-beef-brisket-noodles.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Almond_sauce_noodles_with_crispy_beef_brisket_(12730166434).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Almond_sauce_noodles_with_crispy_beef_brisket_%2812730166434%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Ruth Hartnup from Vancouver, Canada",
+    "src_size": [
+      1280,
+      720
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 67326,
+    "sha256": "62a0421f88cea287",
+    "title": "File:Almond sauce noodles with crispy beef brisket (12730166434).jpg"
+  },
+  {
+    "name": "酸菜牛肉面",
+    "cuisine": "面食",
+    "dish_ids": [
+      48
+    ],
+    "file": "048-pickled-cabbage-beef-noodl.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_Balls_Noodle_Soup,_Blanco_Court_Beef_Noodles,_Food_Republic_@_Suntec_City,_2023_(01).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Beef_Balls_Noodle_Soup%2C_Blanco_Court_Beef_Noodles%2C_Food_Republic_%40_Suntec_City%2C_2023_%2801%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Bahnfrend",
+    "src_size": [
+      1280,
+      720
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 117138,
+    "sha256": "60fc43594887d81f",
+    "title": "File:Beef Balls Noodle Soup, Blanco Court Beef Noodles, Food Republic @ Suntec City, 2023 (01).jpg"
+  },
+  {
+    "name": "藜麦鸡胸沙拉",
+    "cuisine": "轻食",
+    "dish_ids": [
+      49
+    ],
+    "file": "049-quinoa-chicken-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Quinoa_salad_(29307761548).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/36/Quinoa_salad_%2829307761548%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Joey Doll",
+    "src_size": [
+      1920,
+      1280
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 48121,
+    "sha256": "1119868e3db4ff72",
+    "title": "File:Quinoa salad (29307761548).jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "三文鱼沙拉",
+    "cuisine": "轻食",
+    "dish_ids": [
+      50
+    ],
+    "file": "050-salmon-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Green_goddess_salad_with_salmon_-_Cambridge,_MA.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Green_goddess_salad_with_salmon_-_Cambridge%2C_MA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Daderot",
+    "src_size": [
+      1280,
+      1308
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 99642,
+    "sha256": "60b30bdc01fbba24",
+    "title": "File:Green goddess salad with salmon - Cambridge, MA.jpg"
+  },
+  {
+    "name": "全麦鸡肉卷",
+    "cuisine": "轻食",
+    "dish_ids": [
+      51
+    ],
+    "file": "051-whole-wheat-chicken-wrap.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:2017-05-28_AT_Wien_20_Brigittenau,_McDonald%27s_Rivergate,_Tomato_Salsa_Crispy_Chicken_Wrap_(50776193102).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/8b/2017-05-28_AT_Wien_20_Brigittenau%2C_McDonald%27s_Rivergate%2C_Tomato_Salsa_Crispy_Chicken_Wrap_%2850776193102%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Paul Korecky",
+    "src_size": [
+      1280,
+      1280
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 47570,
+    "sha256": "5ca221b81287bc6a",
+    "title": "File:2017-05-28 AT Wien 20 Brigittenau, McDonald's Rivergate, Tomato Salsa Crispy Chicken Wrap (50776193102).jpg"
+  },
+  {
+    "name": "招牌麻辣烫",
+    "cuisine": "麻辣烫",
+    "dish_ids": [
+      52
+    ],
+    "file": "052-malatang-bowl.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:A_bowl_of_YGF_Malatang_and_Coco_Cafe-20220101.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a5/A_bowl_of_YGF_Malatang_and_Coco_Cafe-20220101.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Shwangtianyuan",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 65258,
+    "sha256": "7c7ad158f9aada28",
+    "title": "File:A bowl of YGF Malatang and Coco Cafe-20220101.jpg"
+  },
+  {
+    "name": "五花肉烤肉套餐",
+    "cuisine": "烤肉",
+    "dish_ids": [
+      53
+    ],
+    "file": "053-korean-bbq-pork-belly.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Korean_Barbecue,_Pork.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Korean_Barbecue%2C_Pork.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Jo Hanshin",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 121556,
+    "sha256": "e55c6b1c8d763218",
+    "title": "File:Korean Barbecue, Pork.jpg"
+  },
+  {
+    "name": "烤牛肉拼盘",
+    "cuisine": "烤肉",
+    "dish_ids": [
+      54
+    ],
+    "file": "054-korean-bbq-beef-platter.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E5%85%89%E6%98%8E%E6%96%B0%E5%8D%80_Guangming_N_%E6%AC%A1%E6%96%B9%E5%85%AC%E5%9C%92%E5%95%86%E5%A0%B4_N_Square_Park_Mall_shop_%E8%81%96%E7%90%BC%E9%9F%93%E5%BC%8F%E7%83%A4%E8%82%89%E8%87%AA%E5%8A%A9%E9%A4%90%E5%BB%B3_Saint_Joan_Korean_Barbecue_Beef_Buffet_Restaurant_BBQ_beef_November_2025_R12S_305.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/2c/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E5%85%89%E6%98%8E%E6%96%B0%E5%8D%80_Guangming_N_%E6%AC%A1%E6%96%B9%E5%85%AC%E5%9C%92%E5%95%86%E5%A0%B4_N_Square_Park_Mall_shop_%E8%81%96%E7%90%BC%E9%9F%93%E5%BC%8F%E7%83%A4%E8%82%89%E8%87%AA%E5%8A%A9%E9%A4%90%E5%BB%B3_Saint_Joan_Korean_Barbecue_Beef_Buffet_Restaurant_BBQ_beef_November_2025_R12S_305.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "OPSQ MMSYEEO HAO 528",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 82697,
+    "sha256": "34a87d403e10dfda",
+    "title": "File:SZ 深圳 Shenzhen 光明新區 Guangming N 次方公園商場 N Square Park Mall shop 聖琼韓式烤肉自助餐廳 Saint Joan Korean Barbecue Beef Buffet Restaurant BBQ beef November 2025 R12S 305.jpg"
+  },
+  {
+    "name": "烤蔬菜拼盘",
+    "cuisine": "烤肉",
+    "dish_ids": [
+      55
+    ],
+    "file": "055-grilled-vegetables-platter.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Grilled_Chicken_Tikka_served_on_a_sizzling_platter_with_vegetables.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/9/94/Grilled_Chicken_Tikka_served_on_a_sizzling_platter_with_vegetables.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Iwaqarhashmi",
+    "src_size": [
+      1280,
+      721
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 131101,
+    "sha256": "4c2975c93c6d3dc1",
+    "title": "File:Grilled Chicken Tikka served on a sizzling platter with vegetables.jpg"
+  },
+  {
+    "name": "三文鱼刺身",
+    "cuisine": "日料",
+    "dish_ids": [
+      56
+    ],
+    "file": "056-salmon-sashimi.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Home-made_salmon_sashimi_(15532557543).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/46/Home-made_salmon_sashimi_%2815532557543%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Vee Satayamas from Bangkok, Thailand",
+    "src_size": [
+      1280,
+      853
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 71086,
+    "sha256": "b00c2273beeb16e5",
+    "title": "File:Home-made salmon sashimi (15532557543).jpg"
+  },
+  {
+    "name": "鳗鱼饭",
+    "cuisine": "日料",
+    "dish_ids": [
+      57
+    ],
+    "file": "057-unagi-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Unagi_rice.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Unagi_rice.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "ProjectManhattan",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 99655,
+    "sha256": "9352d00b70bb93e2",
+    "title": "File:Unagi rice.jpg"
+  },
+  {
+    "name": "韩式炸鸡",
+    "cuisine": "韩餐",
+    "dish_ids": [
+      58
+    ],
+    "file": "058-korean-fried-chicken.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Sticky_Korean_fried_Quorn%E2%84%A2_%E2%80%98no_chicken%E2%80%99_bowl_with_chips_-_The_Perkin_Warbeck_2025-07-26.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/de/Sticky_Korean_fried_Quorn%E2%84%A2_%E2%80%98no_chicken%E2%80%99_bowl_with_chips_-_The_Perkin_Warbeck_2025-07-26.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Andy Li",
+    "src_size": [
+      1280,
+      964
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 86720,
+    "sha256": "f16d3b8e90548bc2",
+    "title": "File:Sticky Korean fried Quorn™ ‘no chicken’ bowl with chips - The Perkin Warbeck 2025-07-26.jpg"
+  },
+  {
+    "name": "红烧狮子头",
+    "cuisine": "江浙菜",
+    "dish_ids": [
+      59
+    ],
+    "file": "059-lion-head-meatball.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Lions_head_meatballs_in_brown_sauce.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Lions_head_meatballs_in_brown_sauce.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Jpatokal",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 74024,
+    "sha256": "42bebc0c6286ca8a",
+    "title": "File:Lions head meatballs in brown sauce.jpg"
+  },
+  {
+    "name": "猪肚鸡汤",
+    "cuisine": "粥品",
+    "dish_ids": [
+      60
+    ],
+    "file": "060-pork-tripe-chicken-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Chicken_Soup_with_Rice_Noodles.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Liat_Portal_for_Foodie_Disorder_-_Chicken_Soup_with_Rice_Noodles.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "HaJunkiyada",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 31815,
+    "sha256": "e24e143a0bc66d41",
+    "title": "File:Liat Portal for Foodie Disorder - Chicken Soup with Rice Noodles.jpg"
+  },
+  {
+    "name": "番茄炒蛋",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      61
+    ],
+    "file": "061-tomato-scrambled-eggs.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Hunan_cuisine,_stir-fried_tomato_with_eggs.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hunan_cuisine%2C_stir-fried_tomato_with_eggs.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "Huangdan2060",
+    "src_size": [
+      1920,
+      1440
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 51722,
+    "sha256": "3f237e0d02ba9ad3",
+    "title": "File:Hunan cuisine, stir-fried tomato with eggs.jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "蒜蓉西兰花",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      63
+    ],
+    "file": "063-garlic-broccoli.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Black_pan_with_stir-fried_vegetables_(broccoli,_onion,_red_pepper).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Black_pan_with_stir-fried_vegetables_%28broccoli%2C_onion%2C_red_pepper%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "Public domain",
+    "license_url": null,
+    "author": "",
+    "src_size": [
+      775,
+      449
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 54615,
+    "sha256": "8436c62e1cd46b78",
+    "title": "File:Black pan with stir-fried vegetables (broccoli, onion, red pepper).jpg",
+    "picked_by": "manual"
+  },
+  {
+    "name": "手撕包菜",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      64
+    ],
+    "file": "064-hand-torn-cabbage.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E6%B0%B4%E5%9C%8D_Shuiweicun_%E5%91%B3%E7%90%AA%E9%A4%90%E5%BB%B3_Wei_Qi_Restaurant_dinner_food_%E6%A2%85%E8%8F%9C%E8%82%89%E7%A2%8E%E7%82%92%E8%9B%8B_Salty_cabbage_stir_fried_mince_pork_with_egg_April_2024_R12S_01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/79/SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E7%A6%8F%E7%94%B0_Futian_%E6%B0%B4%E5%9C%8D_Shuiweicun_%E5%91%B3%E7%90%AA%E9%A4%90%E5%BB%B3_Wei_Qi_Restaurant_dinner_food_%E6%A2%85%E8%8F%9C%E8%82%89%E7%A2%8E%E7%82%92%E8%9B%8B_Salty_cabbage_stir_fried_mince_pork_with_egg_April_2024_R12S_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Mingz 33 hwiyuAEM Hungom",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 91502,
+    "sha256": "ba0cd3ba11789227",
+    "title": "File:SZ 深圳 Shenzhen 福田 Futian 水圍 Shuiweicun 味琪餐廳 Wei Qi Restaurant dinner food 梅菜肉碎炒蛋 Salty cabbage stir fried mince pork with egg April 2024 R12S 01.jpg"
+  },
+  {
+    "name": "鱼香茄子",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      66
+    ],
+    "file": "066-yuxiang-eggplant.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Yuxiang_Eggplant_(13974518993).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Yuxiang_Eggplant_%2813974518993%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Charles Haynes",
+    "src_size": [
+      1024,
+      683
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 56403,
+    "sha256": "1d432e373d5f9804",
+    "title": "File:Yuxiang Eggplant (13974518993).jpg"
+  },
+  {
+    "name": "可乐鸡翅",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      67
+    ],
+    "file": "067-cola-chicken-wings.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chicken_Wings_in_Coca_Cola_Sauce.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/72/Chicken_Wings_in_Coca_Cola_Sauce.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Alpha from Melbourne, Australia",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 65136,
+    "sha256": "cd150f4e76b5e82c",
+    "title": "File:Chicken Wings in Coca Cola Sauce.jpg"
+  },
+  {
+    "name": "红烧排骨",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      68
+    ],
+    "file": "068-braised-pork-ribs.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Braised_Pork_Ribs_Noodle_with_Mushroom.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Braised_Pork_Ribs_Noodle_with_Mushroom.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Banej",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 74880,
+    "sha256": "eaeb49669d8654d7",
+    "title": "File:Braised Pork Ribs Noodle with Mushroom.jpg"
+  },
+  {
+    "name": "清蒸鲈鱼",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      71
+    ],
+    "file": "071-steamed-sea-bass.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:CHILEAN_SEA_BASS_with_SUKI_SAUCE_(Spicy)_Steamed_sea_bass_topped_with_our_special_spicy_chili_sauce._Served_on_top_of_steamed_vegetables.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/37/CHILEAN_SEA_BASS_with_SUKI_SAUCE_%28Spicy%29_Steamed_sea_bass_topped_with_our_special_spicy_chili_sauce._Served_on_top_of_steamed_vegetables.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "T.Tseng",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 63910,
+    "sha256": "de4a3cde87fb4a15",
+    "title": "File:CHILEAN SEA BASS with SUKI SAUCE (Spicy) Steamed sea bass topped with our special spicy chili sauce. Served on top of steamed vegetables.jpg"
+  },
+  {
+    "name": "香菇滑鸡",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      73
+    ],
+    "file": "073-chicken-with-shiitake.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chicken_and_Shiitake_Mushrooms_(32042410548).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Chicken_and_Shiitake_Mushrooms_%2832042410548%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Jose Nicdao from San Jose, United States",
+    "src_size": [
+      1280,
+      720
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 88592,
+    "sha256": "1fe9d12cae7279d8",
+    "title": "File:Chicken and Shiitake Mushrooms (32042410548).jpg"
+  },
+  {
+    "name": "干煸豆角",
+    "cuisine": "川湘菜",
+    "dish_ids": [
+      77
+    ],
+    "file": "077-dry-fried-long-beans.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Sichuan-style-dried_fried_Green_Beans_with_Minced_Pork_-_Aberdeen_Seafood,_Brighton_2026-07-19.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Sichuan-style-dried_fried_Green_Beans_with_Minced_Pork_-_Aberdeen_Seafood%2C_Brighton_2026-07-19.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Andy Li",
+    "src_size": [
+      1280,
+      964
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 108320,
+    "sha256": "64052834c5d60c85",
+    "title": "File:Sichuan-style-dried fried Green Beans with Minced Pork - Aberdeen Seafood, Brighton 2026-07-19.jpg"
+  },
+  {
+    "name": "蒜蓉生菜",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      78
+    ],
+    "file": "078-garlic-lettuce.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Stir-fried_Indian_Lettuce.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Stir-fried_Indian_Lettuce.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Ceeseven",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 102459,
+    "sha256": "c5fc3e5ab63b95b8",
+    "title": "File:Stir-fried Indian Lettuce.jpg",
+    "picked_by": "recover"
+  },
+  {
+    "name": "西芹百合",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      79
+    ],
+    "file": "079-celery-with-lily-bulb.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:%E5%87%89%E7%B2%89_Cold_bean_noodles_Y4,_%E7%99%BE%E5%90%88%E8%A5%BF%E8%8A%B9_Lily_bulb_and_celery_Y4_-_%E9%BE%99%E6%8A%84%E6%89%8B%E9%A4%90%E5%8E%85_Long_Chao_Shou_Canting_(1483871052).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/0a/%E5%87%89%E7%B2%89_Cold_bean_noodles_Y4%2C_%E7%99%BE%E5%90%88%E8%A5%BF%E8%8A%B9_Lily_bulb_and_celery_Y4_-_%E9%BE%99%E6%8A%84%E6%89%8B%E9%A4%90%E5%8E%85_Long_Chao_Shou_Canting_%281483871052%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Alpha from Melbourne, Australia",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 51633,
+    "sha256": "84e7205d5ce25496",
+    "title": "File:凉粉 Cold bean noodles Y4, 百合西芹 Lily bulb and celery Y4 - 龙抄手餐厅 Long Chao Shou Canting (1483871052).jpg",
+    "picked_by": "recover"
+  },
+  {
+    "name": "冬瓜排骨汤",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      80
+    ],
+    "file": "080-winter-melon-pork-rib-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Winter_Melon_and_Seafood_Soup_-_Pre-CNY_Diner_with_the_Yews,_Easy_East.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/54/Winter_Melon_and_Seafood_Soup_-_Pre-CNY_Diner_with_the_Yews%2C_Easy_East.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Alpha from Melbourne, Australia",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 38596,
+    "sha256": "88f20054d4c0e89a",
+    "title": "File:Winter Melon and Seafood Soup - Pre-CNY Diner with the Yews, Easy East.jpg"
+  },
+  {
+    "name": "番茄蛋汤",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      81
+    ],
+    "file": "081-tomato-egg-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:2153Chicken_stew_with_tomatoes,_tamarind_soup_and_egg_in_calamondin,_lemon_grass_and_bilimbi_02.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/4d/2153Chicken_stew_with_tomatoes%2C_tamarind_soup_and_egg_in_calamondin%2C_lemon_grass_and_bilimbi_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Judgefloro",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 94487,
+    "sha256": "32f81a0955884149",
+    "title": "File:2153Chicken stew with tomatoes, tamarind soup and egg in calamondin, lemon grass and bilimbi 02.jpg"
+  },
+  {
+    "name": "菌菇鸡汤",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      84
+    ],
+    "file": "084-mushroom-chicken-soup.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Campbell%27s_2026-08-29_Condensed_Cream_of_Chicken_%26_Mushroom_Soup_01.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Campbell%27s_2026-08-29_Condensed_Cream_of_Chicken_%26_Mushroom_Soup_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "author": "P1898",
+    "src_size": [
+      1280,
+      862
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 42812,
+    "sha256": "eaa46b3a5f999206",
+    "title": "File:Campbell's 2026-08-29 Condensed Cream of Chicken & Mushroom Soup 01.jpg"
+  },
+  {
+    "name": "电饭煲焖饭",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      85
+    ],
+    "file": "085-rice-cooker-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Chicken_Paws_and_Pork_Ribs_claypot_rice_from_SY_restaurant_in_Shenzhen.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Chicken_Paws_and_Pork_Ribs_claypot_rice_from_SY_restaurant_in_Shenzhen.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Peachyeung316",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 76698,
+    "sha256": "74054324c0930ccc",
+    "title": "File:Chicken Paws and Pork Ribs claypot rice from SY restaurant in Shenzhen.jpg",
+    "picked_by": "recover"
+  },
+  {
+    "name": "电饭煲茶叶蛋",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      87
+    ],
+    "file": "087-tea-egg.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Tea_eggs_at_a_food_stall_near_Sanyuanqiao_(20211013123501).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Tea_eggs_at_a_food_stall_near_Sanyuanqiao_%2820211013123501%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "N509FZ",
+    "src_size": [
+      1280,
+      853
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 78867,
+    "sha256": "2e265cd3fff6362d",
+    "title": "File:Tea eggs at a food stall near Sanyuanqiao (20211013123501).jpg"
+  },
+  {
+    "name": "电饭煲红烧肉",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      88
+    ],
+    "file": "088-braised-pork-belly.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Szechuan_beef_Sichuan_cuisine_%E5%9B%9B%E5%B7%9D%E8%8F%9C_Shuizhu_roupian_Red_braised_pork_belly_%E7%BA%A2%E7%83%A7%E8%82%89_h%C3%B3ngsh%C4%81or%C3%B2u_Fresh_Buffet_Solaire_23_January_2025_Filipinas3.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/df/Szechuan_beef_Sichuan_cuisine_%E5%9B%9B%E5%B7%9D%E8%8F%9C_Shuizhu_roupian_Red_braised_pork_belly_%E7%BA%A2%E7%83%A7%E8%82%89_h%C3%B3ngsh%C4%81or%C3%B2u_Fresh_Buffet_Solaire_23_January_2025_Filipinas3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "",
+    "src_size": [
+      1280,
+      504
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 66654,
+    "sha256": "1d4f69012f865707",
+    "title": "File:Szechuan beef Sichuan cuisine 四川菜 Shuizhu roupian Red braised pork belly 红烧肉 hóngshāoròu Fresh Buffet Solaire 23 January 2025 Filipinas3.jpg"
+  },
+  {
+    "name": "电饭煲青菜粥",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      89
+    ],
+    "file": "089-vegetable-congee.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:A_BOWL_OF_FOXTAIL_MILLET_CONGEE.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/20/A_BOWL_OF_FOXTAIL_MILLET_CONGEE.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Dinkun Chen",
+    "src_size": [
+      1280,
+      780
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 52404,
+    "sha256": "7ceffc7967a25988",
+    "title": "File:A BOWL OF FOXTAIL MILLET CONGEE.jpg",
+    "picked_by": "recover"
+  },
+  {
+    "name": "空气炸锅鸡翅",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      90
+    ],
+    "file": "090-air-fryer-chicken-wings.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Bankrueed_fried_chicken_wings.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/73/Bankrueed_fried_chicken_wings.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "author": "Vee Satayamas",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 56243,
+    "sha256": "23f342853910eff7",
+    "title": "File:Bankrueed fried chicken wings.jpg"
+  },
+  {
+    "name": "空气炸锅薯条",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      91
+    ],
+    "file": "091-air-fryer-fries.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:French_fries_and_fried_egg_side_by_side_on_a_plate.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cd/French_fries_and_fried_egg_side_by_side_on_a_plate.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Horacio Cambeiro",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 89095,
+    "sha256": "6819a71475d3b2e5",
+    "title": "File:French fries and fried egg side by side on a plate.jpg",
+    "picked_by": "recover"
+  },
+  {
+    "name": "空气炸锅烤茄子",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      92
+    ],
+    "file": "092-air-fryer-eggplant.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Roasted_Eggplant_Halves_(Base_Preparation).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/29/Liat_Portal_for_Foodie_Disorder_-_Roasted_Eggplant_Halves_%28Base_Preparation%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "HaJunkiyada",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 64818,
+    "sha256": "d0ab02a120107fff",
+    "title": "File:Liat Portal for Foodie Disorder - Roasted Eggplant Halves (Base Preparation).jpg"
+  },
+  {
+    "name": "空气炸锅三文鱼",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      93
+    ],
+    "file": "093-air-fryer-salmon.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Grilled_Salmon_with_Roasted_Potatoes_and_Asparagus.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Liat_Portal_for_Foodie_Disorder_-_Grilled_Salmon_with_Roasted_Potatoes_and_Asparagus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "HaJunkiyada",
+    "src_size": [
+      1280,
+      1707
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 68995,
+    "sha256": "49adb236a7ffce33",
+    "title": "File:Liat Portal for Foodie Disorder - Grilled Salmon with Roasted Potatoes and Asparagus.jpg"
+  },
+  {
+    "name": "凉拌黄瓜",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      94
+    ],
+    "file": "094-smashed-cucumber-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Pine_and_Crane_DTLA_-_smashed_cucumber_salad.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/38/Pine_and_Crane_DTLA_-_smashed_cucumber_salad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Benoît Prieur",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 79838,
+    "sha256": "16cf64bd596513f6",
+    "title": "File:Pine and Crane DTLA - smashed cucumber salad.jpg"
+  },
+  {
+    "name": "凉拌豆腐丝",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      96
+    ],
+    "file": "096-tofu-skin-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:ToFu_Salad.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d6/ToFu_Salad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "စာကလေး SarKaLay",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 77987,
+    "sha256": "4cf5e4c459f74633",
+    "title": "File:ToFu Salad.jpg"
+  },
+  {
+    "name": "凉拌鸡丝",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      97
+    ],
+    "file": "097-shredded-chicken-salad.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Sichuan_shredded_chicken_salad.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Sichuan_shredded_chicken_salad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Coolli22",
+    "src_size": [
+      1280,
+      719
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 78205,
+    "sha256": "1da3791dd2d65a3f",
+    "title": "File:Sichuan shredded chicken salad.jpg"
+  },
+  {
+    "name": "一锅出咖喱饭",
+    "cuisine": "家常菜",
+    "dish_ids": [
+      100
+    ],
+    "file": "100-curry-rice.jpg",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Beef_curry_rice_003.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Beef_curry_rice_003.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Ocdp",
+    "src_size": [
+      1280,
+      960
+    ],
+    "out_size": [
+      800,
+      450
+    ],
+    "bytes": 60843,
+    "sha256": "e079609ab386f154",
+    "title": "File:Beef curry rice 003.jpg"
+  }
+]

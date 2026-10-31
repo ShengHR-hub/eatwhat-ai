@@ -1,0 +1,13 @@
+场景：user_id=2，limit=40；同一测量工具（backend/scripts/measure_recommend_sql.py）跑两次实现
+
+批量实现  HOME_COOKING : total=6  fridge=1  returned=31
+legacy    HOME_COOKING : total=37  fridge=32  returned=31
+批量实现  OUT_DINING   : total=6  fridge=0  returned=40
+
+top3 一致（batch vs legacy）：True
+返回条数一致（batch vs legacy）：True
+
+top3:
+  batch: [[81, '番茄蛋汤', 95.1], [89, '电饭煲青菜粥', 93.4], [65, '麻婆豆腐', 87.8]]
+  legacy: [[81, '番茄蛋汤', 95.1], [89, '电饭煲青菜粥', 93.4], [65, '麻婆豆腐', 87.8]]
+  out_dining: [[13, '番茄鸡蛋面', 87.6], [20, '南瓜浓汤', 87.0], [16, '番茄麻辣烫', 86.6]]

@@ -1,0 +1,1360 @@
+# git status --short
+warning: could not open directory '.pytest-tmp-r04-independent/': Permission denied
+warning: could not open directory '.pytest-tmp-s09r02-review/': Permission denied
+warning: could not open directory '.pytest-tmp-s09r02-review2/': Permission denied
+A  .gitignore
+AM AGENTS.md
+AM DASHBOARD_EXPANSION.md
+AM MASTER_SPEC.md
+A  MOBILE_VISUAL_SPEC.md
+A  WEATHERPILL_GLASS.md
+A  backend/__init__.py
+A  backend/algorithms/__init__.py
+A  backend/algorithms/combo_optimizer.py
+A  backend/algorithms/group_recommender.py
+AM backend/algorithms/single_recommender.py
+A  backend/algorithms/time_decay.py
+A  backend/algorithms/vector_spec.py
+A  backend/algorithms/veto_rules.py
+A  backend/config.py
+A  backend/database.py
+AM backend/deps.py
+A  backend/main.py
+AM backend/models.py
+A  backend/routers/__init__.py
+AM backend/routers/auth_user.py
+A  backend/routers/catalog.py
+A  backend/routers/eating_log.py
+AM backend/routers/fridge.py
+AM backend/routers/group_room.py
+A  backend/routers/recommend.py
+AM backend/schemas.py
+A  backend/scripts/__init__.py
+AM backend/scripts/dish_images.py
+AM backend/scripts/init_seed_data.py
+AM backend/scripts/migrate_room_contract.py
+A  backend/scripts/migrate_v231.py
+A  backend/tests/__init__.py
+A  backend/tests/conftest.py
+AM backend/tests/test_api.py
+A  backend/tests/test_combo_optimizer.py
+A  backend/tests/test_eating_log.py
+A  backend/tests/test_fridge.py
+A  backend/tests/test_group_recommender.py
+AM backend/tests/test_room.py
+A  backend/tests/test_single_recommender.py
+A  backend/tests/test_time_decay.py
+A  backend/tests/test_veto_and_consensus.py
+AM docs/AGENT_MEMORY.md
+AM docs/DISH_IMAGES_LEDGER.md
+AM docs/DISH_IMAGES_MISSING.md
+AM docs/DISH_IMAGES_PLAN.md
+AM docs/DISH_IMAGES_TODO.md
+A  docs/LOTTIE_SOURCES.md
+AM docs/README.md
+A  docs/_data/dishes.json
+A  docs/_data/dishes_status.json
+A  docs/_data/dishes_table.md
+A  docs/_data/image_ledger.json
+A  docs/_data/image_missing.json
+A  docs/_data/repick_candidates.txt
+AM docs/review/README.md
+A  docs/review/audit-2026-10-24/REPORT.md
+A  docs/review/audit-2026-10-24/backend-results.json
+A  docs/review/audit-2026-10-24/backend-validation.log
+A  docs/review/audit-2026-10-24/database-before-audit-cleanup.sqlite
+A  docs/review/audit-2026-10-24/frontend-results.json
+A  docs/review/audit-2026-10-24/frontend-validation.log
+A  docs/review/audit-2026-10-24/home-390x667.jpg
+A  docs/review/audit-2026-10-24/probe-validation.log
+A  docs/review/audit-2026-10-24/probe_backend.py
+A  docs/review/audit-2026-10-24/tmp-667-check.png
+A  docs/review/deck-gesture/01-deck-before-exhaust.png
+A  docs/review/deck-gesture/01-deck-idle.png
+A  docs/review/deck-gesture/02-deck-exhausted.png
+A  docs/review/deck-gesture/02-drag-left-stamp.png
+A  docs/review/deck-gesture/03-deck-round-done.png
+A  docs/review/deck-gesture/03-drag-left-over.png
+A  docs/review/deck-gesture/04-after-left.png
+A  docs/review/deck-gesture/04-deck-after-reset.png
+A  docs/review/deck-gesture/05-drag-right-stamp.png
+A  docs/review/deck-gesture/06-confirm-state.png
+A  docs/review/deck-gesture/07-after-confirm.png
+A  docs/review/deck-gesture/08-radar-sheet.png
+A  docs/review/deck-gesture/09-back-to-deck.png
+A  docs/review/deck-gesture/refill-evidence.json
+A  docs/review/deck-gesture/tap-touch.png
+A  docs/review/dishes/dishes-sheet-1.png
+A  docs/review/dishes/dishes-sheet-2.png
+A  docs/review/dishes/dishes-sheet-3.png
+A  docs/review/dishes/dishes-sheet-4.png
+A  docs/review/footprint/footprint-390.png
+A  docs/review/fridge/fridge-393-list.png
+A  docs/review/fridge/fridge-393.png
+A  docs/review/home/checkin-toast.png
+A  docs/review/home/empty-state-390.png
+A  docs/review/home/home-390-weather.png
+AM docs/review/home/home-390x667.png
+AM docs/review/home/home-393x852.png
+A  docs/review/home/lottie-pill.png
+A  docs/review/home/onescreen-390-images-home.png
+A  docs/review/home/onescreen-390-images.png
+A  docs/review/home/onescreen-390.png
+A  docs/review/home/onescreen-390x667-images.png
+A  docs/review/home/onescreen-390x667.png
+A  docs/review/home/tmp-greet-zoom.png
+A  docs/review/home/tmp-probe.png
+A  docs/review/profile/profile-390-bottom.png
+A  docs/review/profile/profile-390.png
+A  docs/review/profile/profile-393-entry.png
+AM docs/review/profile/profile-users.png
+A  docs/review/room/room-lobby-b.png
+A  docs/review/room/room-recovered.png
+A  docs/review/room/room-revealed-a.png
+A  docs/review/room/room-revealed-b.png
+A  docs/review/room/room-swiping.png
+A  docs/spec_archive/MASTER_SPEC_v2.1.1.md
+A  "docs/spec_archive/MASTER_SPEC_v2.1_\345\210\235\347\250\277.md"
+A  docs/spec_archive/MASTER_SPEC_v2.3.1.md
+A  "docs/spec_archive/MOBILE_VISUAL_SPEC_v1_\346\227\247\347\211\210_8285B.md"
+A  docs/vuebits-diff.md
+A  docs/vuebits-originals/Grainient.vue
+A  docs/vuebits-originals/LiquidChrome.vue
+A  docs/vuebits-originals/Silk.vue
+A  "docs/\351\200\211\351\242\230\346\226\271\345\220\221.md"
+A  frontend/index.html
+A  frontend/package-lock.json
+A  frontend/package.json
+A  frontend/postcss.config.js
+AM frontend/public/dishes/001-mala-xiang-guo-spicy-stir.jpg
+AM frontend/public/dishes/002-sichuan-boiled-pork-slices.jpg
+AM frontend/public/dishes/003-chongqing-spicy-chicken.jpg
+AM frontend/public/dishes/004-dry-fried-green-beans.jpg
+AM frontend/public/dishes/006-char-siu-rice.jpg
+AM frontend/public/dishes/007-white-cut-chicken-rice.jpg
+AM frontend/public/dishes/008-roast-duck-rice.jpg
+AM frontend/public/dishes/009-stir-fried-choy-sum.jpg
+AM frontend/public/dishes/010-cantonese-soup.jpg
+AM frontend/public/dishes/011-braised-beef-noodle-soup.jpg
+AM frontend/public/dishes/012-beef-noodle-soup-clear-bro.jpg
+AM frontend/public/dishes/013-tomato-egg-noodle-soup.jpg
+AM frontend/public/dishes/014-beef-vermicelli-soup.jpg
+AM frontend/public/dishes/015-malatang.jpg
+AM frontend/public/dishes/018-chicken-breast-salad.jpg
+AM frontend/public/dishes/019-grilled-chicken-rice-bowl.jpg
+AM frontend/public/dishes/020-pumpkin-soup.jpg
+AM frontend/public/dishes/021-shredded-pork-with-green-p.jpg
+AM frontend/public/dishes/022-yuxiang-shredded-pork.jpg
+AM frontend/public/dishes/023-kung-pao-chicken.jpg
+AM frontend/public/dishes/024-mapo-tofu.jpg
+AM frontend/public/dishes/025-tomato-scrambled-eggs.jpg
+AM frontend/public/dishes/026-seaweed-egg-drop-soup.jpg
+AM frontend/public/dishes/027-century-egg-congee.jpg
+AM frontend/public/dishes/028-rice-noodle-roll.jpg
+AM frontend/public/dishes/029-wonton-noodles.jpg
+AM frontend/public/dishes/030-beef-chow-fun.jpg
+AM frontend/public/dishes/031-bibimbap.jpg
+AM frontend/public/dishes/032-budae-jjigae-army-stew.jpg
+AM frontend/public/dishes/033-lanzhou-beef-noodles.jpg
+AM frontend/public/dishes/034-fried-noodle-pieces-beef.jpg
+AM frontend/public/dishes/035-lamb-skewers.jpg
+AM frontend/public/dishes/036-lotus-root-pork-rib-soup.jpg
+AM frontend/public/dishes/037-claypot-tofu.jpg
+AM frontend/public/dishes/038-claypot-chicken.jpg
+AM frontend/public/dishes/039-maoxuewang.jpg
+AM frontend/public/dishes/040-sichuan-boiled-fish.jpg
+AM frontend/public/dishes/041-twice-cooked-pork.jpg
+AM frontend/public/dishes/043-har-gow-shrimp-dumpling.jpg
+AM frontend/public/dishes/044-boiled-shrimp.jpg
+AM frontend/public/dishes/045-roast-goose-rice.jpg
+AM frontend/public/dishes/046-cantonese-slow-soup.jpg
+AM frontend/public/dishes/047-beef-brisket-noodles.jpg
+AM frontend/public/dishes/048-pickled-cabbage-beef-noodl.jpg
+AM frontend/public/dishes/049-quinoa-chicken-salad.jpg
+AM frontend/public/dishes/050-salmon-salad.jpg
+AM frontend/public/dishes/051-whole-wheat-chicken-wrap.jpg
+AM frontend/public/dishes/052-malatang-bowl.jpg
+AM frontend/public/dishes/053-korean-bbq-pork-belly.jpg
+AM frontend/public/dishes/054-korean-bbq-beef-platter.jpg
+AM frontend/public/dishes/055-grilled-vegetables-platter.jpg
+AM frontend/public/dishes/056-salmon-sashimi.jpg
+AM frontend/public/dishes/057-unagi-rice.jpg
+AM frontend/public/dishes/058-korean-fried-chicken.jpg
+AM frontend/public/dishes/059-lion-head-meatball.jpg
+AM frontend/public/dishes/060-pork-tripe-chicken-soup.jpg
+AM frontend/public/dishes/061-tomato-scrambled-eggs.jpg
+AM frontend/public/dishes/063-garlic-broccoli.jpg
+AM frontend/public/dishes/064-hand-torn-cabbage.jpg
+AM frontend/public/dishes/066-yuxiang-eggplant.jpg
+AM frontend/public/dishes/067-cola-chicken-wings.jpg
+AM frontend/public/dishes/068-braised-pork-ribs.jpg
+AM frontend/public/dishes/071-steamed-sea-bass.jpg
+AM frontend/public/dishes/073-chicken-with-shiitake.jpg
+AM frontend/public/dishes/077-dry-fried-long-beans.jpg
+AM frontend/public/dishes/078-garlic-lettuce.jpg
+AM frontend/public/dishes/079-celery-with-lily-bulb.jpg
+AM frontend/public/dishes/080-winter-melon-pork-rib-soup.jpg
+AM frontend/public/dishes/081-tomato-egg-soup.jpg
+AM frontend/public/dishes/084-mushroom-chicken-soup.jpg
+AM frontend/public/dishes/085-rice-cooker-rice.jpg
+AM frontend/public/dishes/087-tea-egg.jpg
+AM frontend/public/dishes/088-braised-pork-belly.jpg
+AM frontend/public/dishes/089-vegetable-congee.jpg
+AM frontend/public/dishes/090-air-fryer-chicken-wings.jpg
+AM frontend/public/dishes/091-air-fryer-fries.jpg
+AM frontend/public/dishes/092-air-fryer-eggplant.jpg
+AM frontend/public/dishes/093-air-fryer-salmon.jpg
+AM frontend/public/dishes/094-smashed-cucumber-salad.jpg
+AM frontend/public/dishes/096-tofu-skin-salad.jpg
+AM frontend/public/dishes/097-shredded-chicken-salad.jpg
+AM frontend/public/dishes/100-curry-rice.jpg
+A  frontend/src/App.vue
+A  frontend/src/api/client.js
+AM frontend/src/api/index.js
+A  frontend/src/assets/lottie/empty-state.json
+A  frontend/src/assets/lottie/reveal.json
+A  frontend/src/assets/lottie/weather-rainy.json
+A  frontend/src/assets/lottie/weather-snowy.json
+A  frontend/src/assets/lottie/weather-sunny.json
+AM frontend/src/components/AlgoSandboxDrawer.vue
+AM frontend/src/components/AppTabBar.vue
+AM frontend/src/components/DishCard.vue
+AM frontend/src/components/ExplainRadar.vue
+A  frontend/src/components/GlassFilters.vue
+AM frontend/src/components/LottieIcon.vue
+AM frontend/src/components/ModeSwitcher.vue
+A  frontend/src/components/NumberTicker.vue
+AM frontend/src/components/RadarSheet.vue
+AM frontend/src/components/ShimmerButton.vue
+AM frontend/src/components/StatusBubbles.vue
+AM frontend/src/components/SwipeCardDeck.vue
+AM frontend/src/components/WeatherPill.vue
+AM frontend/src/components/backdrop/AppBackdrop.vue
+A  frontend/src/components/bits/Grainient.vue
+A  frontend/src/components/bits/LiquidChrome.vue
+A  frontend/src/components/bits/Silk.vue
+A  frontend/src/constants/bubbles.js
+A  frontend/src/layouts/MobileShell.vue
+A  frontend/src/main.js
+A  frontend/src/router/index.js
+A  frontend/src/stores/algo.js
+A  frontend/src/stores/mode.js
+A  frontend/src/stores/persona.js
+AM frontend/src/styles/glass-card.css
+AM frontend/src/styles/glass-tokens.css
+AM frontend/src/styles/main.css
+A  frontend/src/utils/events.js
+A  frontend/src/utils/theme.js
+AM frontend/src/views/mobile/ComingSoon.vue
+AM frontend/src/views/mobile/Footprint.vue
+AM frontend/src/views/mobile/Fridge.vue
+AM frontend/src/views/mobile/Home.vue
+AM frontend/src/views/mobile/Profile.vue
+AM frontend/src/views/mobile/Room.vue
+A  frontend/tailwind.config.js
+A  frontend/vite.config.js
+A  pytest.ini
+A  requirements.txt
+AM scripts/README.md
+A  scripts/apply_picks.py
+A  scripts/check_lottie_colors.py
+A  scripts/contact_sheet.py
+A  scripts/dump_dishes.py
+A  scripts/exhaust.mjs
+A  scripts/fetch_dish_images.py
+A  scripts/gen_dish_image_map.py
+A  scripts/home-fit.mjs
+A  scripts/insert_dish_table.py
+A  scripts/lottie_fills.py
+A  scripts/make_dish_table.py
+A  scripts/make_dish_todo.py
+A  scripts/make_empty_state_lottie.py
+A  scripts/make_reveal_lottie.py
+A  scripts/peek_lottie.py
+A  scripts/record.mjs
+A  scripts/recover_missing.py
+A  scripts/refill-fresh.mjs
+A  scripts/render_image_docs.py
+A  scripts/repick.py
+A  scripts/room-demo.mjs
+A  scripts/room-recover.mjs
+A  scripts/sandbox-sync.mjs
+A  scripts/shot.mjs
+A  scripts/swipe-probe.mjs
+A  scripts/tap-probe.mjs
+?? BATCH4_PLAN.md
+?? BATCH4_PRE_CLEARANCE.md
+?? backend/algorithms/fridge_clock.py
+?? backend/algorithms/simulate_personas.py
+?? backend/scripts/benchmark_snapshot.json
+?? backend/scripts/fetch_amap_poi.py
+?? backend/scripts/import_open_recipes.py
+?? backend/scripts/measure_recommend_sql.py
+?? backend/scripts/migrate_pre00_runtime_schema.py
+?? backend/scripts/migrate_s10_data_schema.py
+?? backend/scripts/s10_common.py
+?? backend/scripts/verify_s10_import.py
+?? backend/tests/test_identity_bounds_and_stock.py
+?? backend/tests/test_pre00_runtime_migration.py
+?? backend/tests/test_query_budget.py
+?? backend/tests/test_s10_import.py
+?? backend/tests/test_seed_guard.py
+?? backend/tests/test_simulation_metrics.py
+?? docs/DISH_IMAGES_SOURCES_RAW.md
+?? docs/REVIEW_RULES.md
+?? docs/review/PRE_S10_REMEDIATION_PLAN.md
+?? docs/review/STAGE_STATUS.md
+?? docs/review/clearance-codex-2026-10-24/
+?? docs/review/clearance-codex-pre00-r01/
+?? docs/review/clearance-codex-pre00-r02/
+?? docs/review/clearance-codex-r02-2026-10-24/
+?? docs/review/clearance-codex-r03-2026-10-24/
+?? docs/review/clearance-codex-r04-2026-10-24/
+?? docs/review/clearance-codex-s09-r04/
+?? docs/review/clearance/
+?? docs/review/footprint/footprint-393.png
+?? docs/review/home/home-jiachang-393.png
+?? docs/review/recheck-2026-10-24/
+?? docs/review/simulation/
+?? docs/review/stages/
+?? frontend/public/dishes/005-hot-sour-potato-shreds.jpg
+?? frontend/public/dishes/016-tomato-malatang.jpg
+?? frontend/public/dishes/017-bone-broth-malatang.jpg
+?? frontend/public/dishes/042-houttuynia-salad.jpg
+?? frontend/public/dishes/062-green-pepper-potato-shreds.jpg
+?? frontend/public/dishes/074-onion-scrambled-eggs.jpg
+?? frontend/public/dishes/075-chive-scrambled-eggs.jpg
+?? frontend/public/dishes/076-hot-sour-cabbage.jpg
+?? frontend/public/dishes/083-corn-pork-rib-soup.jpg
+?? frontend/public/dishes/086-cured-sausage-claypot-rice.jpg
+?? frontend/public/dishes/095-wood-ear-salad.jpg
+?? frontend/public/dishes/098-tomato-beef-brisket-pot.jpg
+?? frontend/public/dishes/099-potato-chicken-stew-pot.jpg
+?? scripts/build_dish_image_map.py
+?? scripts/check-colors.mjs
+?? scripts/gate_probes.py
+?? scripts/normalize_colors.py
+?? scripts/render_image_ledger_from_sources.py
+
+# git diff --cached --stat
+ scripts/home-fit.mjs                               |  160 +
+ scripts/insert_dish_table.py                       |   17 +
+ scripts/lottie_fills.py                            |   23 +
+ scripts/make_dish_table.py                         |  135 +
+ scripts/make_dish_todo.py                          |   84 +
+ scripts/make_empty_state_lottie.py                 |  156 +
+ scripts/make_reveal_lottie.py                      |   82 +
+ scripts/peek_lottie.py                             |   18 +
+ scripts/record.mjs                                 |  151 +
+ scripts/recover_missing.py                         |  141 +
+ scripts/refill-fresh.mjs                           |  170 +
+ scripts/render_image_docs.py                       |   98 +
+ scripts/repick.py                                  |   77 +
+ scripts/room-demo.mjs                              |  218 ++
+ scripts/room-recover.mjs                           |  136 +
+ scripts/sandbox-sync.mjs                           |  173 ++
+ scripts/shot.mjs                                   |  105 +
+ scripts/swipe-probe.mjs                            |   84 +
+ scripts/tap-probe.mjs                              |  100 +
+ 280 files changed, 30556 insertions(+)
+
+# git diff --stat
+ frontend/src/components/ExplainRadar.vue           |   2 +-
+ frontend/src/components/LottieIcon.vue             |   2 +-
+ frontend/src/components/ModeSwitcher.vue           |   6 +-
+ frontend/src/components/RadarSheet.vue             |  10 +-
+ frontend/src/components/ShimmerButton.vue          |  16 +-
+ frontend/src/components/StatusBubbles.vue          |   6 +-
+ frontend/src/components/SwipeCardDeck.vue          |  14 +-
+ frontend/src/components/WeatherPill.vue            |   8 +-
+ frontend/src/components/backdrop/AppBackdrop.vue   |   2 +-
+ frontend/src/styles/glass-card.css                 |   6 +-
+ frontend/src/styles/glass-tokens.css               |  17 +-
+ frontend/src/styles/main.css                       |  40 ++-
+ frontend/src/views/mobile/ComingSoon.vue           |   2 +-
+ frontend/src/views/mobile/Footprint.vue            |  19 +-
+ frontend/src/views/mobile/Fridge.vue               |  28 +-
+ frontend/src/views/mobile/Home.vue                 |  62 +---
+ frontend/src/views/mobile/Profile.vue              |  54 +--
+ frontend/src/views/mobile/Room.vue                 |  46 +--
+ scripts/README.md                                  |  23 +-
+ 130 files changed, 1651 insertions(+), 646 deletions(-)
+
+# branch/head
+master
+fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+HEAD
+head_exit=128
+
+# staged diff sha256
+cbfeb1e84ea5a38053d2b0fa67bd897b69a9aa988e16426e2ccc437e13a630cb *-
+
+# untracked files
+warning: could not open directory '.pytest-tmp-r04-independent/': Permission denied
+warning: could not open directory '.pytest-tmp-s09r02-review/': Permission denied
+warning: could not open directory '.pytest-tmp-s09r02-review2/': Permission denied
+warning: could not open directory 'docs/review/clearance-codex-r03-2026-10-24/pytest-cache/': Permission denied
+warning: could not open directory 'docs/review/clearance-codex-r03-2026-10-24/pytest-temp/': Permission denied
+warning: could not open directory 'docs/review/clearance-codex-r03-2026-10-24/query-cache/': Permission denied
+BATCH4_PLAN.md
+BATCH4_PRE_CLEARANCE.md
+backend/algorithms/fridge_clock.py
+backend/algorithms/simulate_personas.py
+backend/scripts/benchmark_snapshot.json
+backend/scripts/fetch_amap_poi.py
+backend/scripts/import_open_recipes.py
+backend/scripts/measure_recommend_sql.py
+backend/scripts/migrate_pre00_runtime_schema.py
+backend/scripts/migrate_s10_data_schema.py
+backend/scripts/s10_common.py
+backend/scripts/verify_s10_import.py
+backend/tests/test_identity_bounds_and_stock.py
+backend/tests/test_pre00_runtime_migration.py
+backend/tests/test_query_budget.py
+backend/tests/test_s10_import.py
+backend/tests/test_seed_guard.py
+backend/tests/test_simulation_metrics.py
+docs/DISH_IMAGES_SOURCES_RAW.md
+docs/REVIEW_RULES.md
+docs/review/PRE_S10_REMEDIATION_PLAN.md
+docs/review/STAGE_STATUS.md
+docs/review/clearance-codex-2026-10-24/.gitignore
+docs/review/clearance-codex-2026-10-24/REPORT.md
+docs/review/clearance-codex-2026-10-24/SOURCE_MANIFEST.json
+docs/review/clearance-codex-2026-10-24/benchmark-cli.json
+docs/review/clearance-codex-2026-10-24/benchmark-default-a.json
+docs/review/clearance-codex-2026-10-24/benchmark-default-b.json
+docs/review/clearance-codex-2026-10-24/benchmark-seed7.json
+docs/review/clearance-codex-2026-10-24/browser-results.json
+docs/review/clearance-codex-2026-10-24/build.log
+docs/review/clearance-codex-2026-10-24/color-current.log
+docs/review/clearance-codex-2026-10-24/color-results.json
+docs/review/clearance-codex-2026-10-24/color_probes.mjs
+docs/review/clearance-codex-2026-10-24/colors-probe.log
+docs/review/clearance-codex-2026-10-24/css-outside-token-definitions.json
+docs/review/clearance-codex-2026-10-24/css_scan.mjs
+docs/review/clearance-codex-2026-10-24/demo-after.json
+docs/review/clearance-codex-2026-10-24/demo-before.json
+docs/review/clearance-codex-2026-10-24/final-validation.json
+docs/review/clearance-codex-2026-10-24/footprint-390x667.png
+docs/review/clearance-codex-2026-10-24/footprint-390x844.png
+docs/review/clearance-codex-2026-10-24/fridge-390x667.png
+docs/review/clearance-codex-2026-10-24/home-390x667.png
+docs/review/clearance-codex-2026-10-24/home-cook-390x667.png
+docs/review/clearance-codex-2026-10-24/home-cook-390x844.png
+docs/review/clearance-codex-2026-10-24/index_single_recommender.py.txt
+docs/review/clearance-codex-2026-10-24/meals-default-a-baseline.jsonl.gz
+docs/review/clearance-codex-2026-10-24/meals-default-a-decay.jsonl.gz
+docs/review/clearance-codex-2026-10-24/meals-default-b-baseline.jsonl.gz
+docs/review/clearance-codex-2026-10-24/meals-default-b-decay.jsonl.gz
+docs/review/clearance-codex-2026-10-24/meals-seed7-baseline.jsonl.gz
+docs/review/clearance-codex-2026-10-24/meals-seed7-decay.jsonl.gz
+docs/review/clearance-codex-2026-10-24/profile-390x667.png
+docs/review/clearance-codex-2026-10-24/pytest-full.log
+docs/review/clearance-codex-2026-10-24/query-budget-clean-db.log
+docs/review/clearance-codex-2026-10-24/r01-invalid-limit-initial.log
+docs/review/clearance-codex-2026-10-24/r01-results.json
+docs/review/clearance-codex-2026-10-24/r01-run.log
+docs/review/clearance-codex-2026-10-24/r01_probe.py
+docs/review/clearance-codex-2026-10-24/r02-cli.log
+docs/review/clearance-codex-2026-10-24/r02-results.json
+docs/review/clearance-codex-2026-10-24/r02-run.log
+docs/review/clearance-codex-2026-10-24/r02-semantic-results.json
+docs/review/clearance-codex-2026-10-24/r02-semantic.log
+docs/review/clearance-codex-2026-10-24/r02_semantic_probe.py
+docs/review/clearance-codex-2026-10-24/report-verification.json
+docs/review/clearance-codex-2026-10-24/review_harness.py
+docs/review/clearance-codex-2026-10-24/room-entry-390x667.png
+docs/review/clearance-codex-2026-10-24/sandbox-390x844.png
+docs/review/clearance-codex-2026-10-24/source-integrity.json
+docs/review/clearance-codex-2026-10-24/sql-40-HOME_COOKING-batched-timing.json
+docs/review/clearance-codex-2026-10-24/sql-40-HOME_COOKING-batched.json
+docs/review/clearance-codex-2026-10-24/sql-40-HOME_COOKING-per-dish.json
+docs/review/clearance-codex-2026-10-24/sql-40-HOME_COOKING-per_dish-timing.json
+docs/review/clearance-codex-2026-10-24/sql-40-OUT_DINING-batched-timing.json
+docs/review/clearance-codex-2026-10-24/sql-40-OUT_DINING-batched.json
+docs/review/clearance-codex-2026-10-24/sql-40-OUT_DINING-per-dish.json
+docs/review/clearance-codex-2026-10-24/sql-40-OUT_DINING-per_dish-timing.json
+docs/review/clearance-codex-2026-10-24/sql-400-HOME_COOKING-batched-timing.json
+docs/review/clearance-codex-2026-10-24/sql-400-HOME_COOKING-batched.json
+docs/review/clearance-codex-2026-10-24/sql-400-HOME_COOKING-per-dish.json
+docs/review/clearance-codex-2026-10-24/sql-400-HOME_COOKING-per_dish-timing.json
+docs/review/clearance-codex-2026-10-24/sql-400-OUT_DINING-batched-timing.json
+docs/review/clearance-codex-2026-10-24/sql-400-OUT_DINING-batched.json
+docs/review/clearance-codex-2026-10-24/sql-400-OUT_DINING-per-dish.json
+docs/review/clearance-codex-2026-10-24/sql-400-OUT_DINING-per_dish-timing.json
+docs/review/clearance-codex-2026-10-24/sql-probe.log
+docs/review/clearance-codex-2026-10-24/submitted-manifest-check.json
+docs/review/clearance-codex-2026-10-24/ui-backend.log
+docs/review/clearance-codex-2026-10-24/ui-frontend.log
+docs/review/clearance-codex-2026-10-24/vite-review.config.mjs
+docs/review/clearance-codex-pre00-r01/REPORT.md
+docs/review/clearance-codex-pre00-r02/REPORT.md
+docs/review/clearance-codex-r02-2026-10-24/REPORT.md
+docs/review/clearance-codex-r02-2026-10-24/api-probe.log
+docs/review/clearance-codex-r02-2026-10-24/api_probe.py
+docs/review/clearance-codex-r02-2026-10-24/archived-data-results.json
+docs/review/clearance-codex-r02-2026-10-24/archived-data.log
+docs/review/clearance-codex-r02-2026-10-24/audit.py
+docs/review/clearance-codex-r02-2026-10-24/baseline-controls.json
+docs/review/clearance-codex-r02-2026-10-24/baseline-controls.log
+docs/review/clearance-codex-r02-2026-10-24/baseline.json
+docs/review/clearance-codex-r02-2026-10-24/baseline.log
+docs/review/clearance-codex-r02-2026-10-24/benchmark-write.sqlite
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/REPORT.md
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/actions.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/backend.log
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/baseline.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/cdp-events.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/console.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/cooking-390x667-metrics.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/cooking-390x667.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/cooking-390x667.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/eat-confirmed.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/eat-result.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/eat-result.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/final-protection.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/final_verify.py
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/five-dimensions.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/footprint-after-eat-390x667.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/footprint-after-eat-390x667.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/footprint.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/footprint.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/fridge.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/fridge.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/frontend-correct-cwd.log
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/frontend.log
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-390x667-metrics.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-390x667.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-390x667.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-390x844-metrics.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-390x844.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/home-structure.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/prepare.py
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/profile-390x667.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/profile.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/profile.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/role-switch.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/room-entry.png
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/room-entry.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/sandbox.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/summary.json
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/swap-card-stable.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/swap-card.txt
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/ui-isolated.sqlite
+docs/review/clearance-codex-r02-2026-10-24/browser-supplement/vite-review.config.mjs
+docs/review/clearance-codex-r02-2026-10-24/build.log
+docs/review/clearance-codex-r02-2026-10-24/cli-40-HOME_COOKING-batched.log
+docs/review/clearance-codex-r02-2026-10-24/cli-40-HOME_COOKING-legacy.log
+docs/review/clearance-codex-r02-2026-10-24/cli-40-OUT_DINING-batched.log
+docs/review/clearance-codex-r02-2026-10-24/cli-40-OUT_DINING-legacy.log
+docs/review/clearance-codex-r02-2026-10-24/cli-400-HOME_COOKING-batched.log
+docs/review/clearance-codex-r02-2026-10-24/cli-400-HOME_COOKING-legacy.log
+docs/review/clearance-codex-r02-2026-10-24/cli-400-OUT_DINING-batched.log
+docs/review/clearance-codex-r02-2026-10-24/cli-400-OUT_DINING-legacy.log
+docs/review/clearance-codex-r02-2026-10-24/cli-clean.sqlite
+docs/review/clearance-codex-r02-2026-10-24/cli-results.json
+docs/review/clearance-codex-r02-2026-10-24/cli.log
+docs/review/clearance-codex-r02-2026-10-24/color-results.json
+docs/review/clearance-codex-r02-2026-10-24/color-sandbox/scripts/check-colors.mjs
+docs/review/clearance-codex-r02-2026-10-24/color.log
+docs/review/clearance-codex-r02-2026-10-24/color_audit.mjs
+docs/review/clearance-codex-r02-2026-10-24/controls.py
+docs/review/clearance-codex-r02-2026-10-24/data_audit.py
+docs/review/clearance-codex-r02-2026-10-24/evidence-index.json
+docs/review/clearance-codex-r02-2026-10-24/final-protection.json
+docs/review/clearance-codex-r02-2026-10-24/final-protection.log
+docs/review/clearance-codex-r02-2026-10-24/pytest.log
+docs/review/clearance-codex-r02-2026-10-24/query-pytest.log
+docs/review/clearance-codex-r02-2026-10-24/r01-results.json
+docs/review/clearance-codex-r02-2026-10-24/r01-source-control.json
+docs/review/clearance-codex-r02-2026-10-24/random-metric-results.json
+docs/review/clearance-codex-r02-2026-10-24/random-metric.log
+docs/review/clearance-codex-r02-2026-10-24/random_metric.py
+docs/review/clearance-codex-r02-2026-10-24/review-sql.sqlite
+docs/review/clearance-codex-r02-2026-10-24/seed-guard-cli.log
+docs/review/clearance-codex-r02-2026-10-24/seed-guard-results.json
+docs/review/clearance-codex-r02-2026-10-24/seed-guard.log
+docs/review/clearance-codex-r02-2026-10-24/seed-sandbox/benchmark_snapshot.json
+docs/review/clearance-codex-r02-2026-10-24/seed-sandbox/disposable.sqlite
+docs/review/clearance-codex-r02-2026-10-24/seed-sandbox/init_seed_data.py
+docs/review/clearance-codex-r02-2026-10-24/seed7-independent.json
+docs/review/clearance-codex-r02-2026-10-24/seed7-verification.json
+docs/review/clearance-codex-r02-2026-10-24/seed7.log
+docs/review/clearance-codex-r02-2026-10-24/simulation-default/detail_seed20261024.jsonl
+docs/review/clearance-codex-r02-2026-10-24/simulation-default/rooms_seed20261024.jsonl
+docs/review/clearance-codex-r02-2026-10-24/simulation-independent.json
+docs/review/clearance-codex-r02-2026-10-24/simulation-seed7/detail_seed7.jsonl
+docs/review/clearance-codex-r02-2026-10-24/simulation-seed7/rooms_seed7.jsonl
+docs/review/clearance-codex-r02-2026-10-24/simulation-verification.json
+docs/review/clearance-codex-r02-2026-10-24/simulation.log
+docs/review/clearance-codex-r02-2026-10-24/source-before.json
+docs/review/clearance-codex-r02-2026-10-24/source_control.py
+docs/review/clearance-codex-r02-2026-10-24/sql-40-HOME_COOKING-batched-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-HOME_COOKING-batched.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-HOME_COOKING-per-dish.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-HOME_COOKING-per_dish-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-OUT_DINING-batched-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-OUT_DINING-batched.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-OUT_DINING-per-dish.json
+docs/review/clearance-codex-r02-2026-10-24/sql-40-OUT_DINING-per_dish-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-HOME_COOKING-batched-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-HOME_COOKING-batched.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-HOME_COOKING-per-dish.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-HOME_COOKING-per_dish-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-OUT_DINING-batched-timing.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-OUT_DINING-batched.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-OUT_DINING-per-dish.json
+docs/review/clearance-codex-r02-2026-10-24/sql-400-OUT_DINING-per_dish-timing.json
+docs/review/clearance-codex-r02-2026-10-24/verify_report.py
+docs/review/clearance-codex-r02-2026-10-24/write-check-results.json
+docs/review/clearance-codex-r02-2026-10-24/write-check.log
+docs/review/clearance-codex-r02-2026-10-24/write_checks.py
+docs/review/clearance-codex-r03-2026-10-24/AGENT_MEMORY-before-review.md
+docs/review/clearance-codex-r03-2026-10-24/REPORT.md
+docs/review/clearance-codex-r03-2026-10-24/STAGE_STATUS-before-review.md
+docs/review/clearance-codex-r03-2026-10-24/audit.py
+docs/review/clearance-codex-r03-2026-10-24/backend-browser.log
+docs/review/clearance-codex-r03-2026-10-24/baseline.json
+docs/review/clearance-codex-r03-2026-10-24/baseline.log
+docs/review/clearance-codex-r03-2026-10-24/browser-isolated.sqlite
+docs/review/clearance-codex-r03-2026-10-24/browser/actions.json
+docs/review/clearance-codex-r03-2026-10-24/browser/console.json
+docs/review/clearance-codex-r03-2026-10-24/browser/cooking.jpg
+docs/review/clearance-codex-r03-2026-10-24/browser/cooking.txt
+docs/review/clearance-codex-r03-2026-10-24/browser/events.json
+docs/review/clearance-codex-r03-2026-10-24/browser/footprint.jpg
+docs/review/clearance-codex-r03-2026-10-24/browser/footprint.txt
+docs/review/clearance-codex-r03-2026-10-24/browser/home-390x667.jpg
+docs/review/clearance-codex-r03-2026-10-24/browser/home-390x667.json
+docs/review/clearance-codex-r03-2026-10-24/browser/home-390x844.jpg
+docs/review/clearance-codex-r03-2026-10-24/browser/home-390x844.json
+docs/review/clearance-codex-r03-2026-10-24/browser/profile.jpg
+docs/review/clearance-codex-r03-2026-10-24/browser/profile.txt
+docs/review/clearance-codex-r03-2026-10-24/build.log
+docs/review/clearance-codex-r03-2026-10-24/color-harness-before-cwd-fix.json
+docs/review/clearance-codex-r03-2026-10-24/color-harness-before-cwd-fix.log
+docs/review/clearance-codex-r03-2026-10-24/color-results.json
+docs/review/clearance-codex-r03-2026-10-24/color-sandbox/scripts/check-colors.mjs
+docs/review/clearance-codex-r03-2026-10-24/color.log
+docs/review/clearance-codex-r03-2026-10-24/color_audit.mjs
+docs/review/clearance-codex-r03-2026-10-24/data-before-omega-adaptation.json
+docs/review/clearance-codex-r03-2026-10-24/data-probe.log
+docs/review/clearance-codex-r03-2026-10-24/data-results.json
+docs/review/clearance-codex-r03-2026-10-24/data_probe.py
+docs/review/clearance-codex-r03-2026-10-24/evidence-index.json
+docs/review/clearance-codex-r03-2026-10-24/final-protection.json
+docs/review/clearance-codex-r03-2026-10-24/final-protection.log
+docs/review/clearance-codex-r03-2026-10-24/frontend-browser.log
+docs/review/clearance-codex-r03-2026-10-24/prepare_browser.py
+docs/review/clearance-codex-r03-2026-10-24/pytest-workspace-temp.log
+docs/review/clearance-codex-r03-2026-10-24/pytest.log
+docs/review/clearance-codex-r03-2026-10-24/query-pytest.log
+docs/review/clearance-codex-r03-2026-10-24/review-validation.json
+docs/review/clearance-codex-r03-2026-10-24/review-validation.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/bad-refresh/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/bad-refresh/incoming.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/bad-refresh/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/bad-refresh/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-curve-sample/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-curve-sample/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-curve-sample/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-timestamp/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-timestamp/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/invalid-timestamp/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/missing/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/missing/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/older-with-offset/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/older-with-offset/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/older-with-offset/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/raw-simulation-output/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/raw-simulation-output/incoming.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/raw-simulation-output/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/raw-simulation-output/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/rejected-after-snapshot-write/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/rejected-after-snapshot-write/incoming.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/rejected-after-snapshot-write/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/rejected-after-snapshot-write/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/repeat-fresh/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/repeat-fresh/cli-1.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/repeat-fresh/incoming.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/repeat-fresh/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/repeat-fresh/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/stale-naive/cli-0.log
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/stale-naive/snapshot.json
+docs/review/clearance-codex-r03-2026-10-24/seed-cases/stale-naive/test.sqlite
+docs/review/clearance-codex-r03-2026-10-24/seed-probe.log
+docs/review/clearance-codex-r03-2026-10-24/seed-results.json
+docs/review/clearance-codex-r03-2026-10-24/seed7-independent.json
+docs/review/clearance-codex-r03-2026-10-24/seed7-verification.json
+docs/review/clearance-codex-r03-2026-10-24/seed7.log
+docs/review/clearance-codex-r03-2026-10-24/seed_cli_wrapper.py
+docs/review/clearance-codex-r03-2026-10-24/seed_probe.py
+docs/review/clearance-codex-r03-2026-10-24/simulation-default/absence_rooms_seed20261024.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-default/absence_seed20261024.json
+docs/review/clearance-codex-r03-2026-10-24/simulation-default/detail_seed20261024.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-default/rooms_seed20261024.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-independent.json
+docs/review/clearance-codex-r03-2026-10-24/simulation-seed7/absence_rooms_seed7.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-seed7/absence_seed7.json
+docs/review/clearance-codex-r03-2026-10-24/simulation-seed7/detail_seed7.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-seed7/rooms_seed7.jsonl
+docs/review/clearance-codex-r03-2026-10-24/simulation-verification.json
+docs/review/clearance-codex-r03-2026-10-24/simulation.log
+docs/review/clearance-codex-r03-2026-10-24/source-before.json
+docs/review/clearance-codex-r03-2026-10-24/syntax-results.json
+docs/review/clearance-codex-r03-2026-10-24/syntax.log
+docs/review/clearance-codex-r03-2026-10-24/syntax_probe.mjs
+docs/review/clearance-codex-r03-2026-10-24/verify_review.py
+docs/review/clearance-codex-r03-2026-10-24/vite-review.config.mjs
+docs/review/clearance-codex-r04-2026-10-24/REPORT.md
+docs/review/clearance-codex-s09-r04/REPORT.md
+docs/review/clearance/FINAL_REGRESSION.txt
+docs/review/clearance/README.md
+docs/review/clearance/f12/README.md
+docs/review/clearance/f12/after_count.txt
+docs/review/clearance/f12/gate_block_demo.txt
+docs/review/clearance/f12/gate_pass.txt
+docs/review/clearance/f12/gate_pass_again.txt
+docs/review/clearance/r01/before_after_summary.txt
+docs/review/clearance/r01/sql_after_home_cooking.log
+docs/review/clearance/r01/sql_after_out_dining.log
+docs/review/clearance/r01/sql_before_home_cooking.log
+docs/review/clearance/r02/benchmark_seed20261024.json
+docs/review/clearance/r02/benchmark_seed7.json
+docs/review/clearance/r02/db_benchmark_check.txt
+docs/review/clearance/r02/no_legacy_curves.txt
+docs/review/clearance/r02/simulate_seed20261024.log
+docs/review/clearance/r02/simulate_seed7.log
+docs/review/footprint/footprint-393.png
+docs/review/home/home-jiachang-393.png
+docs/review/recheck-2026-10-24/REPORT.md
+docs/review/recheck-2026-10-24/backend-recheck.json
+docs/review/recheck-2026-10-24/backend-validation.log
+docs/review/recheck-2026-10-24/browser-results.json
+docs/review/recheck-2026-10-24/footprint-after.jpg
+docs/review/recheck-2026-10-24/frontend-validation.log
+docs/review/recheck-2026-10-24/home-after-390x844.jpg
+docs/review/recheck-2026-10-24/navigation-before.jpg
+docs/review/recheck-2026-10-24/navigation-before.json
+docs/review/recheck-2026-10-24/profile-after.jpg
+docs/review/simulation/absence_rooms_seed20261024.jsonl
+docs/review/simulation/absence_rooms_seed7.jsonl
+docs/review/simulation/absence_seed20261024.json
+docs/review/simulation/absence_seed7.json
+docs/review/simulation/benchmark_seed20261024.json
+docs/review/simulation/benchmark_seed7.json
+docs/review/simulation/detail_seed20261024.jsonl
+docs/review/simulation/detail_seed7.jsonl
+docs/review/simulation/rooms_seed20261024.jsonl
+docs/review/simulation/rooms_seed7.jsonl
+docs/review/simulation/sim_seed20261024_ours.db-journal
+docs/review/simulation/smoke.json
+docs/review/simulation/smoke2.json
+docs/review/stages/PC01/r01/BASELINE.md
+docs/review/stages/PC01/r01/CHECKS.md
+docs/review/stages/PC01/r01/REVIEW.md
+docs/review/stages/PC01/r01/SOURCE_MANIFEST.json
+docs/review/stages/PC01/r01/SUBMISSION.md
+docs/review/stages/PC01/r01/browser/NOT_APPLICABLE.md
+docs/review/stages/PC01/r01/data/benchmark_seed20261024.json
+docs/review/stages/PC01/r01/data/benchmark_seed7.json
+docs/review/stages/PC01/r01/data/benchmark_snapshot.json
+docs/review/stages/PC01/r01/data/db_benchmark_check.txt
+docs/review/stages/PC01/r01/data/no_legacy_curves.txt
+docs/review/stages/PC01/r01/logs/pytest.log
+docs/review/stages/PC01/r01/logs/reseed.log
+docs/review/stages/PC01/r01/logs/simulate_seed20261024.log
+docs/review/stages/PC01/r01/logs/simulate_seed7.log
+docs/review/stages/PC01/r02/BASELINE.md
+docs/review/stages/PC01/r02/CHECKS.md
+docs/review/stages/PC01/r02/REVIEW.md
+docs/review/stages/PC01/r02/SOURCE_MANIFEST.json
+docs/review/stages/PC01/r02/SUBMISSION.md
+docs/review/stages/PC01/r02/browser/NOT_APPLICABLE.md
+docs/review/stages/PC01/r02/data/_db_check.py
+docs/review/stages/PC01/r02/data/benchmark_seed20261024.json
+docs/review/stages/PC01/r02/data/benchmark_seed7.json
+docs/review/stages/PC01/r02/data/db_benchmark_check.txt
+docs/review/stages/PC01/r02/data/detail_lines.txt
+docs/review/stages/PC01/r02/data/git_status_short.txt
+docs/review/stages/PC01/r02/data/no_legacy_curves.txt
+docs/review/stages/PC01/r02/logs/01_simulate_seed20261024.log
+docs/review/stages/PC01/r02/logs/02_simulate_seed7_lambda0.8.log
+docs/review/stages/PC01/r02/logs/03_reseed.log
+docs/review/stages/PC01/r02/logs/04_db_benchmark_check.log
+docs/review/stages/PC01/r02/logs/05_pytest.log
+docs/review/stages/PC01/r03/BASELINE.md
+docs/review/stages/PC01/r03/CHECKS.md
+docs/review/stages/PC01/r03/REVIEW.md
+docs/review/stages/PC01/r03/SOURCE_MANIFEST.json
+docs/review/stages/PC01/r03/SUBMISSION.md
+docs/review/stages/PC01/r03/browser/NOT_APPLICABLE.md
+docs/review/stages/PC01/r03/data/absence_seed20261024.json
+docs/review/stages/PC01/r03/data/benchmark_seed20261024.json
+docs/review/stages/PC01/r03/data/benchmark_seed7.json
+docs/review/stages/PC01/r03/data/db_benchmark_check.txt
+docs/review/stages/PC01/r03/data/detail_seed20261024.jsonl
+docs/review/stages/PC01/r03/data/detail_seed7.jsonl
+docs/review/stages/PC01/r03/data/fixed_samples.json
+docs/review/stages/PC01/r03/data/git_status_short.txt
+docs/review/stages/PC01/r03/data/method_notes.md
+docs/review/stages/PC01/r03/data/no_legacy_curves.txt
+docs/review/stages/PC01/r03/data/rooms_seed20261024.jsonl
+docs/review/stages/PC01/r03/logs/01_simulate_seed20261024.err.log
+docs/review/stages/PC01/r03/logs/01_simulate_seed20261024.log
+docs/review/stages/PC01/r03/logs/02_simulate_seed7.err.log
+docs/review/stages/PC01/r03/logs/02_simulate_seed7.log
+docs/review/stages/PC01/r03/logs/03_reseed.log
+docs/review/stages/PC01/r03/logs/04_db_benchmark_check.log
+docs/review/stages/PC01/r03/logs/05_pytest.log
+docs/review/stages/PC01/r03/logs/06_stale_snapshot_blocked.log
+docs/review/stages/PC01/r03/logs/07_r2_01_r2_02_tests.log
+docs/review/stages/PC01/r03/logs/08_no_legacy_curves.log
+docs/review/stages/PC01/r04/BASELINE.md
+docs/review/stages/PC01/r04/CHECKS.md
+docs/review/stages/PC01/r04/REVIEW.md
+docs/review/stages/PC01/r04/SOURCE_MANIFEST.json
+docs/review/stages/PC01/r04/SUBMISSION.md
+docs/review/stages/PC01/r04/browser/NOT_APPLICABLE.md
+docs/review/stages/PC01/r04/data/bars_recomputed.json
+docs/review/stages/PC01/r04/data/benchmark_seed20261024.json
+docs/review/stages/PC01/r04/data/benchmark_seed7.json
+docs/review/stages/PC01/r04/data/db_benchmark_check.json
+docs/review/stages/PC01/r04/data/db_inventory.json
+docs/review/stages/PC01/r04/data/fixed_samples.json
+docs/review/stages/PC01/r04/data/git_status_short.txt
+docs/review/stages/PC01/r04/data/seed-probe/allow_stale_refresh/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/allow_stale_refresh/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/allow_stale_refresh/incoming.json
+docs/review/stages/PC01/r04/data/seed-probe/base.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/base_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/full_output_with_params/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/full_output_with_params/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/full_output_with_params/incoming.json
+docs/review/stages/PC01/r04/data/seed-probe/illegal_sample_curve/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/illegal_sample_curve/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/invalid_generated_at/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/invalid_generated_at/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/missing_snapshot/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/plain_stale_no_incoming/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/plain_stale_no_incoming/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/rejected_incoming_keeps_target/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/rejected_incoming_keeps_target/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/rejected_incoming_keeps_target/incoming.json
+docs/review/stages/PC01/r04/data/seed-probe/repeat_run/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/repeat_run/case.sqlite
+docs/review/stages/PC01/r04/data/seed-probe/repeat_run/incoming.json
+docs/review/stages/PC01/r04/data/seed-probe/timezone_aware_older/benchmark_snapshot.json
+docs/review/stages/PC01/r04/data/seed-probe/timezone_aware_older/case.sqlite
+docs/review/stages/PC01/r04/data/seed-results.json
+docs/review/stages/PC01/r04/data/sim_seed20261024/absence_rooms_seed20261024.jsonl
+docs/review/stages/PC01/r04/data/sim_seed20261024/absence_seed20261024.json
+docs/review/stages/PC01/r04/data/sim_seed20261024/detail_seed20261024.jsonl
+docs/review/stages/PC01/r04/data/sim_seed20261024/rooms_seed20261024.jsonl
+docs/review/stages/PC01/r04/data/sim_seed7/absence_rooms_seed7.jsonl
+docs/review/stages/PC01/r04/data/sim_seed7/absence_seed7.json
+docs/review/stages/PC01/r04/data/sim_seed7/detail_seed7.jsonl
+docs/review/stages/PC01/r04/data/sim_seed7/rooms_seed7.jsonl
+docs/review/stages/PC01/r04/logs/01_simulate_seed20261024.err.log
+docs/review/stages/PC01/r04/logs/01_simulate_seed20261024.exit
+docs/review/stages/PC01/r04/logs/01_simulate_seed20261024.log
+docs/review/stages/PC01/r04/logs/02_simulate_seed7.err.log
+docs/review/stages/PC01/r04/logs/02_simulate_seed7.exit
+docs/review/stages/PC01/r04/logs/02_simulate_seed7.log
+docs/review/stages/PC01/r04/logs/03_metric_probe.log
+docs/review/stages/PC01/r04/logs/04_seed_probe.log
+docs/review/stages/PC01/r04/logs/05_pytest.log
+docs/review/stages/PC01/r04/logs/05a_pytest_review_basetemp.log
+docs/review/stages/PC01/r04/logs/06_recompute_bars.log
+docs/review/stages/PC01/r04/logs/07_reseed.log
+docs/review/stages/PC01/r04/logs/08_repeat_reseed.log
+docs/review/stages/PC01/r04/logs/09_db_check.log
+docs/review/stages/PC01/r04/probes/db_check.py
+docs/review/stages/PC01/r04/probes/metric_probe.py
+docs/review/stages/PC01/r04/probes/recompute_bars.py
+docs/review/stages/PC01/r04/probes/seed_probe.py
+docs/review/stages/PC02/r01/BASELINE.md
+docs/review/stages/PC02/r01/CHECKS.md
+docs/review/stages/PC02/r01/REVIEW.md
+docs/review/stages/PC02/r01/SOURCE_MANIFEST.json
+docs/review/stages/PC02/r01/SUBMISSION.md
+docs/review/stages/PC02/r01/browser/NOT_APPLICABLE.md
+docs/review/stages/PC02/r01/data/before_after_summary.txt
+docs/review/stages/PC02/r01/logs/pytest_full.log
+docs/review/stages/PC02/r01/logs/pytest_query_budget.log
+docs/review/stages/PC02/r01/logs/sql_after_home_cooking.log
+docs/review/stages/PC02/r01/logs/sql_after_out_dining.log
+docs/review/stages/PC02/r01/logs/sql_before_home_cooking.log
+docs/review/stages/PC02/r01/logs/sql_before_out_dining.log
+docs/review/stages/PC02/r02/BASELINE.md
+docs/review/stages/PC02/r02/CHECKS.md
+docs/review/stages/PC02/r02/REVIEW.md
+docs/review/stages/PC02/r02/SOURCE_MANIFEST.json
+docs/review/stages/PC02/r02/SUBMISSION.md
+docs/review/stages/PC02/r02/browser/NOT_APPLICABLE.md
+docs/review/stages/PC02/r02/data/before_after_summary.txt
+docs/review/stages/PC02/r02/data/git_status_short.txt
+docs/review/stages/PC02/r02/logs/10_clean_db_pytest.log
+docs/review/stages/PC02/r02/logs/11_measure_batched.log
+docs/review/stages/PC02/r02/logs/12_measure_legacy.log
+docs/review/stages/PC02/r02/logs/13_measure_out_dining.log
+docs/review/stages/PC03/r01/BASELINE.md
+docs/review/stages/PC03/r01/CHECKS.md
+docs/review/stages/PC03/r01/REVIEW.md
+docs/review/stages/PC03/r01/SOURCE_MANIFEST.json
+docs/review/stages/PC03/r01/SUBMISSION.md
+docs/review/stages/PC03/r01/browser/README.md
+docs/review/stages/PC03/r01/browser/footprint-393.png
+docs/review/stages/PC03/r01/browser/home-390x667.png
+docs/review/stages/PC03/r01/browser/home-393x852.png
+docs/review/stages/PC03/r01/data/after_scan.txt
+docs/review/stages/PC03/r01/data/token_map.md
+docs/review/stages/PC03/r01/data/warm_color_grep.txt
+docs/review/stages/PC03/r01/logs/build.log
+docs/review/stages/PC03/r01/logs/gate_block_demo.log
+docs/review/stages/PC03/r01/logs/gate_pass.log
+docs/review/stages/PC03/r01/logs/gate_pass_again.log
+docs/review/stages/PC03/r01/logs/gate_verbose.log
+docs/review/stages/PC03/r01/logs/home_fit.log
+docs/review/stages/PC03/r01/logs/normalize_dryrun.log
+docs/review/stages/PC03/r02/BASELINE.md
+docs/review/stages/PC03/r02/CHECKS.md
+docs/review/stages/PC03/r02/REVIEW.md
+docs/review/stages/PC03/r02/SOURCE_MANIFEST.json
+docs/review/stages/PC03/r02/SUBMISSION.md
+docs/review/stages/PC03/r02/browser/footprint-393.png
+docs/review/stages/PC03/r02/browser/home-390x667.png
+docs/review/stages/PC03/r02/browser/home-393x852.png
+docs/review/stages/PC03/r02/data/git_status_short.txt
+docs/review/stages/PC03/r02/logs/20_check_colors_pass.log
+docs/review/stages/PC03/r02/logs/21_check_colors_block_css.log
+docs/review/stages/PC03/r02/logs/22_check_colors_block_bits.log
+docs/review/stages/PC03/r02/logs/23_check_colors_after_cleanup.log
+docs/review/stages/PC03/r02/logs/24_build.log
+docs/review/stages/PC03/r02/logs/25_home_fit.log
+docs/review/stages/PC03/r03/BASELINE.md
+docs/review/stages/PC03/r03/CHECKS.md
+docs/review/stages/PC03/r03/REVIEW.md
+docs/review/stages/PC03/r03/SOURCE_MANIFEST.json
+docs/review/stages/PC03/r03/SUBMISSION.md
+docs/review/stages/PC03/r03/browser/footprint-393.png
+docs/review/stages/PC03/r03/browser/home-390x667.png
+docs/review/stages/PC03/r03/browser/home-393x852.png
+docs/review/stages/PC03/r03/data/git_status_short.txt
+docs/review/stages/PC03/r03/logs/20_check_colors_pass.log
+docs/review/stages/PC03/r03/logs/21_check_colors_block_css.log
+docs/review/stages/PC03/r03/logs/22_check_colors_block_bits.log
+docs/review/stages/PC03/r03/logs/23_check_colors_after_cleanup.log
+docs/review/stages/PC03/r03/logs/24_build.log
+docs/review/stages/PC03/r03/logs/25_home_fit.log
+docs/review/stages/PC03/r03/logs/gate_probes.json
+docs/review/stages/PC03/r03/logs/gate_probes.log
+docs/review/stages/PC03/r04/BASELINE.md
+docs/review/stages/PC03/r04/CHECKS.md
+docs/review/stages/PC03/r04/REVIEW.md
+docs/review/stages/PC03/r04/SOURCE_MANIFEST.json
+docs/review/stages/PC03/r04/SUBMISSION.md
+docs/review/stages/PC03/r04/browser/NOT_APPLICABLE.md
+docs/review/stages/PC03/r04/data/git_status_short.txt
+docs/review/stages/PC03/r04/logs/20_build.log
+docs/review/stages/PC03/r04/logs/20_check_colors_real.log
+docs/review/stages/PC03/r04/logs/21_gate_probes.log
+docs/review/stages/PC03/r04/logs/gate_probes.json
+docs/review/stages/PC03/r04/sandbox/scripts/check-colors.mjs
+docs/review/stages/PRE-00/r01/BASELINE.md
+docs/review/stages/PRE-00/r01/CHECKS.md
+docs/review/stages/PRE-00/r01/SOURCE_MANIFEST.json
+docs/review/stages/PRE-00/r01/SUBMISSION.md
+docs/review/stages/PRE-00/r01/data/baseline.json
+docs/review/stages/PRE-00/r01/data/failure_rollback.json
+docs/review/stages/PRE-00/r01/data/final_protection.json
+docs/review/stages/PRE-00/r01/data/generate_evidence.py
+docs/review/stages/PRE-00/r01/data/migration_run1.json
+docs/review/stages/PRE-00/r01/data/migration_run2.json
+docs/review/stages/PRE-00/r01/data/post_schema.json
+docs/review/stages/PRE-00/r01/data/pre_schema.json
+docs/review/stages/PRE-00/r01/logs/00_dev_copy_provenance.log
+docs/review/stages/PRE-00/r01/logs/01_baseline.txt
+docs/review/stages/PRE-00/r01/logs/02_server_pre_migration.log
+docs/review/stages/PRE-00/r01/logs/03_http_health_pre.json
+docs/review/stages/PRE-00/r01/logs/04_http_recommend_pre.txt
+docs/review/stages/PRE-00/r01/logs/05_http_stats_pre.txt
+docs/review/stages/PRE-00/r01/logs/06_pytest_pre00.log
+docs/review/stages/PRE-00/r01/logs/07_migration_run1.log
+docs/review/stages/PRE-00/r01/logs/08_migration_run2.log
+docs/review/stages/PRE-00/r01/logs/09_server_post_migration.log
+docs/review/stages/PRE-00/r01/logs/10_http_health_post.json
+docs/review/stages/PRE-00/r01/logs/11_http_recommend_out_post.json
+docs/review/stages/PRE-00/r01/logs/12_http_recommend_home_post.json
+docs/review/stages/PRE-00/r01/logs/13_http_stats_post.json
+docs/review/stages/PRE-00/r01/logs/14_post_summary.json
+docs/review/stages/PRE-00/r01/logs/15_guard_refusal.log
+docs/review/stages/PRE-00/r01/logs/16_failure_rollback.log
+docs/review/stages/PRE-00/r01/logs/17_pytest_full_isolated.log
+docs/review/stages/PRE-00/r01/logs/18_model_schema_parity.log
+docs/review/stages/PRE-00/r01/logs/19_final_protection.log
+docs/review/stages/PRE-00/r01/logs/20_manifest_validation_gen.log
+docs/review/stages/PRE-00/r01/validation.json
+docs/review/stages/PRE-00/r02/BASELINE.md
+docs/review/stages/PRE-00/r02/CHECKS.md
+docs/review/stages/PRE-00/r02/SOURCE_MANIFEST.json
+docs/review/stages/PRE-00/r02/SUBMISSION.md
+docs/review/stages/PRE-00/r02/data/baseline.json
+docs/review/stages/PRE-00/r02/data/dev_copy.json
+docs/review/stages/PRE-00/r02/data/failure_rollback.json
+docs/review/stages/PRE-00/r02/data/final_protection.json
+docs/review/stages/PRE-00/r02/data/generate_evidence.py
+docs/review/stages/PRE-00/r02/data/guard_probe.json
+docs/review/stages/PRE-00/r02/data/guard_probe.py
+docs/review/stages/PRE-00/r02/data/migration_run1.json
+docs/review/stages/PRE-00/r02/data/migration_run2.json
+docs/review/stages/PRE-00/r02/data/path_alias_probe.json
+docs/review/stages/PRE-00/r02/data/post_schema.json
+docs/review/stages/PRE-00/r02/data/pre_schema.json
+docs/review/stages/PRE-00/r02/logs/00_baseline.txt
+docs/review/stages/PRE-00/r02/logs/01_pytest_pre00_r02.log
+docs/review/stages/PRE-00/r02/logs/02_guard_probe.log
+docs/review/stages/PRE-00/r02/logs/03_dev_copy_provenance.log
+docs/review/stages/PRE-00/r02/logs/04_migration_run1.log
+docs/review/stages/PRE-00/r02/logs/05_migration_run2.log
+docs/review/stages/PRE-00/r02/logs/06_server_post_migration.log
+docs/review/stages/PRE-00/r02/logs/07_http_health.json
+docs/review/stages/PRE-00/r02/logs/08_http_recommend_out.json
+docs/review/stages/PRE-00/r02/logs/09_http_recommend_home.json
+docs/review/stages/PRE-00/r02/logs/10_http_stats.json
+docs/review/stages/PRE-00/r02/logs/11_http_fridge.json
+docs/review/stages/PRE-00/r02/logs/12_post_summary.json
+docs/review/stages/PRE-00/r02/logs/13_pytest_full_isolated.log
+docs/review/stages/PRE-00/r02/logs/14_schema_parity.log
+docs/review/stages/PRE-00/r02/logs/15_direct_guard.log
+docs/review/stages/PRE-00/r02/logs/16_failure_rollback.log
+docs/review/stages/PRE-00/r02/logs/17_final_protection.log
+docs/review/stages/PRE-00/r02/logs/18_path_alias_probe.log
+docs/review/stages/PRE-00/r02/logs/19_manifest_validation_gen.log
+docs/review/stages/PRE-00/r02/validation.json
+docs/review/stages/S00/r01/logs/01_git_status.txt
+docs/review/stages/S09/r01/BASELINE.md
+docs/review/stages/S09/r01/CHECKS.md
+docs/review/stages/S09/r01/CONTRACT_MATRIX.md
+docs/review/stages/S09/r01/DATA_PLAN.md
+docs/review/stages/S09/r01/DECISIONS.md
+docs/review/stages/S09/r01/EXPERIMENT_PROTOCOL.md
+docs/review/stages/S09/r01/REVIEW.md
+docs/review/stages/S09/r01/SOURCE_MANIFEST.json
+docs/review/stages/S09/r01/SUBMISSION.md
+docs/review/stages/S09/r01/data/amap_docs_check.json
+docs/review/stages/S09/r01/data/amap_keyless_check.json
+docs/review/stages/S09/r01/data/amap_official_facts.json
+docs/review/stages/S09/r01/data/assets_baseline.json
+docs/review/stages/S09/r01/data/dataset_fingerprint.json
+docs/review/stages/S09/r01/data/db_baseline.json
+docs/review/stages/S09/r01/data/dependency_and_license_assessment.json
+docs/review/stages/S09/r01/data/env.json
+docs/review/stages/S09/r01/data/evidence_index.json
+docs/review/stages/S09/r01/data/external_deps.json
+docs/review/stages/S09/r01/data/file_hashes.json
+docs/review/stages/S09/r01/data/git_status_short.txt
+docs/review/stages/S09/r01/data/howtocook_dedup.json
+docs/review/stages/S09/r01/data/opendatalab_xiachufang.json
+docs/review/stages/S09/r01/data/recipe_details.json
+docs/review/stages/S09/r01/data/recipe_repos_check.json
+docs/review/stages/S09/r01/data/recipe_source_assessment.json
+docs/review/stages/S09/r01/data/route_gap.json
+docs/review/stages/S09/r01/data/routes.json
+docs/review/stages/S09/r01/data/validation.json
+docs/review/stages/S09/r01/logs/01_env.log
+docs/review/stages/S09/r01/logs/02_baseline.log
+docs/review/stages/S09/r01/logs/03_amap_keyless.log
+docs/review/stages/S09/r01/logs/04_amap_docs.log
+docs/review/stages/S09/r01/logs/05_amap_docs_extract.log
+docs/review/stages/S09/r01/logs/06_amap_tables.log
+docs/review/stages/S09/r01/logs/07_recipe_repos.log
+docs/review/stages/S09/r01/logs/08_recipe_details.log
+docs/review/stages/S09/r01/logs/09_opendatalab.log
+docs/review/stages/S09/r01/logs/10_xiachufang_page.log
+docs/review/stages/S09/r01/logs/11_seed_dedup.log
+docs/review/stages/S09/r01/logs/12_feature_baseline.log
+docs/review/stages/S09/r01/logs/13_amap_fields.log
+docs/review/stages/S09/r01/logs/14_dataset_fingerprint.log
+docs/review/stages/S09/r01/logs/15_dep_licenses.log
+docs/review/stages/S09/r01/logs/16_pytest_baseline.log
+docs/review/stages/S09/r01/logs/17_validate_evidence.log
+docs/review/stages/S09/r01/logs/18_howtocook_dedup.log
+docs/review/stages/S09/r01/probes/baseline_probe.py
+docs/review/stages/S09/r01/probes/validate_evidence.py
+docs/review/stages/S09/r02/BASELINE.md
+docs/review/stages/S09/r02/CHECKS.md
+docs/review/stages/S09/r02/CONTRACT_MATRIX.md
+docs/review/stages/S09/r02/DATA_PLAN.md
+docs/review/stages/S09/r02/DECISIONS.md
+docs/review/stages/S09/r02/EXPERIMENT_PROTOCOL.md
+docs/review/stages/S09/r02/REVIEW.md
+docs/review/stages/S09/r02/SOURCE_MANIFEST.json
+docs/review/stages/S09/r02/SUBMISSION.md
+docs/review/stages/S09/r02/data/amap_collection.json
+docs/review/stages/S09/r02/data/amap_geocode.json
+docs/review/stages/S09/r02/data/amap_jianda_collection.json
+docs/review/stages/S09/r02/data/amap_jianda_geocode.json
+docs/review/stages/S09/r02/data/amap_jianda_pois.jsonl
+docs/review/stages/S09/r02/data/amap_pagination_probe.json
+docs/review/stages/S09/r02/data/amap_poi_smoke.json
+docs/review/stages/S09/r02/data/amap_pois.jsonl
+docs/review/stages/S09/r02/data/assets_baseline.json
+docs/review/stages/S09/r02/data/canteen_plan.json
+docs/review/stages/S09/r02/data/db_baseline.json
+docs/review/stages/S09/r02/data/doc_sync_check.json
+docs/review/stages/S09/r02/data/env.json
+docs/review/stages/S09/r02/data/evidence_index.json
+docs/review/stages/S09/r02/data/external_deps.json
+docs/review/stages/S09/r02/data/file_hashes.json
+docs/review/stages/S09/r02/data/git_status_short.txt
+docs/review/stages/S09/r02/data/jianda_poi_spotcheck.json
+docs/review/stages/S09/r02/data/key_redaction_report.json
+docs/review/stages/S09/r02/data/poi_field_stats.json
+docs/review/stages/S09/r02/data/route_gap.json
+docs/review/stages/S09/r02/data/routes.json
+docs/review/stages/S09/r02/logs/01_geocode.log
+docs/review/stages/S09/r02/logs/02_baseline.log
+docs/review/stages/S09/r02/logs/02_poi_smoke.log
+docs/review/stages/S09/r02/logs/03_pagination_probe.log
+docs/review/stages/S09/r02/logs/04_amap_collect.log
+docs/review/stages/S09/r02/logs/05_finalize_poi.log
+docs/review/stages/S09/r02/logs/06_baseline.log
+docs/review/stages/S09/r02/logs/07_validate.log
+docs/review/stages/S09/r02/logs/08_pytest.log
+docs/review/stages/S09/r02/logs/09_sanitize_pois.log
+docs/review/stages/S09/r02/logs/10_doc_sync.log
+docs/review/stages/S09/r02/logs/12_doc_sync_final.log
+docs/review/stages/S09/r02/logs/14_key_redaction.log
+docs/review/stages/S09/r02/logs/15_jianda_geocode.log
+docs/review/stages/S09/r02/logs/16_jianda_collect.log
+docs/review/stages/S09/r02/logs/17_sanitize_siyuan.log
+docs/review/stages/S09/r02/logs/18_sanitize_jianda.log
+docs/review/stages/S09/r02/logs/19_doc_sync_final.log
+docs/review/stages/S09/r02/logs/20_siyuan_recollect.log
+docs/review/stages/S09/r02/logs/21_sanitize_siyuan_recollect.log
+docs/review/stages/S09/r02/logs/22_jianda_spotcheck.log
+docs/review/stages/S09/r02/logs/23_poi_field_stats.log
+docs/review/stages/S09/r02/logs/24_validate_d03_fields.log
+docs/review/stages/S09/r02/logs/25_doc_sync_check.log
+docs/review/stages/S09/r02/probes/amap_collect.py
+docs/review/stages/S09/r02/probes/amap_geocode_campus.py
+docs/review/stages/S09/r02/probes/baseline_probe.py
+docs/review/stages/S09/r02/probes/doc_sync_check.py
+docs/review/stages/S09/r02/probes/finalize_poi_summary.py
+docs/review/stages/S09/r02/probes/poi_field_stats.py
+docs/review/stages/S09/r02/probes/poi_spotcheck.py
+docs/review/stages/S09/r02/probes/redact_key.py
+docs/review/stages/S09/r02/probes/sanitize_pois.py
+docs/review/stages/S09/r02/probes/validate_evidence.py
+docs/review/stages/S09/r02/validation.json
+docs/review/stages/S09/r03/BASELINE.md
+docs/review/stages/S09/r03/CHECKS.md
+docs/review/stages/S09/r03/EVIDENCE_MAP.md
+docs/review/stages/S09/r03/REVIEW.md
+docs/review/stages/S09/r03/SOURCE_MANIFEST.json
+docs/review/stages/S09/r03/SUBMISSION.md
+docs/review/stages/S09/r03/data/r03_evidence.json
+docs/review/stages/S09/r03/logs/01_validate_r03.log
+docs/review/stages/S09/r03/logs/02_build_manifest.log
+docs/review/stages/S09/r03/probes/build_manifest.py
+docs/review/stages/S09/r03/probes/validate_r03.py
+docs/review/stages/S09/r03/validation.json
+docs/review/stages/S09/r04/BASELINE.md
+docs/review/stages/S09/r04/CHECKS.md
+docs/review/stages/S09/r04/EVIDENCE_MAP.md
+docs/review/stages/S09/r04/SEAL.md
+docs/review/stages/S09/r04/SOURCE_MANIFEST.json
+docs/review/stages/S09/r04/SUBMISSION.md
+docs/review/stages/S09/r04/data/r04_evidence.json
+docs/review/stages/S09/r04/logs/01_premanifest_check.log
+docs/review/stages/S09/r04/probes/verify_sealed.py
+docs/review/stages/S09/r04/snapshot/SOURCES.json
+docs/review/stages/S09/r04/snapshot/r02/BASELINE.md
+docs/review/stages/S09/r04/snapshot/r02/CHECKS.md
+docs/review/stages/S09/r04/snapshot/r02/CONTRACT_MATRIX.md
+docs/review/stages/S09/r04/snapshot/r02/DATA_PLAN.md
+docs/review/stages/S09/r04/snapshot/r02/DECISIONS.md
+docs/review/stages/S09/r04/snapshot/r02/EXPERIMENT_PROTOCOL.md
+docs/review/stages/S09/r04/snapshot/r02/SUBMISSION.md
+docs/review/stages/S09/r04/snapshot/r02/data/amap_collection.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_geocode.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_jianda_collection.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_jianda_geocode.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_jianda_pois.jsonl
+docs/review/stages/S09/r04/snapshot/r02/data/amap_pagination_probe.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_poi_smoke.json
+docs/review/stages/S09/r04/snapshot/r02/data/amap_pois.jsonl
+docs/review/stages/S09/r04/snapshot/r02/data/assets_baseline.json
+docs/review/stages/S09/r04/snapshot/r02/data/canteen_plan.json
+docs/review/stages/S09/r04/snapshot/r02/data/db_baseline.json
+docs/review/stages/S09/r04/snapshot/r02/data/doc_sync_check.json
+docs/review/stages/S09/r04/snapshot/r02/data/env.json
+docs/review/stages/S09/r04/snapshot/r02/data/evidence_index.json
+docs/review/stages/S09/r04/snapshot/r02/data/external_deps.json
+docs/review/stages/S09/r04/snapshot/r02/data/file_hashes.json
+docs/review/stages/S09/r04/snapshot/r02/data/git_status_short.txt
+docs/review/stages/S09/r04/snapshot/r02/data/jianda_poi_spotcheck.json
+docs/review/stages/S09/r04/snapshot/r02/data/key_redaction_report.json
+docs/review/stages/S09/r04/snapshot/r02/data/poi_field_stats.json
+docs/review/stages/S09/r04/snapshot/r02/data/route_gap.json
+docs/review/stages/S09/r04/snapshot/r02/data/routes.json
+docs/review/stages/S09/r04/snapshot/r02/logs/01_geocode.log
+docs/review/stages/S09/r04/snapshot/r02/logs/02_baseline.log
+docs/review/stages/S09/r04/snapshot/r02/logs/02_poi_smoke.log
+docs/review/stages/S09/r04/snapshot/r02/logs/03_pagination_probe.log
+docs/review/stages/S09/r04/snapshot/r02/logs/04_amap_collect.log
+docs/review/stages/S09/r04/snapshot/r02/logs/05_finalize_poi.log
+docs/review/stages/S09/r04/snapshot/r02/logs/06_baseline.log
+docs/review/stages/S09/r04/snapshot/r02/logs/07_validate.log
+docs/review/stages/S09/r04/snapshot/r02/logs/08_pytest.log
+docs/review/stages/S09/r04/snapshot/r02/logs/09_sanitize_pois.log
+docs/review/stages/S09/r04/snapshot/r02/logs/10_doc_sync.log
+docs/review/stages/S09/r04/snapshot/r02/logs/12_doc_sync_final.log
+docs/review/stages/S09/r04/snapshot/r02/logs/14_key_redaction.log
+docs/review/stages/S09/r04/snapshot/r02/logs/15_jianda_geocode.log
+docs/review/stages/S09/r04/snapshot/r02/logs/16_jianda_collect.log
+docs/review/stages/S09/r04/snapshot/r02/logs/17_sanitize_siyuan.log
+docs/review/stages/S09/r04/snapshot/r02/logs/18_sanitize_jianda.log
+docs/review/stages/S09/r04/snapshot/r02/logs/19_doc_sync_final.log
+docs/review/stages/S09/r04/snapshot/r02/logs/20_siyuan_recollect.log
+docs/review/stages/S09/r04/snapshot/r02/logs/21_sanitize_siyuan_recollect.log
+docs/review/stages/S09/r04/snapshot/r02/logs/22_jianda_spotcheck.log
+docs/review/stages/S09/r04/snapshot/r02/logs/23_poi_field_stats.log
+docs/review/stages/S09/r04/snapshot/r02/logs/24_validate_d03_fields.log
+docs/review/stages/S09/r04/snapshot/r02/logs/25_doc_sync_check.log
+docs/review/stages/S09/r04/snapshot/r02/validation.json
+docs/review/stages/S09/r04/snapshot/r03/BASELINE.md
+docs/review/stages/S09/r04/snapshot/r03/CHECKS.md
+docs/review/stages/S09/r04/snapshot/r03/EVIDENCE_MAP.md
+docs/review/stages/S09/r04/snapshot/r03/SOURCE_MANIFEST.json
+docs/review/stages/S09/r04/snapshot/r03/SUBMISSION.md
+docs/review/stages/S09/r04/snapshot/r03/data/r03_evidence.json
+docs/review/stages/S09/r04/snapshot/r03/logs/01_validate_r03.log
+docs/review/stages/S09/r04/snapshot/r03/logs/02_build_manifest.log
+docs/review/stages/S09/r04/snapshot/r03/validation.json
+docs/review/stages/S09/r04/snapshot/r04_reports/PC01-r04-PASS.md
+docs/review/stages/S09/r04/snapshot/r04_reports/PC02-r01-FAIL.md
+docs/review/stages/S09/r04/snapshot/r04_reports/PC02-r02-PASS.md
+docs/review/stages/S09/r04/snapshot/r04_reports/PC03-r04-PASS.md
+docs/review/stages/S09/r04/snapshot/r04_reports/clearance-r04-REPORT.md
+docs/review/stages/S09/r04/snapshot/root/AGENTS.md
+docs/review/stages/S09/r04/snapshot/root/BATCH4_PLAN.md
+docs/review/stages/S09/r04/snapshot/root/DASHBOARD_EXPANSION.md
+docs/review/stages/S09/r04/snapshot/root/MASTER_SPEC.md
+docs/review/stages/S09/r04/snapshot/root/docs/AGENT_MEMORY.md
+docs/review/stages/S09/r04/snapshot/root/docs/DISH_IMAGES_LEDGER.md
+docs/review/stages/S09/r04/snapshot/root/docs/DISH_IMAGES_SOURCES_RAW.md
+docs/review/stages/S09/r04/snapshot/root/docs/LOTTIE_SOURCES.md
+docs/review/stages/S09/r04/snapshot/root/docs/README.md
+docs/review/stages/S09/r04/snapshot/root/docs/REVIEW_RULES.md
+docs/review/stages/S09/r04/snapshot/root/docs/_data/dishes.json
+docs/review/stages/S09/r04/snapshot/root/docs/review/STAGE_STATUS.md
+docs/review/stages/S09/r04/validation.json
+docs/review/stages/S10/r01/BASELINE.md
+docs/review/stages/S10/r01/CHECKS.md
+docs/review/stages/S10/r01/EVIDENCE_MAP.md
+docs/review/stages/S10/r01/SOURCE_MANIFEST.json
+docs/review/stages/S10/r01/SUBMISSION.md
+docs/review/stages/S10/r01/data/db_inventory.json
+docs/review/stages/S10/r01/data/dedup_report.json
+docs/review/stages/S10/r01/data/field_quality.json
+docs/review/stages/S10/r01/data/fingerprint_after_second.json
+docs/review/stages/S10/r01/data/fingerprint_before_second.json
+docs/review/stages/S10/r01/data/idempotency_report.json
+docs/review/stages/S10/r01/data/import_canteen_jianda_first.json
+docs/review/stages/S10/r01/data/import_canteen_jianda_second.json
+docs/review/stages/S10/r01/data/import_canteen_siyuan_first.json
+docs/review/stages/S10/r01/data/import_canteen_siyuan_second.json
+docs/review/stages/S10/r01/data/import_poi_jianda_first.json
+docs/review/stages/S10/r01/data/import_poi_jianda_second.json
+docs/review/stages/S10/r01/data/import_poi_siyuan_first.json
+docs/review/stages/S10/r01/data/import_poi_siyuan_second.json
+docs/review/stages/S10/r01/data/import_recipes_first.json
+docs/review/stages/S10/r01/data/import_recipes_second.json
+docs/review/stages/S10/r01/data/import_summary.json
+docs/review/stages/S10/r01/data/input_manifest.json
+docs/review/stages/S10/r01/data/reject_probe_first.json
+docs/review/stages/S10/r01/data/reject_probe_fixed_input.jsonl
+docs/review/stages/S10/r01/data/reject_probe_retry.json
+docs/review/stages/S10/r01/data/reject_probe_source_input.jsonl
+docs/review/stages/S10/r01/data/reject_retry_probe.json
+docs/review/stages/S10/r01/data/sample_import_canteen_jianda.json
+docs/review/stages/S10/r01/data/sample_import_canteen_siyuan.json
+docs/review/stages/S10/r01/data/sample_import_poi_jianda.json
+docs/review/stages/S10/r01/data/sample_import_poi_siyuan.json
+docs/review/stages/S10/r01/data/sample_import_recipes.json
+docs/review/stages/S10/r01/data/sample_mapping_check.json
+docs/review/stages/S10/r01/data/sample_mapping_check_failed_jsonnull.json
+docs/review/stages/S10/r01/data/sample_poi_mapping.json
+docs/review/stages/S10/r01/data/sample_recipe_mapping.json
+docs/review/stages/S10/r01/data/temp_probe_dbs.json
+docs/review/stages/S10/r01/data/validation.json
+docs/review/stages/S10/r01/logs/01_migrate_target.json
+docs/review/stages/S10/r01/logs/01_migrate_target.log
+docs/review/stages/S10/r01/logs/02_migrate_target_again.json
+docs/review/stages/S10/r01/logs/02_migrate_target_again.log
+docs/review/stages/S10/r01/logs/03_migrate_sample.json
+docs/review/stages/S10/r01/logs/03_migrate_sample.log
+docs/review/stages/S10/r01/logs/04_sample_poi_siyuan.log
+docs/review/stages/S10/r01/logs/05_sample_poi_jianda.log
+docs/review/stages/S10/r01/logs/06_sample_canteen_siyuan.log
+docs/review/stages/S10/r01/logs/07_sample_canteen_jianda.log
+docs/review/stages/S10/r01/logs/08_sample_recipes.log
+docs/review/stages/S10/r01/logs/08a_sample_exit_codes.log
+docs/review/stages/S10/r01/logs/09_sample_mapping_check.log
+docs/review/stages/S10/r01/logs/09a_sample_mapping_check_failed_jsonnull.log
+docs/review/stages/S10/r01/logs/10_full_poi_siyuan_first.log
+docs/review/stages/S10/r01/logs/11_full_poi_jianda_first.log
+docs/review/stages/S10/r01/logs/11a_full_poi_exit_codes.log
+docs/review/stages/S10/r01/logs/12_full_canteen_siyuan_first.log
+docs/review/stages/S10/r01/logs/13_full_canteen_jianda_first.log
+docs/review/stages/S10/r01/logs/14_full_recipes_first.log
+docs/review/stages/S10/r01/logs/14a_full_canteen_recipe_exit_codes.log
+docs/review/stages/S10/r01/logs/15_verify_after_first.log
+docs/review/stages/S10/r01/logs/15a_verify_after_first_failed.log
+docs/review/stages/S10/r01/logs/16_reimport_poi_siyuan.log
+docs/review/stages/S10/r01/logs/17_reimport_poi_jianda.log
+docs/review/stages/S10/r01/logs/18_reimport_canteen_siyuan.log
+docs/review/stages/S10/r01/logs/19_reimport_canteen_jianda.log
+docs/review/stages/S10/r01/logs/20_reimport_recipes.log
+docs/review/stages/S10/r01/logs/20a_reimport_exit_codes.log
+docs/review/stages/S10/r01/logs/21_verify_final.log
+docs/review/stages/S10/r01/logs/22_reject_probe_migrate.json
+docs/review/stages/S10/r01/logs/22_reject_probe_migrate.log
+docs/review/stages/S10/r01/logs/23_reject_probe_first.log
+docs/review/stages/S10/r01/logs/24_reject_probe_retry.log
+docs/review/stages/S10/r01/logs/24a_reject_probe_retry_exit.log
+docs/review/stages/S10/r01/logs/25_reject_probe_summary.log
+docs/review/stages/S10/r01/logs/26_pytest_full.log
+docs/review/stages/S10/r01/logs/27_seed_isolated.log
+docs/review/stages/S10/r01/logs/28_seed_isolated_counts.log
+docs/review/stages/S10/r01/logs/29_demo_db_guard_migrate.log
+docs/review/stages/S10/r01/logs/30_demo_db_guard_import.log
+docs/review/stages/S10/r01/logs/30a_demo_db_guard_exit_codes.log
+docs/review/stages/S10/r01/logs/31_git_diff_models.log
+docs/review/stages/S10/r01/logs/32_manifest_generation.log
+docs/review/stages/S10/r01/logs/exit_codes.json
+docs/review/stages/S10/r01/logs/reject_probe_rejects.jsonl
+docs/review/stages/S10/r01/validation.json
+frontend/public/dishes/005-hot-sour-potato-shreds.jpg
+frontend/public/dishes/016-tomato-malatang.jpg
+frontend/public/dishes/017-bone-broth-malatang.jpg
+frontend/public/dishes/042-houttuynia-salad.jpg
+frontend/public/dishes/062-green-pepper-potato-shreds.jpg
+frontend/public/dishes/074-onion-scrambled-eggs.jpg
+frontend/public/dishes/075-chive-scrambled-eggs.jpg
+frontend/public/dishes/076-hot-sour-cabbage.jpg
+frontend/public/dishes/083-corn-pork-rib-soup.jpg
+frontend/public/dishes/086-cured-sausage-claypot-rice.jpg
+frontend/public/dishes/095-wood-ear-salad.jpg
+frontend/public/dishes/098-tomato-beef-brisket-pot.jpg
+frontend/public/dishes/099-potato-chicken-stew-pot.jpg
+scripts/build_dish_image_map.py
+scripts/check-colors.mjs
+scripts/gate_probes.py
+scripts/normalize_colors.py
+scripts/render_image_ledger_from_sources.py

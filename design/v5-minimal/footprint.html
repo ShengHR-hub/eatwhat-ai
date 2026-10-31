@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>食刻 · 足迹</title>
+<style>
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --ink: #1d1c19;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(29, 28, 25, .12);
+    --line-strong: rgba(29, 28, 25, .2);
+    --accent: #b85c2e;
+    --glass: rgba(251, 249, 244, .74);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  .stage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; }
+  .stage-note { position: fixed; left: 42px; top: 40px; width: 220px; }
+  .stage-note__eyebrow { margin: 0 0 8px; font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+  .stage-note__title { margin: 0 0 12px; font-size: 18px; font-weight: 500; line-height: 1.4; }
+  .stage-note__body { margin: 0; font-size: 12px; line-height: 1.75; color: var(--muted); }
+  .stage-note__meta { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 10px; line-height: 1.7; color: var(--faint); }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid rgba(255, 255, 255, .7);
+    box-shadow: 0 32px 90px rgba(38, 31, 23, .16), 0 2px 8px rgba(38, 31, 23, .08);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("./assets/paper-grain.png");
+    background-size: 180px 180px;
+    opacity: .52;
+    mix-blend-mode: multiply;
+  }
+  .status { position: relative; z-index: 2; height: 34px; padding: 11px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; }
+  .status__right { display: flex; gap: 4px; align-items: center; }
+  .battery { width: 16px; height: 7px; border: 1px solid var(--ink); border-radius: 2px; position: relative; opacity: .75; }
+  .battery::after { content: ""; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: var(--ink); border-radius: 0 1px 1px 0; }
+  .battery i { position: absolute; inset: 1px; width: 70%; background: var(--ink); border-radius: 1px; }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink); opacity: .6; }
+
+  .top { position: relative; z-index: 2; padding: 10px 22px 0; }
+  .eyebrow { margin: 0 0 5px; font-size: 10px; letter-spacing: .14em; color: var(--faint); }
+  .title-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .title-row h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -.04em; line-height: 1.15; }
+  .report-link { padding: 0 0 3px; font-size: 10px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .top__meta { margin: 7px 0 0; font-size: 10.5px; color: var(--muted); }
+
+  .summary-strip { position: relative; z-index: 2; display: flex; gap: 16px; align-items: baseline; margin: 14px 22px 0; padding: 11px 0 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 9.5px; color: var(--muted); }
+  .summary-strip b { font-size: 16px; font-weight: 500; color: var(--ink); margin-right: 2px; letter-spacing: -.02em; }
+  .summary-strip span:last-child { margin-left: auto; color: var(--faint); }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 22px 6px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  .timeline { position: relative; padding-top: 2px; }
+  .timeline::before { content: ""; position: absolute; left: 49px; top: 0; bottom: 12px; width: 1px; background: var(--line); }
+  .day-group { position: relative; margin-bottom: 15px; }
+  .day-label { margin: 0 0 8px; font-size: 9.5px; color: var(--faint); letter-spacing: .03em; }
+  .day-label span { margin-left: 5px; opacity: .7; }
+
+  .entry { position: relative; display: grid; grid-template-columns: 38px 12px minmax(0, 1fr); gap: 8px; align-items: flex-start; margin-bottom: 13px; }
+  .entry__time { padding-top: 2px; text-align: right; font-size: 8.5px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .entry__dot { width: 7px; height: 7px; margin-top: 3px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--paper); position: relative; z-index: 1; }
+  .entry__body { padding-bottom: 12px; border-bottom: 1px solid var(--line); min-width: 0; }
+  .entry:last-child .entry__body { border-bottom: 0; }
+  .entry__head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .entry__head h2 { margin: 0; font-size: 12.5px; font-weight: 500; letter-spacing: -.01em; }
+  .entry__price { font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+  .entry__meta { margin: 3px 0 6px; font-size: 9px; color: var(--faint); }
+  .entry__tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { padding: 3px 6px; border-radius: 6px; background: rgba(29, 28, 25, .055); font-size: 8.5px; color: var(--muted); }
+  .tag--cool { border: 1px solid var(--line); background: transparent; }
+  .tag--home { background: rgba(184, 92, 46, .1); color: var(--accent); }
+
+  .earlier { display: block; width: 100%; padding: 10px 0 14px 58px; text-align: left; font-size: 9.5px; color: var(--faint); }
+  .earlier:active { opacity: .55; }
+
+  .tabbar {
+    position: relative;
+    z-index: 3;
+    height: 58px;
+    margin: 0 12px 10px;
+    padding: 5px 7px calc(4px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    background: rgba(251, 249, 244, .74);
+    -webkit-backdrop-filter: blur(24px) saturate(1.16);
+    backdrop-filter: blur(24px) saturate(1.16);
+    border: 1px solid rgba(255, 255, 255, .76);
+    border-radius: 22px;
+    box-shadow: 0 8px 26px rgba(38, 31, 23, .08);
+  }
+  .tab { position: relative; height: 46px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--faint); font-size: 9px; transition: color .18s ease, opacity .18s ease; }
+  .tab svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .tab.is-active { color: var(--ink); font-weight: 500; }
+  .tab.is-active svg { stroke-width: 1.75; }
+  .tab.is-active::after { content: ""; position: absolute; bottom: 4px; width: 3px; height: 3px; border-radius: 50%; background: var(--ink); }
+  .tab:active { opacity: .58; }
+
+  .overlay { position: absolute; inset: 0; z-index: 10; background: rgba(20, 18, 15, .25); opacity: 0; pointer-events: none; transition: opacity .28s ease; }
+  .overlay.is-open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 11;
+    max-height: 78%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(251, 249, 244, .66);
+    -webkit-backdrop-filter: blur(36px) saturate(1.3);
+    backdrop-filter: blur(36px) saturate(1.3);
+    border-top: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -24px 70px rgba(38, 31, 23, .18);
+    transform: translateY(102%);
+    transition: transform .36s cubic-bezier(.32, .72, 0, 1);
+  }
+  .sheet.is-open { transform: translateY(0); }
+  .sheet__handle { width: 38px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 10px auto 0; }
+  .sheet__head { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 22px 10px; }
+  .sheet__eyebrow { margin: 0 0 3px; font-size: 9px; letter-spacing: .16em; color: var(--faint); }
+  .sheet__title { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; }
+  .sheet__close { width: 30px; height: 30px; border-radius: 50%; background: rgba(29, 28, 25, .06); display: grid; place-items: center; font-size: 17px; color: var(--muted); }
+  .sheet__body { overflow-y: auto; padding: 0 22px 18px; scrollbar-width: none; }
+  .sheet__body::-webkit-scrollbar { display: none; }
+
+  .report-summary { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 10px; padding-bottom: 13px; border-bottom: 1px solid var(--line); }
+  .report-num { display: flex; align-items: baseline; gap: 4px; }
+  .report-num b { font-size: 28px; font-weight: 500; line-height: 1; letter-spacing: -.05em; }
+  .report-num span { font-size: 9px; color: var(--muted); }
+  .report-label { margin: 5px 0 0; font-size: 9px; color: var(--faint); }
+  .report-value { font-size: 15px; font-weight: 500; letter-spacing: -.02em; }
+  .report-value small { font-size: 8.5px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+
+  .report-block { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .report-block:last-of-type { border-bottom: 0; }
+  .report-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .report-head h3 { margin: 0; font-size: 11px; font-weight: 500; }
+  .report-head span { font-size: 9px; color: var(--faint); }
+
+  .budget-line { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--muted); }
+  .budget-line b { color: var(--ink); font-weight: 500; }
+  .budget-bar { height: 5px; margin: 7px 0 6px; border-radius: 3px; background: rgba(29, 28, 25, .09); overflow: hidden; }
+  .budget-bar span { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+  .report-note { margin: 0; font-size: 9px; line-height: 1.5; color: var(--faint); }
+
+  .week-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; height: 72px; }
+  .week-mini__day { display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .week-mini__bar { width: 7px; min-height: 3px; border-radius: 4px; background: rgba(29, 28, 25, .13); }
+  .week-mini__day.is-peak .week-mini__bar { background: var(--ink); }
+  .week-mini__day span { font-size: 8px; color: var(--faint); }
+
+  .taste { display: flex; flex-direction: column; gap: 8px; }
+  .taste__row { display: grid; grid-template-columns: 50px 1fr 20px; gap: 8px; align-items: center; }
+  .taste__name { font-size: 9px; color: var(--muted); }
+  .taste__bar { height: 4px; border-radius: 2px; background: rgba(29, 28, 25, .08); overflow: hidden; }
+  .taste__fill { display: block; height: 100%; border-radius: 2px; background: var(--ink); }
+  .taste__count { text-align: right; font-size: 8.5px; color: var(--muted); }
+
+  .advice { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .advice li { display: flex; flex-direction: column; gap: 2px; padding-left: 11px; position: relative; }
+  .advice li::before { content: ""; position: absolute; left: 0; top: 6px; width: 3px; height: 3px; border-radius: 50%; background: var(--accent); }
+  .advice b { font-size: 10px; font-weight: 500; }
+  .advice span { font-size: 9px; line-height: 1.5; color: var(--muted); }
+
+  .toast { position: absolute; left: 50%; bottom: 78px; z-index: 20; transform: translate(-50%, 14px); padding: 9px 14px; border-radius: 12px; background: rgba(29, 28, 25, .9); color: var(--paper); font-size: 10px; opacity: 0; pointer-events: none; transition: opacity .22s ease, transform .22s ease; white-space: nowrap; }
+  .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stage-note { display: none; }
+    .stage { padding: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <aside class="stage-note" aria-label="设计说明">
+    <p class="stage-note__eyebrow">EATWHAT · V5 / 02</p>
+    <h1 class="stage-note__title">足迹是时间线，不是周报</h1>
+    <p class="stage-note__body">先看最近吃过什么，再决定要不要重复。周报只是辅助，不占据主界面。</p>
+    <div class="stage-note__meta">390 × 844<br>静态设计原型<br>不连接数据库与后端</div>
+  </aside>
+
+  <section class="phone" aria-label="食刻足迹页">
+    <div class="status"><span>9:41</span><span class="status__right"><span class="dot"></span><span class="dot"></span><span class="battery"><i></i></span></span></div>
+
+    <header class="top">
+      <p class="eyebrow">FOOTPRINT · 10.20 — 10.26</p>
+      <div class="title-row">
+        <h1>足迹</h1>
+        <button class="report-link" type="button" id="reportButton">本周周报 →</button>
+      </div>
+      <p class="top__meta">从最近一顿往回看</p>
+    </header>
+
+    <div class="summary-strip">
+      <span><b>5</b>顿</span>
+      <span><b>¥86</b>花费</span>
+      <span><b>2</b>道冷却</span>
+      <span>较上周少 1 顿</span>
+    </div>
+
+    <div class="content">
+      <div class="timeline">
+        <div class="day-group">
+          <p class="day-label">今天<span>10.26</span></p>
+          <article class="entry">
+            <span class="entry__time">12:20</span><span class="entry__dot"></span>
+            <div class="entry__body">
+              <div class="entry__head"><h2>番茄牛腩汤面</h2><span class="entry__price">¥26</span></div>
+              <p class="entry__meta">一食堂 · 川湘窗口 · 外食</p>
+              <div class="entry__tags"><span class="tag">热汤</span><span class="tag">省事</span><span class="tag tag--cool">冷却 32%</span></div>
+            </div>
+          </article>
+          <article class="entry">
+            <span class="entry__time">18:05</span><span class="entry__dot"></span>
+            <div class="entry__body">
+              <div class="entry__head"><h2>麻辣香锅</h2><span class="entry__price">¥22</span></div>
+              <p class="entry__meta">二食堂 · 川湘窗口 · 外食</p>
+              <div class="entry__tags"><span class="tag">辣</span><span class="tag">高饱腹</span><span class="tag tag--cool">冷却 58%</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="day-group">
+          <p class="day-label">昨天<span>10.25</span></p>
+          <article class="entry">
+            <span class="entry__time">12:40</span><span class="entry__dot"></span>
+            <div class="entry__body">
+              <div class="entry__head"><h2>兰州牛肉拉面</h2><span class="entry__price">¥12</span></div>
+              <p class="entry__meta">一食堂 · 面食窗口 · 外食</p>
+              <div class="entry__tags"><span class="tag">清汤</span><span class="tag">出餐快</span></div>
+            </div>
+          </article>
+          <article class="entry">
+            <span class="entry__time">19:10</span><span class="entry__dot"></span>
+            <div class="entry__body">
+              <div class="entry__head"><h2>香菇滑鸡饭</h2><span class="entry__price">¥15</span></div>
+              <p class="entry__meta">宿舍 · 电饭煲 · 下厨</p>
+              <div class="entry__tags"><span class="tag tag--home">下厨</span><span class="tag">清库存</span><span class="tag">一锅出</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="day-group">
+          <p class="day-label">周一<span>10.21</span></p>
+          <article class="entry">
+            <span class="entry__time">12:10</span><span class="entry__dot"></span>
+            <div class="entry__body">
+              <div class="entry__head"><h2>轻食鸡胸沙拉</h2><span class="entry__price">¥11</span></div>
+              <p class="entry__meta">三食堂 · 轻食窗口 · 外食</p>
+              <div class="entry__tags"><span class="tag">高蛋白</span><span class="tag">低油</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <button class="earlier" type="button" data-toast="更早的足迹：本周之前还有 18 顿记录">更早的足迹 →</button>
+    </div>
+
+    <nav class="tabbar" aria-label="主导航">
+      <a class="tab" href="index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5.5h5V20"/></svg><span>首页</span>
+      </a>
+      <a class="tab is-active" href="footprint.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4.5l3 1.8"/></svg><span>足迹</span>
+      </a>
+      <button class="tab" type="button" data-toast="冰箱页设计待开始"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M5 10h14M9 6.5v1.8M9 13v2.2"/></svg><span>冰箱</span></button>
+      <button class="tab" type="button" data-toast="房间页设计待开始"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.8 19c.5-3 2.5-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 14.8c2.7-.4 5.1.8 6 3.4"/></svg><span>房间</span></button>
+      <button class="tab" type="button" data-toast="我的页设计待开始"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"/></svg><span>我的</span></button>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+    <aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="本周周报" aria-hidden="true">
+      <div class="sheet__handle"></div>
+      <header class="sheet__head">
+        <div><p class="sheet__eyebrow">WEEKLY REPORT</p><h2 class="sheet__title">本周周报</h2></div>
+        <button class="sheet__close" type="button" id="closeReport" aria-label="关闭">×</button>
+      </header>
+      <div class="sheet__body">
+        <div class="report-summary">
+          <div><div class="report-num"><b>5</b><span>顿</span></div><p class="report-label">本周打卡</p></div>
+          <div><span class="report-value">¥86</span><p class="report-label">本周花费</p></div>
+          <div><span class="report-value">2<small>道</small></span><p class="report-label">冷却中</p></div>
+        </div>
+
+        <div class="report-block">
+          <div class="report-head"><h3>一周节奏</h3><span>共 5 顿</span></div>
+          <div class="week-mini">
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:22px"></span><span>一</span></div>
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:4px"></span><span>二</span></div>
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:22px"></span><span>三</span></div>
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:4px"></span><span>四</span></div>
+            <div class="week-mini__day is-peak"><span class="week-mini__bar" style="height:52px"></span><span>五</span></div>
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:22px"></span><span>六</span></div>
+            <div class="week-mini__day"><span class="week-mini__bar" style="height:4px"></span><span>日</span></div>
+          </div>
+        </div>
+
+        <div class="report-block">
+          <div class="report-head"><h3>预算执行</h3><span>周预算 ¥100</span></div>
+          <div class="budget-line"><span>已用 ¥86</span><b>剩 ¥14</b></div>
+          <div class="budget-bar"><span style="width:86%"></span></div>
+          <p class="report-note">周五两顿占了本周花费的 42%，但整体没有超预算。</p>
+        </div>
+
+        <div class="report-block">
+          <div class="report-head"><h3>口味构成</h3><span>本周 5 顿</span></div>
+          <div class="taste">
+            <div class="taste__row"><span class="taste__name">川湘菜</span><span class="taste__bar"><span class="taste__fill" style="width:60%"></span></span><span class="taste__count">3</span></div>
+            <div class="taste__row"><span class="taste__name">粤菜</span><span class="taste__bar"><span class="taste__fill" style="width:20%"></span></span><span class="taste__count">1</span></div>
+            <div class="taste__row"><span class="taste__name">轻食</span><span class="taste__bar"><span class="taste__fill" style="width:20%"></span></span><span class="taste__count">1</span></div>
+          </div>
+        </div>
+
+        <div class="report-block">
+          <div class="report-head"><h3>下周建议</h3><span>可执行</span></div>
+          <ul class="advice">
+            <li><b>把周一晚餐换成汤面</b><span>本周川湘占 60%，换一顿清淡的，油腻度会明显下降。</span></li>
+            <li><b>周五预算先设 ¥25</b><span>周五两顿占本周花费 42%，提前设上限比事后控制更有效。</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+  let timer;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('is-show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('is-show'), 2200);
+  }
+  function openReport() {
+    document.getElementById('overlay').classList.add('is-open');
+    document.getElementById('sheet').classList.add('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeReport() {
+    document.getElementById('overlay').classList.remove('is-open');
+    document.getElementById('sheet').classList.remove('is-open');
+    document.getElementById('sheet').setAttribute('aria-hidden', 'true');
+  }
+  document.getElementById('reportButton').addEventListener('click', openReport);
+  document.getElementById('closeReport').addEventListener('click', closeReport);
+  document.getElementById('overlay').addEventListener('click', closeReport);
+  document.querySelectorAll('[data-toast]').forEach((button) => {
+    button.addEventListener('click', () => showToast(button.dataset.toast));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeReport();
+  });
+  if (new URLSearchParams(location.search).has('report')) openReport();
+</script>
+</body>
+</html>

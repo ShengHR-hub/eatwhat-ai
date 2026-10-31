@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>实验大屏 · 投屏模式 · 食刻 EatWhat</title>
+<style>
+  /* 深色投屏版：与后台报表是两种东西。
+     后台用于坐着分析，这里用于站着讲——一屏不滚动、字号大、对比强。 */
+  :root {
+    --bg: #0a0d13;
+    --panel: #11151e;
+    --panel-2: #151a25;
+    --line: rgba(255, 255, 255, .07);
+    --line-2: rgba(255, 255, 255, .12);
+    --ink: #e8ecf4;
+    --muted: #8b93a5;
+    --faint: #5d6577;
+    --accent: #4c8dff;
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --font: "PingFang SC", "Microsoft YaHei UI", "Source Han Sans CN", "Noto Sans SC", "Segoe UI", sans-serif;
+    --mono: "SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--bg); color: var(--ink);
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+    /* 极淡的网格底纹，投屏时有种"监控中心"的质感 */
+    background-image:
+      radial-gradient(80% 60% at 50% 0%, rgba(76, 141, 255, .1), transparent 70%),
+      linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  .screen { height: 100vh; padding: 18px 24px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* 顶栏 */
+  .top { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand__mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, #4c8dff, #2f6bff); color: #fff;
+    display: grid; place-items: center; font-size: 15px; font-weight: 600;
+    box-shadow: 0 0 22px rgba(76, 141, 255, .45);
+  }
+  .brand__name { font-size: 15px; font-weight: 600; letter-spacing: .01em; }
+  .brand__sub { font-size: 9.5px; letter-spacing: .18em; color: var(--faint); text-transform: uppercase; }
+  .top__mid { margin-left: 26px; display: flex; gap: 8px; }
+  .tag {
+    height: 26px; padding: 0 11px; border-radius: 999px;
+    border: 1px solid var(--line-2); color: var(--muted);
+    font-size: 11px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tag.is-on { color: var(--accent); border-color: rgba(76, 141, 255, .45); background: rgba(76, 141, 255, .1); }
+  .top__right { margin-left: auto; text-align: right; }
+  .clock { font-family: var(--mono); font-size: 20px; letter-spacing: .04em; }
+  .clock small { font-size: 10.5px; color: var(--faint); letter-spacing: .1em; margin-left: 6px; }
+
+  /* KPI 行：数字要大，这是投屏时唯一能被后排看清的东西 */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; flex: 0 0 auto; }
+  .kpi {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; position: relative; overflow: hidden;
+  }
+  .kpi::after {
+    content: ""; position: absolute; left: 0; top: 0; width: 2px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    opacity: .8;
+  }
+  .kpi__k { font-size: 10.5px; color: var(--muted); letter-spacing: .04em; }
+  .kpi__v {
+    font-size: 34px; font-weight: 600; letter-spacing: -.03em; line-height: 1.1;
+    margin-top: 2px; text-shadow: 0 0 26px rgba(76, 141, 255, .3);
+  }
+  .kpi__v small { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; letter-spacing: 0; text-shadow: none; }
+  .kpi__d { font-size: 10px; color: var(--faint); margin-top: 3px; }
+
+  /* 主区：左 2fr 右 1fr，再下面一行三块 */
+  /* 显式区域：auto-placement 在多面板跨列时会算错，必须写死 */
+  .body {
+    flex: 1; display: grid; gap: 12px; min-height: 0;
+    grid-template-columns: 1.75fr 1.05fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .p-heat    { grid-column: 1 / 3; grid-row: 1; }
+  .p-donut   { grid-column: 3;     grid-row: 1; }
+  .p-cuisine { grid-column: 1;     grid-row: 2; }
+  .p-curve   { grid-column: 2;     grid-row: 2; }
+  .p-radar   { grid-column: 3;     grid-row: 2; }
+  .panel {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .panel__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; flex: 0 0 auto; }
+  .panel__head h2 { font-size: 12px; font-weight: 500; color: var(--ink); }
+  .panel__head span { font-size: 9.5px; color: var(--faint); margin-left: auto; }
+  .panel__body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+  /* 热力 */
+  .heat { display: grid; gap: 4px; height: 100%; grid-auto-rows: 1fr; }
+  .heat__cell { border-radius: 3px; background: rgba(255,255,255,.04); }
+  .heat__lbl { font-size: 9px; color: var(--faint); display: flex; align-items: center; }
+  .heat__lbl--c { justify-content: center; }
+
+  /* 横条 */
+  .hbars { display: flex; flex-direction: column; gap: 7px; }
+  .hbar { display: grid; grid-template-columns: 46px 1fr 44px; align-items: center; gap: 8px; font-size: 10.5px; }
+  .hbar__t { display: block; height: 6px; border-radius: 3px; background: rgba(255,255,255,.05); overflow: hidden; }
+  .hbar__f { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2f6bff, #7db1ff); }
+  .hbar__v { text-align: right; color: var(--muted); font-size: 10px; }
+
+  /* 环形 */
+  .donut-wrap { display: flex; align-items: center; gap: 16px; }
+  .legend { display: flex; flex-direction: column; gap: 7px; font-size: 10.5px; flex: 1; }
+  .legend div { display: flex; align-items: center; gap: 7px; color: var(--muted); }
+  .legend i { width: 7px; height: 7px; border-radius: 2px; }
+  .legend b { margin-left: auto; color: var(--ink); font-weight: 500; }
+
+  svg.chart { display: block; width: 100%; height: 100%; overflow: visible; }
+
+  /* 底部滚动条 */
+  .ticker {
+    flex: 0 0 auto; height: 30px; display: flex; align-items: center; gap: 14px;
+    border-top: 1px solid var(--line); padding-top: 10px;
+    font-size: 10.5px; color: var(--faint); overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  }
+  .ticker b { color: var(--muted); font-weight: 400; }
+  .ticker .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .ticker__run { display: flex; gap: 26px; white-space: nowrap; animation: run 28s linear infinite; }
+  @keyframes run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* 右侧竖排小指标 */
+  .minis { display: flex; flex-direction: column; gap: 8px; }
+  .mini {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 10px; border-radius: 8px; background: rgba(255,255,255,.03);
+    border: 1px solid var(--line); font-size: 10.5px; color: var(--muted);
+  }
+  .mini b { margin-left: auto; color: var(--ink); font-weight: 500; font-size: 12px; }
+  .mini i { width: 6px; height: 6px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="top">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span>
+        <div class="brand__name">食刻 EatWhat · 数据大屏</div>
+        <div class="brand__sub">Data Wall</div>
+      </span>
+    </div>
+    <div class="top__mid">
+      <span class="tag is-on">全部校区</span>
+      <span class="tag">近 7 天</span>
+      <span class="tag">v2.3.6</span>
+    </div>
+    <div class="top__right">
+      <div class="clock" id="clock">--:--:--<small>2026-10-30 周五</small></div>
+    </div>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi"><div class="kpi__k">有效门店</div><div class="kpi__v tabular">7,704<small>家</small></div><div class="kpi__d">思源 3,862 · 建大 3,842</div></div>
+    <div class="kpi"><div class="kpi__k">菜品 / 菜谱</div><div class="kpi__v tabular">6,560<small>道</small></div><div class="kpi__d">外食 120 · 下厨 6,440</div></div>
+    <div class="kpi"><div class="kpi__k">有效特征值</div><div class="kpi__v tabular">52,352<small>个</small></div><div class="kpi__d">6,544 道 × 8 维</div></div>
+    <div class="kpi"><div class="kpi__k">饮食流水</div><div class="kpi__v tabular">1,284<small>条</small></div><div class="kpi__d">近 7 天 214 条</div></div>
+    <div class="kpi"><div class="kpi__k">真实投票</div><div class="kpi__v tabular">386<small>票</small></div><div class="kpi__d">12 个房间</div></div>
+  </section>
+
+  <div class="body">
+    <section class="panel p-heat">
+      <div class="panel__head"><h2>一周 × 时段 决策密度</h2><span>颜色越亮 = 行为越多</span></div>
+      <div class="panel__body"><div class="heat" id="heat"></div></div>
+    </section>
+
+    <section class="panel p-donut">
+      <div class="panel__head"><h2>打标覆盖率</h2><span>6,560 道</span></div>
+      <div class="panel__body">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 42 42" style="width:104px;height:104px;flex:0 0 104px">
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="5"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#34d399" stroke-width="5"
+                    stroke-dasharray="99.27 100" stroke-dashoffset="25" style="filter:drop-shadow(0 0 5px rgba(52,211,153,.6))"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#fbbf24" stroke-width="5"
+                    stroke-dasharray="0.37 100" stroke-dashoffset="25.63"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f87171" stroke-width="5"
+                    stroke-dasharray="0.37 100" stroke-dashoffset="25.26"/>
+            <text x="21" y="20" text-anchor="middle" font-size="5.6" fill="#e8ecf4" font-weight="600">99.3%</text>
+            <text x="21" y="25" text-anchor="middle" font-size="2.9" fill="#8b93a5">已打标</text>
+          </svg>
+          <div class="legend">
+            <div><i style="background:#34d399"></i>已完成<b>6,512</b></div>
+            <div><i style="background:#fbbf24"></i>待打标<b>24</b></div>
+            <div><i style="background:#f87171"></i>失败<b>24</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel p-cuisine">
+      <div class="panel__head"><h2>菜系构成</h2><span>Top 8</span></div>
+      <div class="panel__body"><div class="hbars" id="cuisine"></div></div>
+    </section>
+
+    <section class="panel p-curve">
+      <div class="panel__head"><h2>防腻衰减实验</h2><span>λ=0.5 vs λ=0</span></div>
+      <div class="panel__body"><svg class="chart" viewBox="0 0 380 110" preserveAspectRatio="none" id="curve"></svg></div>
+    </section>
+
+    <section class="panel p-radar">
+      <div class="panel__head"><h2>四大人设八维口味</h2><span>base_vector</span></div>
+      <div class="panel__body"><svg class="chart" viewBox="0 0 260 160" id="radar"></svg></div>
+    </section>
+
+  </div>
+
+  <footer class="ticker">
+    <span class="dot"></span><b>实时</b>
+    <div class="ticker__run">
+      <span>砂锅豆腐 · 教工食堂 · 今日 12 次</span>
+      <span>红烧牛肉面 · 二食堂 · 今日 9 次</span>
+      <span>麻辣香锅 · 一食堂 · 今日 7 次</span>
+      <span>数据质量：18 行异常待处理</span>
+      <span>打标队列：24 道待处理</span>
+      <span>砂锅豆腐 · 教工食堂 · 今日 12 次</span>
+      <span>红烧牛肉面 · 二食堂 · 今日 9 次</span>
+      <span>麻辣香锅 · 一食堂 · 今日 7 次</span>
+      <span>数据质量：18 行异常待处理</span>
+      <span>打标队列：24 道待处理</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // 时钟
+  (function clock() {
+    const el = $('clock');
+    const week = ['周日','周一','周二','周三','周四','周五','周六'];
+    const tick = () => {
+      const d = new Date();
+      const p = (n) => String(n).padStart(2, '0');
+      el.innerHTML = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}` +
+        `<small>${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${week[d.getDay()]}</small>`;
+    };
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // 热力：深色下用"亮度"表达强度，而不是透明度
+  (function heat() {
+    const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
+    const SLOTS = ['06-08','08-10','10-12','12-14','14-16','16-18','18-20','20-22'];
+    const M = [
+      [4,9,12,38,10,8,26,7],[5,8,14,41,9,7,24,6],[4,10,15,36,11,9,27,8],
+      [6,9,13,39,10,8,25,9],[7,11,16,44,13,12,31,14],[9,14,18,35,16,15,33,19],
+      [8,13,17,32,15,14,30,17],
+    ];
+    const max = Math.max.apply(null, M.flat());
+    const color = (r) => {
+      // 指数 >1 让中低值压在暗部，只把真正的峰值推到亮部，
+      // 否则整块热力看起来都是同一档灰
+      const t = Math.pow(r, 1.5);
+      const c = [
+        Math.round(14 + t * 226),
+        Math.round(22 + t * 214),
+        Math.round(44 + t * 168),
+      ];
+      return `rgb(${c.join(',')})`;
+    };
+    const el = $('heat');
+    el.style.gridTemplateColumns = `40px repeat(${SLOTS.length}, 1fr)`;
+    el.style.height = '100%';
+    let html = '<div></div>' + SLOTS.map((s) => `<div class="heat__lbl heat__lbl--c">${s}</div>`).join('');
+    M.forEach((row, i) => {
+      html += `<div class="heat__lbl">${DAYS[i]}</div>`;
+      row.forEach((v) => {
+        html += `<div class="heat__cell" title="${v}" style="background:${color(v / max)}"></div>`;
+      });
+    });
+    el.innerHTML = html;
+  })();
+
+  // 菜系横条
+  (function cuisine() {
+    const D = [['家常',1842],['川湘菜',1486],['面食',1162],['粤菜',824],['凉菜',662],['轻食',584],['小吃',512],['汤品',388]];
+    const max = D[0][1];
+    $('cuisine').innerHTML = D.map((d) =>
+      `<div class="hbar"><span>${d[0]}</span>
+        <span class="hbar__t"><span class="hbar__f" style="width:${(d[1]/max*100).toFixed(1)}%"></span></span>
+        <span class="hbar__v">${d[1].toLocaleString()}</span></div>`).join('');
+  })();
+
+  // 防腻曲线
+  (function curve() {
+    const W = 380, H = 110, P = { l: 26, r: 6, t: 8, b: 14 };
+    const a = [0.62,0.58,0.55,0.52,0.50,0.49,0.48,0.47,0.47,0.46];
+    const b = [0.62,0.66,0.69,0.72,0.74,0.76,0.78,0.79,0.80,0.81];
+    const x = (i) => P.l + (i / (a.length - 1)) * (W - P.l - P.r);
+    const y = (v) => P.t + (1 - (v - 0.4) / 0.45) * (H - P.t - P.b);
+    let s = '';
+    [0.5, 0.6, 0.7, 0.8].forEach((g) => {
+      s += `<line x1="${P.l}" y1="${y(g)}" x2="${W - P.r}" y2="${y(g)}" stroke="rgba(255,255,255,.06)"/>`;
+    });
+    const line = (arr, color, dash, glow) =>
+      `<polyline points="${arr.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}"
+        fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"
+        ${dash ? 'stroke-dasharray="4 3"' : ''} style="filter:drop-shadow(0 0 5px ${glow})"/>`;
+    s += line(b, '#f87171', true, 'rgba(248,113,113,.5)');
+    s += line(a, '#4c8dff', false, 'rgba(76,141,255,.6)');
+    $('curve').innerHTML = s;
+  })();
+
+  // 雷达
+  (function radar() {
+    const cx = 130, cy = 78, R = 48;
+    const AX = ['酸','甜','苦','辣','咸','鲜','油','烫'];
+    const P = [
+      { c: '#f87171', v: [.4,.2,.1,.9,.7,.6,.8,.6] },
+      { c: '#34d399', v: [.3,.1,.2,.1,.5,.7,.2,.8] },
+      { c: '#fbbf24', v: [.5,.3,.1,.3,.8,.4,.6,.5] },
+      { c: '#4c8dff', v: [.4,.2,.2,.1,.3,.5,.1,.4] },
+    ];
+    const ang = (i) => (-Math.PI / 2) + (i * 2 * Math.PI) / 8;
+    const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
+    let s = '';
+    [0.33, 0.66, 1].forEach((r) => {
+      s += `<polygon points="${AX.map((_, i) => pt(i, r).map(n => n.toFixed(1)).join(',')).join(' ')}"
+        fill="none" stroke="rgba(255,255,255,${r === 1 ? .14 : .06})"/>`;
+    });
+    AX.forEach((_, i) => {
+      const p = pt(i, 1);
+      s += `<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="rgba(255,255,255,.06)"/>`;
+    });
+    P.forEach((p) => {
+      const pts = p.v.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ');
+      s += `<polygon points="${pts}" fill="none" stroke="${p.c}" stroke-width="1.6"
+        stroke-linejoin="round" style="filter:drop-shadow(0 0 4px ${p.c}66)"/>`;
+    });
+    AX.forEach((label, i) => {
+      const p = pt(i, 1.24);
+      s += `<text x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" text-anchor="middle"
+        dominant-baseline="middle" font-size="8" fill="#5d6577">${label}</text>`;
+    });
+    $('radar').innerHTML = s;
+  })();
+</script>
+</body>
+</html>

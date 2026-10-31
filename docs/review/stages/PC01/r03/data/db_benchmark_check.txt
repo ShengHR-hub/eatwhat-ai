@@ -1,0 +1,13 @@
+detail_lines: 48000
+rooms_lines: 1000
+groups_db rooms: 1000
+groups_db votes: 40000
+votes_per_room min/max: (40, 40)
+vote_distribution: {'LIKE': 12000, 'PASS': 15907, 'SUPER_LIKE': 8000, 'VETO': 4093}
+db_benchmark_keys: ['duplication_rate_curve', 'generated_at', 'group_satisfaction_bars', 'sample']
+db_curve_matches_archive: True
+ours_d14: 0.0091
+base_d14: 0.2927
+avg_scores: [92.0, 92.05, 71.39]
+least_misery: [75.37, 74.77, 38.82]
+demo_db_group_rooms: 0

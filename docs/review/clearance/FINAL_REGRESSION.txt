@@ -1,0 +1,7 @@
+=== final regression 2026-10-24 16:18 ===
+pytest -q: 128 passed in 6.12s
+npm run build: OK / EXIT=0 (7.60s)
+check-colors: PASS (31 files)
+home-fit: PASS 390x844 card 422px(50%) overlap 0 / PASS 390x667 card 261px(39%) overlap 0
+refill-fresh: PASS (exclude 24, returned 22, new first card 干煸四季豆)
+sandbox-sync: PASS (requests 1→2, batch 24)

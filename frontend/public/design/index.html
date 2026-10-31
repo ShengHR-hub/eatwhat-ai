@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>食刻 · V5 设计预览</title>
+<style>
+  :root { --bg:#e7e1d5; --paper:#f4f1ea; --ink:#1d1c19; --muted:#6e6256; --faint:#a39a8c; --line:rgba(29,28,25,.12); --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); }
+  main { max-width:760px; margin:0 auto; padding:48px 24px 64px; }
+  .eyebrow { margin:0 0 8px; font-size:10px; letter-spacing:.18em; color:var(--muted); }
+  h1 { margin:0 0 10px; font-size:30px; font-weight:500; letter-spacing:-.04em; }
+  .intro { margin:0 0 28px; font-size:13px; line-height:1.7; color:var(--muted); max-width:520px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  a { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 16px; border-radius:14px; background:var(--paper); border:1px solid var(--line); color:var(--ink); text-decoration:none; }
+  a span:first-child { display:flex; flex-direction:column; gap:3px; }
+  a b { font-size:13px; font-weight:500; }
+  a small { font-size:10px; color:var(--faint); }
+  a i { font-style:normal; font-size:16px; color:var(--faint); }
+  a:active { opacity:.65; }
+  .foot { margin-top:26px; padding-top:16px; border-top:1px solid var(--line); font-size:10px; line-height:1.7; color:var(--faint); }
+  @media (max-width:560px) { .grid { grid-template-columns:1fr; } main { padding:32px 18px 48px; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">EATWHAT · V5 DESIGN</p>
+  <h1>食刻 V5 设计预览</h1>
+  <p class="intro">静态设计原型，不连接数据库与后端。所有页面共享纸感、青黛水彩和玻璃抽屉的视觉基线。</p>
+  <div class="grid">
+    <a href="./v5/index.html"><span><b>首页</b><small>决策台 / 雷达 / 背景图抽屉</small></span><i>→</i></a>
+    <a href="./v5/footprint.html"><span><b>足迹</b><small>时间线 / 周报抽屉</small></span><i>→</i></a>
+    <a href="./v5/fridge.html"><span><b>冰箱</b><small>临期 / 拍照入库 / 买菜清单</small></span><i>→</i></a>
+    <a href="./v5/room.html"><span><b>房间 · 等待</b><small>二维码 / 成员 / 开始</small></span><i>→</i></a>
+    <a href="./v5/room-swipe.html"><span><b>房间 · 划卡</b><small>15 秒 / 双线雷达 / 四票</small></span><i>→</i></a>
+    <a href="./v5/room-reveal.html"><span><b>房间 · 揭晓</b><small>赢家 / 满意度 / 否决</small></span><i>→</i></a>
+    <a href="./v5/profile.html"><span><b>我的</b><small>饮食基因 / 成就 / 角色</small></span><i>→</i></a>
+    <a href="./color-lab/index.html"><span><b>调色台</b><small>实时配色 / 对比度 / 背景图</small></span><i>→</i></a>
+  </div>
+  <p class="foot">设计基线见 docs/V5_DESIGN_DECISIONS.md。当前仅设计预览，正式 Vue 页面迁移尚未完成。</p>
+</main>
+</body>
+</html>

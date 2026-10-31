@@ -1,0 +1,6 @@
+✗ check-colors: 2 处裸色值（扫描 32 个文件）
+  frontend/src/components/ColorGateDemo.vue:7  [hex] #ff0000   color: #ff0000;
+  frontend/src/components/ColorGateDemo.vue:8  [rgb] rgba(   background: rgba(255, 190, 140, 0.32);
+
+改法：hex → var(--color-x)；透明度 → rgb(var(--rgb-x) / a)。
+demo exit code: 1

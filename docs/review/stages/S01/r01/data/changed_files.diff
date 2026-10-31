@@ -1,0 +1,1898 @@
+diff --git a/backend/deps.py b/backend/deps.py
+index d04a1e5..375ce57 100644
+--- a/backend/deps.py
++++ b/backend/deps.py
+@@ -1,25 +1,151 @@
++"""演示级身份解析（S01/F07 的唯一口径）。
++
++MASTER_SPEC v2.3.5 第五章 0：
++* 所有需要用户上下文的请求必须携带 ``X-User-Id``；
++* 请求头必须解析为 ``users`` 表里已存在的用户，查无此人 404；
++* 缺失 / 空 / 非整数 / 非正整数 / 超出 SQLite INTEGER 范围一律 422，
++  **不回退用户 1**；
++* body / query 里的 ``user_id``、``host_user_id`` 只能作为缺省值记录，
++  与请求头冲突时以请求头为准并写冲突日志；
++* 路径 ``user_id`` 与请求头冲突沿用既有 403 语义。SSOT 只写了 body/query
++  的「按头解析」，路径冲突尚无明确裁决，本步不擅自改产品语义，作为设计缺口
++  记录在 S01/r01 证据包中。
++"""
++
++import logging
+ from typing import Optional
+ 
+-from fastapi import Header
++from fastapi import Depends, Header, HTTPException
++from sqlalchemy.orm import Session
++
++from .database import get_db
++from .models import User
++
++logger = logging.getLogger("eatwhat.identity")
++
++# SQLite INTEGER 是 64 位有符号整数；再大就会在 SQL 绑定阶段抛 OverflowError。
++MAX_USER_ID = 2**63 - 1
++
++
++def raw_user_id(
++    x_user_id: Optional[str] = Header(default=None, alias="X-User-Id"),
++) -> Optional[str]:
++    """原样返回请求头字符串，用于区分「没带」与「带了空值」。"""
++    return x_user_id
++
++
++def parse_user_id(raw: Optional[str]) -> int:
++    text = "" if raw is None else str(raw).strip()
++    if not text:
++        logger.warning("identity_rejected reason=missing_header status=422")
++        raise HTTPException(
++            status_code=422,
++            detail="缺少 X-User-Id 请求头；演示身份必须显式指定当前用户",
++        )
++    try:
++        value = int(text)
++    except (TypeError, ValueError):
++        logger.warning("identity_rejected reason=invalid_header value=%r status=422", raw)
++        raise HTTPException(
++            status_code=422,
++            detail=f"X-User-Id 必须是整数，收到 {raw!r}",
++        )
++    if value <= 0:
++        logger.warning("identity_rejected reason=invalid_header value=%r status=422", raw)
++        raise HTTPException(
++            status_code=422,
++            detail=f"X-User-Id 必须是正整数，收到 {value}",
++        )
++    if value > MAX_USER_ID:
++        logger.warning("identity_rejected reason=invalid_header value=%r status=422", raw)
++        raise HTTPException(
++            status_code=422,
++            detail="X-User-Id 超出可支持范围",
++        )
++    return value
+ 
+-DEFAULT_USER_ID = 1
+ 
++def require_user_id(raw: Optional[str] = Depends(raw_user_id)) -> int:
++    return parse_user_id(raw)
+ 
+-def current_user_id(
+-    x_user_id: Optional[int] = Header(default=None, alias="X-User-Id"),
++
++def require_user(
++    header_user_id: int = Depends(require_user_id),
++    db: Session = Depends(get_db),
++) -> int:
++    """当前请求头身份必须真实存在；未知用户 404，不静默回退。"""
++    exists = db.query(User.id).filter(User.id == header_user_id).first()
++    if exists is None:
++        logger.warning(
++            "identity_rejected reason=unknown_user header_user_id=%s status=404",
++            header_user_id,
++        )
++        raise HTTPException(status_code=404, detail=f"用户 {header_user_id} 不存在")
++    return header_user_id
++
++
++def resolve_user_id(
++    header_user_id: int,
++    body_user_id: Optional[int],
++    *,
++    field: str = "user_id",
+ ) -> int:
+-    return int(x_user_id) if x_user_id is not None else DEFAULT_USER_ID
++    """请求头是唯一事实来源；body 身份只在冲突时留痕。"""
++    header_id = int(header_user_id)
++    if body_user_id is not None:
++        try:
++            body_id: Optional[int] = int(body_user_id)
++        except (TypeError, ValueError):
++            body_id = None
++        if body_id != header_id:
++            logger.warning(
++                "identity_conflict field=%s header_user_id=%s body_user_id=%r "
++                "resolution=header",
++                field,
++                header_id,
++                body_user_id,
++            )
++    return header_id
+ 
+ 
+-def resolve_user_id(header_user_id: Optional[int], body_user_id: Optional[int]) -> int:
+-    """身份解析的唯一口径（审查 F07）。
++def ensure_self(path_user_id: int, header_user_id: int) -> int:
++    """路径里的 user_id 与请求头必须一致，否则 403。
+ 
+-    规格把身份锁定在 `X-User-Id` 请求头上（演示级身份），所以**请求头优先**；
+-    body 里的 `user_id` 只作为缺省回退保留，不能反过来压过请求头——
+-    否则前端一改 body 就能冒充别的用户。
++    路径标识被操作的资源，请求头标识当前操作者。演示环境也不允许跨用户。
++    没带请求头的情况已由 ``require_user`` 在更早的依赖里拒绝（422）。
+     """
+-    if header_user_id is not None:
+-        return int(header_user_id)
+-    if body_user_id is not None:
+-        return int(body_user_id)
+-    return DEFAULT_USER_ID
++    path_id = int(path_user_id)
++    header_id = int(header_user_id)
++    if header_id != path_id:
++        logger.warning(
++            "identity_rejected reason=path_header_mismatch header_user_id=%s "
++            "path_user_id=%s status=403",
++            header_id,
++            path_id,
++        )
++        raise HTTPException(
++            status_code=403,
++            detail=(
++                f"不能操作其他用户的资源（请求头 X-User-Id={header_id}，"
++                f"路径 user_id={path_id}）"
++            ),
++        )
++    return path_id
++
++
++def ensure_member(member_user_ids, user_id: int, *, room_code: str) -> int:
++    """房间资源只对已 join 的成员开放；非成员 403，不泄露候选/成员/报告。"""
++    uid = int(user_id)
++    members = [int(i) for i in (member_user_ids or [])]
++    if uid not in members:
++        logger.warning(
++            "identity_rejected reason=not_room_member room_code=%s user_id=%s "
++            "status=403",
++            room_code,
++            uid,
++        )
++        raise HTTPException(
++            status_code=403,
++            detail=f"你还没加入房间 {room_code}，先 POST /rooms/{room_code}/join",
++        )
++    return uid
+diff --git a/backend/routers/auth_user.py b/backend/routers/auth_user.py
+index d66f5b5..40af73e 100644
+--- a/backend/routers/auth_user.py
++++ b/backend/routers/auth_user.py
+@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
+ from sqlalchemy.orm import Session
+ 
+ from ..database import get_db
++from ..deps import ensure_self, require_user
+ from ..models import Dish, EatingLog, GroupRoom, Restaurant, User, UserPreference
+ from ..schemas import (
+     DemoUser,
+@@ -104,7 +105,13 @@ def demo_list(db: Session = Depends(get_db)) -> List[DemoUser]:
+ 
+ 
+ @router.get("/users/{user_id}/profile", response_model=ProfileResponse)
+-def profile(user_id: int, db: Session = Depends(get_db)) -> ProfileResponse:
++def profile(
++    user_id: int,
++    db: Session = Depends(get_db),
++    header_user_id: int = Depends(require_user),
++) -> ProfileResponse:
++    # F07：路径里的 user_id 不能绕过请求头身份
++    ensure_self(user_id, header_user_id)
+     user = _get_user(db, user_id)
+     prefs = _get_prefs(db, user_id)
+     return _build_profile(db, user, prefs)
+@@ -115,7 +122,9 @@ def update_preferences(
+     user_id: int,
+     payload: PreferenceUpdate,
+     db: Session = Depends(get_db),
++    header_user_id: int = Depends(require_user),
+ ) -> ProfileResponse:
++    ensure_self(user_id, header_user_id)
+     user = _get_user(db, user_id)
+     prefs = _get_prefs(db, user_id)
+     if payload.base_vector is not None:
+@@ -149,7 +158,9 @@ def update_red_black_list(
+     user_id: int,
+     payload: RedBlackListRequest,
+     db: Session = Depends(get_db),
++    header_user_id: int = Depends(require_user),
+ ) -> RedBlackListResponse:
++    ensure_self(user_id, header_user_id)
+     _get_user(db, user_id)
+     prefs = _get_prefs(db, user_id)
+ 
+diff --git a/backend/routers/eating_log.py b/backend/routers/eating_log.py
+index f9658d5..05ff4be 100644
+--- a/backend/routers/eating_log.py
++++ b/backend/routers/eating_log.py
+@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
+ from ..algorithms.time_decay import compute_decay_weights
+ from ..config import DEFAULT_ALGO_PARAMS
+ from ..database import get_db
+-from ..deps import current_user_id, resolve_user_id
++from ..deps import ensure_self, require_user, resolve_user_id
+ from ..models import AlgoConfig, Dish, EatingLog, User, utcnow
+ from ..schemas import (
+     CheckinRequest,
+@@ -47,7 +47,7 @@ def _cooling_status(weight: float) -> str:
+ @router.post("/logs/checkin", response_model=CheckinResponse)
+ def checkin(
+     payload: CheckinRequest,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> CheckinResponse:
+     user_id = resolve_user_id(header_user_id, payload.user_id)
+@@ -89,8 +89,11 @@ def checkin(
+ 
+ @router.get("/logs/stats/{user_id}", response_model=LogStatsResponse)
+ def log_stats(
+-    user_id: int, db: Session = Depends(get_db)
++    user_id: int,
++    header_user_id: int = Depends(require_user),
++    db: Session = Depends(get_db),
+ ) -> LogStatsResponse:
++    ensure_self(user_id, header_user_id)
+     _require_user(db, user_id)
+     now = utcnow()
+ 
+diff --git a/backend/routers/fridge.py b/backend/routers/fridge.py
+index eb369df..f27477d 100644
+--- a/backend/routers/fridge.py
++++ b/backend/routers/fridge.py
+@@ -20,7 +20,12 @@ from fastapi import APIRouter, Depends, HTTPException
+ from sqlalchemy.orm import Session
+ 
+ from ..database import get_db
+-from ..deps import current_user_id, resolve_user_id
++from ..deps import ensure_self, require_user, resolve_user_id
++from ..algorithms.fridge_clock import (
++    EXPIRING_SOON_DAYS,
++    is_expired,
++    remaining_days,
++)
+ from ..models import Dish, FridgeInventory, User
+ from ..schemas import (
+     FridgeItem,
+@@ -33,7 +38,6 @@ from ..schemas import (
+ 
+ router = APIRouter(tags=["虚拟冰箱"])
+ 
+-EXPIRING_SOON_DAYS = 2
+ 
+ 
+ def _require_user(db: Session, user_id: int) -> User:
+@@ -43,24 +47,8 @@ def _require_user(db: Session, user_id: int) -> User:
+     return user
+ 
+ 
+-def _remaining_days(row: FridgeInventory, now: Optional[datetime] = None) -> int:
+-    """剩余可存天数（审查 F09）。
+-
+-    `expire_days` 存的是**入库时的保质期**，如果直接回传，天数永远不变——
+-    放三天还是「5 天后到期」。这里用 `created_at` 和现在的差值把已经过去的天数扣掉，
+-    过期后返回 0（不再出现负数），前端据此显示「已过期」。
+-    """
+-    total = int(row.expire_days if row.expire_days is not None else 3)
+-    created = row.created_at
+-    if created is None:
+-        return total
+-    now = now or datetime.utcnow()
+-    elapsed = (now - created).total_seconds() / 86400.0
+-    return max(0, int(round(total - elapsed)))
+-
+-
+ def _to_item(row: FridgeInventory) -> FridgeItem:
+-    remaining = _remaining_days(row)
++    remaining = remaining_days(row)
+     return FridgeItem(
+         id=row.id,
+         ingredient_name=row.ingredient_name,
+@@ -96,7 +84,12 @@ def _name_hit(needle: str, haystack: str) -> bool:
+ 
+ 
+ @router.get("/fridge/{user_id}", response_model=FridgeListResponse)
+-def get_fridge(user_id: int, db: Session = Depends(get_db)) -> FridgeListResponse:
++def get_fridge(
++    user_id: int,
++    header_user_id: int = Depends(require_user),
++    db: Session = Depends(get_db),
++) -> FridgeListResponse:
++    ensure_self(user_id, header_user_id)
+     _require_user(db, user_id)
+     return FridgeListResponse(user_id=user_id, items=_fridge_items(db, user_id))
+ 
+@@ -104,7 +97,7 @@ def get_fridge(user_id: int, db: Session = Depends(get_db)) -> FridgeListRespons
+ @router.post("/fridge/shopping-list", response_model=ShoppingListResponse)
+ def shopping_list(
+     payload: ShoppingListRequest,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> ShoppingListResponse:
+     """多菜谱主辅料并集，减去冰箱已有食材（下厨模式的「待采购买菜清单」）。"""
+@@ -135,8 +128,13 @@ def shopping_list(
+     owned: List[ShoppingItem] = []
+     to_buy: List[ShoppingItem] = []
+     for name, (_category, used_by) in needed.items():
++        # F09：过期食材不能算「冰箱里有」，否则清单会让人少买一样
+         hit = next(
+-            (row for row in fridge_rows if _name_hit(name, row.ingredient_name)),
++            (
++                row
++                for row in fridge_rows
++                if _name_hit(name, row.ingredient_name) and not is_expired(row)
++            ),
+             None,
+         )
+         if hit is not None:
+@@ -160,8 +158,10 @@ def shopping_list(
+ def upsert_fridge(
+     user_id: int,
+     payload: FridgeUpsertRequest,
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> FridgeListResponse:
++    ensure_self(user_id, header_user_id)
+     _require_user(db, user_id)
+     name = payload.ingredient_name.strip()
+     row = (
+diff --git a/backend/routers/group_room.py b/backend/routers/group_room.py
+index ba26fa2..47d969b 100644
+--- a/backend/routers/group_room.py
++++ b/backend/routers/group_room.py
+@@ -30,6 +30,7 @@ WebSocket（`MASTER_SPEC.md` 第 344-352 行）：
+ from __future__ import annotations
+ 
+ import asyncio
++import logging
+ import random
+ from datetime import datetime, timedelta
+ from typing import Dict, List, Optional
+@@ -39,7 +40,7 @@ from sqlalchemy.orm import Session
+ 
+ from ..config import DEFAULT_ALGO_PARAMS
+ from ..database import SessionLocal, get_db
+-from ..deps import current_user_id, resolve_user_id
++from ..deps import ensure_member, require_user, resolve_user_id
+ from ..models import AlgoConfig, Dish, GroupRoom, Restaurant, RoomVote, User
+ from ..schemas import (
+     RoomCandidate,
+@@ -57,6 +58,7 @@ from ..algorithms.vector_spec import VOTE_SCORES
+ router = APIRouter(tags=["多人干饭房间"])
+ # WebSocket 挂在根路径（ws://host/ws/room/...），REST 挂在 /api/v1 下，所以用两个 router
+ ws_router = APIRouter()
++identity_logger = logging.getLogger("eatwhat.identity")
+ 
+ MAX_MEMBERS = 8
+ CANDIDATE_COUNT = 10
+@@ -220,13 +222,25 @@ def _snapshot(
+ # —————————————————————— 结算（幂等）——————————————————————
+ 
+ 
+-def _omega_group(db: Session) -> float:
+-    """群组折中系数 ω 的唯一出口。
++def _algo_override(room: GroupRoom) -> Dict[str, float]:
++    """建房时写下的算法参数快照（沙盒 override）。"""
++    params = getattr(room, "algo_params", None)
++    if not isinstance(params, dict):
++        return {}
++    return {str(k): float(v) for k, v in params.items() if v is not None}
++
+ 
+-    审查 F10：原来这里写死 0.5，沙盒里调 ω 对多人房完全无效。
+-    现在跟单人推荐一样读 `algo_configs.config_name == "default_production"`，
+-    没有配置行就回退 `DEFAULT_ALGO_PARAMS`。
++def _omega_group(db: Session, room: GroupRoom) -> float:
++    """群组折中系数 ω 的唯一出口（F10 收口）。
++
++    优先级：建房时的沙盒快照 → DB 里的生产配置 → 默认值。
++    只剩「读 DB」时，前端沙盒调了 ω 对多人房仍然无效——这正是复核方指出的漏洞：
++    请求 override 与 DB config 不是同一条链路。房间是跨请求的，所以必须在建房
++    那一刻把参数**快照**下来，结算时用快照，才能做到「开团时看到什么就是什么」。
+     """
++    override = _algo_override(room).get("omega_group")
++    if override is not None:
++        return float(override)
+     config = (
+         db.query(AlgoConfig)
+         .filter(AlgoConfig.config_name == "default_production")
+@@ -251,7 +265,7 @@ def _settle(db: Session, room: GroupRoom) -> Optional[dict]:
+     dish_ids = [int(i) for i in (room.candidate_dish_ids or [])]
+     votes = db.query(RoomVote).filter(RoomVote.room_code == room.room_code).all()
+     report = compute_group_consensus(
+-        db, members, dish_ids, votes, omega_group=_omega_group(db)
++        db, members, dish_ids, votes, omega_group=_omega_group(db, room)
+     )
+     winner_id = report.get("winner_dish_id")
+     room.status = STATUS_FINISHED
+@@ -297,10 +311,12 @@ def _settle_if_due(db: Session, room: GroupRoom) -> Optional[dict]:
+ @router.post("/rooms/create", response_model=RoomSnapshot)
+ def create_room(
+     payload: RoomCreateRequest,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> RoomSnapshot:
+-    host_id = int(payload.host_user_id or header_user_id)
++    host_id = resolve_user_id(
++        header_user_id, payload.host_user_id, field="host_user_id"
++    )
+     if db.query(User).filter(User.id == host_id).first() is None:
+         raise HTTPException(status_code=404, detail=f"用户 {host_id} 不存在")
+ 
+@@ -315,6 +331,7 @@ def create_room(
+     dish_ids = [int(item["dish_id"]) for item in pool][:CANDIDATE_COUNT]
+ 
+     room = GroupRoom(
++        algo_params=dict(payload.override_params or {}),
+         room_code=_unique_code(db),
+         host_user_id=host_id,
+         mode_type=payload.mode_type,
+@@ -333,7 +350,7 @@ def create_room(
+ async def join_room(
+     code: str,
+     payload: RoomJoinRequest,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> RoomSnapshot:
+     room = _room_or_404(db, code)
+@@ -366,10 +383,12 @@ async def join_room(
+ @router.get("/rooms/{code}", response_model=RoomSnapshot)
+ def get_room(
+     code: str,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> RoomSnapshot:
+     room = _room_or_404(db, code)
++    # S01/F07：房间快照包含成员与候选，只对已 join 的成员开放
++    ensure_member(room.member_user_ids, header_user_id, room_code=room.room_code)
+     # F03/F05：过期就顺手结算，刷新页面也能看到结果
+     _settle_if_due(db, room)
+     db.refresh(room)
+@@ -524,14 +543,62 @@ def _is_member(db: Session, code: str, user_id: int) -> bool:
+ @ws_router.websocket("/ws/room/{room_code}/{user_id}")
+ async def room_socket(websocket: WebSocket, room_code: str, user_id: int) -> None:
+     code = str(room_code).strip()
++
++    # WS 身份按 SSOT 走路径；浏览器不能设置自定义头，但非浏览器客户端可能带。
++    # 头一旦出现就必须与路径一致，否则视为身份冲突直接拒绝。
++    header_raw = websocket.headers.get("x-user-id")
++    if header_raw is not None:
++        try:
++            header_id = int(str(header_raw).strip())
++        except (TypeError, ValueError):
++            identity_logger.warning(
++                "identity_rejected reason=invalid_ws_header room_code=%s "
++                "path_user_id=%s value=%r status=403",
++                code,
++                user_id,
++                header_raw,
++            )
++            raise WebSocketException(
++                code=403, reason="X-User-Id 与路径 user_id 必须一致"
++            )
++        if header_id != int(user_id):
++            identity_logger.warning(
++                "identity_rejected reason=ws_path_header_mismatch room_code=%s "
++                "header_user_id=%s path_user_id=%s status=403",
++                code,
++                header_id,
++                user_id,
++            )
++            raise WebSocketException(
++                code=403, reason="X-User-Id 与路径 user_id 必须一致"
++            )
++
+     db = SessionLocal()
+     try:
++        user_exists = (
++            db.query(User.id).filter(User.id == int(user_id)).first() is not None
++        )
+         member = _is_member(db, code, user_id)
+     finally:
+         db.close()
+ 
++    if not user_exists:
++        identity_logger.warning(
++            "identity_rejected reason=unknown_ws_user room_code=%s user_id=%s "
++            "status=403",
++            code,
++            user_id,
++        )
++        raise WebSocketException(code=403, reason=f"用户 {user_id} 不存在")
++
+     if not member:
+         # 协议第 346 行：未落库的连接直接 HTTP 403（不再 accept 后 1008）
++        identity_logger.warning(
++            "identity_rejected reason=not_room_member room_code=%s user_id=%s "
++            "status=403 channel=ws",
++            code,
++            user_id,
++        )
+         raise WebSocketException(
+             code=403, reason="还没加入这个房间，先 POST /rooms/{code}/join"
+         )
+diff --git a/backend/routers/recommend.py b/backend/routers/recommend.py
+index f54ff87..582788c 100644
+--- a/backend/routers/recommend.py
++++ b/backend/routers/recommend.py
+@@ -8,7 +8,7 @@ from ..algorithms.single_recommender import recommend_single
+ from ..algorithms.vector_spec import capsule_tip
+ from ..config import AMAP_API_KEY, AMAP_WEATHER_URL
+ from ..database import get_db
+-from ..deps import current_user_id, resolve_user_id
++from ..deps import require_user, resolve_user_id
+ from ..schemas import (
+     SingleRecommendRequest,
+     SingleRecommendResponse,
+@@ -78,7 +78,7 @@ def context_weather(
+ @router.post("/recommend/single", response_model=SingleRecommendResponse)
+ def recommend(
+     payload: SingleRecommendRequest,
+-    header_user_id: int = Depends(current_user_id),
++    header_user_id: int = Depends(require_user),
+     db: Session = Depends(get_db),
+ ) -> SingleRecommendResponse:
+     user_id = resolve_user_id(header_user_id, payload.user_id)
+diff --git a/backend/tests/test_api.py b/backend/tests/test_api.py
+index a8b1f0c..d772965 100644
+--- a/backend/tests/test_api.py
++++ b/backend/tests/test_api.py
+@@ -16,9 +16,24 @@ def test_seed_data_volume(db):
+     )
+     assert config is not None
+     benchmark = config.benchmark_json
+-    assert len(benchmark["exp1_duplication_curve"]["days"]) == 14
+-    assert len(benchmark["exp1_duplication_curve"]["ebbinghaus_decay_rate"]) == 14
+-    assert len(benchmark["exp2_group_satisfaction"]["strategies"]) == 4
++    # 结构锁定：SSOT 第三章。键名与长度都必须与规格一致，且不许残留手写曲线
++    assert set(benchmark) == {
++        "generated_at",
++        "sample",
++        "duplication_rate_curve",
++        "group_satisfaction_bars",
++    }
++    curve = benchmark["duplication_rate_curve"]
++    assert len(curve["days"]) == 14
++    assert len(curve["ours_lambda_0.5"]) == 14
++    assert len(curve["baseline_no_decay"]) == 14
++    bars = benchmark["group_satisfaction_bars"]
++    assert len(bars["strategies"]) == 3
++    assert len(bars["avg_scores"]) == 3
++    assert len(bars["least_misery_scores"]) == 3
++    assert all(0 <= v <= 100 for v in bars["avg_scores"] + bars["least_misery_scores"])
++    assert benchmark["sample"]["personas"] == 200
++    assert benchmark["sample"]["meals_per_day"] == 2
+ 
+ 
+ def test_health(client):
+@@ -44,7 +59,9 @@ def test_login_route_removed(client):
+ 
+ 
+ def test_profile(client):
+-    response = client.get("/api/v1/users/1/profile")
++    response = client.get(
++        "/api/v1/users/1/profile", headers={"X-User-Id": "1"}
++    )
+     assert response.status_code == 200
+     body = response.json()
+     assert body["persona_title"] == "川渝无辣不欢星人"
+@@ -96,10 +113,11 @@ def test_single_recommend_with_header(client):
+     assert set(radar) == {"taste", "weather", "budget", "freshness", "status"}
+ 
+ 
+-def test_single_recommend_defaults_to_user_1(client):
++def test_single_recommend_uses_header_user(client):
+     response = client.post(
+         "/api/v1/recommend/single",
+         json={"mode_type": "OUT_DINING", "limit": 100},
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 200
+     names = {item["name"] for item in response.json()["recommendations"]}
+@@ -159,7 +177,9 @@ def test_missing_user_returns_404(client):
+ 
+ def test_invalid_mode_returns_422(client):
+     response = client.post(
+-        "/api/v1/recommend/single", json={"mode_type": "TAKEAWAY"}
++        "/api/v1/recommend/single",
++        json={"mode_type": "TAKEAWAY"},
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 422
+ 
+@@ -178,11 +198,14 @@ def test_red_black_list_roundtrip(client, db):
+             "list_type": "BLACK",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert added.status_code == 200
+     assert dish.id in added.json()["blacklist_dish_ids"]
+ 
+-    profile = client.get("/api/v1/users/1/profile").json()
++    profile = client.get(
++        "/api/v1/users/1/profile", headers={"X-User-Id": "1"}
++    ).json()
+     assert dish.id in profile["blacklist_dish_ids"]
+     assert profile["blacklist_restaurant_ids"] == []
+ 
+@@ -194,6 +217,7 @@ def test_red_black_list_roundtrip(client, db):
+             "list_type": "BLACK",
+             "action": "REMOVE",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert dish.id not in removed.json()["blacklist_dish_ids"]
+ 
+@@ -208,6 +232,7 @@ def test_favorite_only_accepts_dish(client, db):
+             "list_type": "FAV",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 400
+ 
+@@ -220,6 +245,7 @@ def test_favorite_only_accepts_dish(client, db):
+             "list_type": "FAV",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert ok.status_code == 200
+     assert dish.id in ok.json()["favorite_dish_ids"]
+@@ -236,6 +262,7 @@ def test_restaurant_blacklist_filters_whole_store(client, db):
+             "list_type": "BLACK",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "3"},
+     )
+     assert response.status_code == 200
+     assert restaurant.id in response.json()["blacklist_restaurant_ids"]
+@@ -260,6 +287,7 @@ def test_red_black_list_unknown_target_returns_404(client):
+             "list_type": "BLACK",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert dish_resp.status_code == 404
+ 
+@@ -271,6 +299,7 @@ def test_red_black_list_unknown_target_returns_404(client):
+             "list_type": "BLACK",
+             "action": "ADD",
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert restaurant_resp.status_code == 404
+ 
+@@ -279,6 +308,7 @@ def test_update_preferences(client):
+     response = client.put(
+         "/api/v1/users/1/preferences",
+         json={"default_budget": 35.0, "veto_tags": ["香菜", "折耳根"]},
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 200
+     body = response.json()
+@@ -348,7 +378,9 @@ import pytest
+     ],
+ )
+ def test_recommend_rejects_out_of_range_input(client, payload):
+-    response = client.post("/api/v1/recommend/single", json=payload)
++    response = client.post(
++        "/api/v1/recommend/single", json=payload, headers={"X-User-Id": "1"}
++    )
+     assert response.status_code == 422, response.text
+ 
+ 
+@@ -366,6 +398,7 @@ def test_recommend_rejects_bad_override_params(client, override):
+     response = client.post(
+         "/api/v1/recommend/single",
+         json={"mode_type": "OUT_DINING", "override_params": override},
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 422, response.text
+ 
+@@ -378,6 +411,7 @@ def test_recommend_accepts_valid_override_params(client):
+             "limit": 3,
+             "override_params": {"lambda_decay": 2.0, "omega_group": 0.5},
+         },
++        headers={"X-User-Id": "1"},
+     )
+     assert response.status_code == 200
+     assert len(response.json()["recommendations"]) == 3
+diff --git a/backend/tests/test_eating_log.py b/backend/tests/test_eating_log.py
+index da4b1e2..1964e4a 100644
+--- a/backend/tests/test_eating_log.py
++++ b/backend/tests/test_eating_log.py
+@@ -13,7 +13,9 @@ def _dish(db, name: str, mode: str = "OUT_DINING") -> Dish:
+ 
+ def test_checkin_triggers_same_day_decay(client, db):
+     dish = _dish(db, "麻辣香锅")
+-    before = client.get("/api/v1/logs/stats/1").json()
++    before = client.get(
++        "/api/v1/logs/stats/1", headers={"X-User-Id": "1"}
++    ).json()
+     response = client.post(
+         "/api/v1/logs/checkin",
+         json={
+@@ -28,7 +30,9 @@ def test_checkin_triggers_same_day_decay(client, db):
+     assert body["log_id"] > 0
+     assert body["new_decay_weight"] == pytest.approx(0.05)
+ 
+-    after = client.get("/api/v1/logs/stats/1").json()
++    after = client.get(
++        "/api/v1/logs/stats/1", headers={"X-User-Id": "1"}
++    ).json()
+     assert after["meals_this_week"] == before["meals_this_week"] + 1
+     assert after["weekly_expense"] == pytest.approx(
+         before["weekly_expense"] + float(dish.price_or_cost), abs=0.01
+@@ -36,7 +40,7 @@ def test_checkin_triggers_same_day_decay(client, db):
+ 
+ 
+ def test_stats_returns_cooling_board_and_pie(client, db):
+-    response = client.get("/api/v1/logs/stats/1")
++    response = client.get("/api/v1/logs/stats/1", headers={"X-User-Id": "1"})
+     assert response.status_code == 200
+     body = response.json()
+     assert body["cooling_dishes"]
+@@ -67,11 +71,15 @@ def test_checkin_header_wins_over_body(client, db):
+     assert response.status_code == 200
+ 
+     # 记在请求头指定的用户 1 名下
+-    user1 = client.get("/api/v1/logs/stats/1").json()
++    user1 = client.get(
++        "/api/v1/logs/stats/1", headers={"X-User-Id": "1"}
++    ).json()
+     assert any(item["dish_id"] == dish.id for item in user1["cooling_dishes"])
+ 
+     # 不能同时算成用户 2 的打卡
+-    user2 = client.get("/api/v1/logs/stats/2").json()
++    user2 = client.get(
++        "/api/v1/logs/stats/2", headers={"X-User-Id": "2"}
++    ).json()
+     assert not any(item["dish_id"] == dish.id for item in user2["cooling_dishes"])
+ 
+ def test_checkin_mode_mismatch_returns_400(client, db):
+@@ -94,4 +102,9 @@ def test_checkin_unknown_dish_returns_404(client):
+ 
+ 
+ def test_stats_unknown_user_returns_404(client):
+-    assert client.get("/api/v1/logs/stats/999").status_code == 404
++    assert (
++        client.get(
++            "/api/v1/logs/stats/999", headers={"X-User-Id": "999"}
++        ).status_code
++        == 404
++    )
+diff --git a/backend/tests/test_fridge.py b/backend/tests/test_fridge.py
+index 672576e..5c6cd04 100644
+--- a/backend/tests/test_fridge.py
++++ b/backend/tests/test_fridge.py
+@@ -12,7 +12,7 @@
+ 
+ 
+ def test_fridge_list_puts_expiring_first(client):
+-    response = client.get("/api/v1/fridge/2")
++    response = client.get("/api/v1/fridge/2", headers={"X-User-Id": "2"})
+     assert response.status_code == 200
+     payload = response.json()
+     assert payload["user_id"] == 2
+@@ -25,7 +25,7 @@ def test_fridge_list_puts_expiring_first(client):
+ 
+ 
+ def test_fridge_list_unknown_user_returns_404(client):
+-    response = client.get("/api/v1/fridge/99999")
++    response = client.get("/api/v1/fridge/99999", headers={"X-User-Id": "99999"})
+     assert response.status_code == 404
+ 
+ 
+@@ -36,10 +36,12 @@ def test_fridge_add_is_idempotent(client):
+         "quantity_desc": "2 个",
+         "expire_days": 4,
+     }
+-    first = client.post("/api/v1/fridge/2", json=body)
++    first = client.post("/api/v1/fridge/2", json=body, headers={"X-User-Id": "2"})
+     assert first.status_code == 200
+ 
+-    second = client.post("/api/v1/fridge/2", json={**body, "expire_days": 1})
++    second = client.post(
++        "/api/v1/fridge/2", json={**body, "expire_days": 1}, headers={"X-User-Id": "2"}
++    )
+     assert second.status_code == 200
+ 
+     items = second.json()["items"]
+@@ -53,17 +55,21 @@ def test_fridge_remove_missing_returns_404(client):
+     response = client.post(
+         "/api/v1/fridge/2",
+         json={"ingredient_name": "不存在的食材", "action": "REMOVE"},
++        headers={"X-User-Id": "2"},
+     )
+     assert response.status_code == 404
+     assert "不存在的食材" in response.json()["detail"]
+ 
+ 
+ def test_fridge_remove_existing_item(client):
+-    before = client.get("/api/v1/fridge/2").json()["items"]
++    before = client.get(
++        "/api/v1/fridge/2", headers={"X-User-Id": "2"}
++    ).json()["items"]
+     target = before[0]["ingredient_name"]
+     response = client.post(
+         "/api/v1/fridge/2",
+         json={"ingredient_name": target, "action": "REMOVE"},
++        headers={"X-User-Id": "2"},
+     )
+     assert response.status_code == 200
+     names = [item["ingredient_name"] for item in response.json()["items"]]
+@@ -95,11 +101,15 @@ def test_shopping_list_splits_owned_and_to_buy(client):
+ 
+ def test_shopping_list_rejects_empty_and_unknown(client):
+     empty = client.post(
+-        "/api/v1/fridge/shopping-list", json={"user_id": 2, "dish_ids": []}
++        "/api/v1/fridge/shopping-list",
++        json={"user_id": 2, "dish_ids": []},
++        headers={"X-User-Id": "2"},
+     )
+     assert empty.status_code == 400
+ 
+     unknown = client.post(
+-        "/api/v1/fridge/shopping-list", json={"user_id": 2, "dish_ids": [99999]}
++        "/api/v1/fridge/shopping-list",
++        json={"user_id": 2, "dish_ids": [99999]},
++        headers={"X-User-Id": "2"},
+     )
+     assert unknown.status_code == 404
+diff --git a/backend/tests/test_room.py b/backend/tests/test_room.py
+index a9b1697..b0a54f9 100644
+--- a/backend/tests/test_room.py
++++ b/backend/tests/test_room.py
+@@ -38,7 +38,9 @@ def _create(client, mode="OUT_DINING", budget=None):
+     payload = {"mode_type": mode}
+     if budget is not None:
+         payload["budget"] = budget
+-    response = client.post("/api/v1/rooms/create", json=payload)
++    response = client.post(
++        "/api/v1/rooms/create", json=payload, headers={"X-User-Id": "1"}
++    )
+     assert response.status_code == 200, response.text
+     return response.json()
+ 
+@@ -91,7 +93,9 @@ def test_join_room_is_idempotent_and_keeps_candidates(client, room_env):
+ 
+ 
+ def test_join_unknown_room_404(client, room_env):
+-    response = client.post("/api/v1/rooms/000000/join", json={"user_id": 2})
++    response = client.post(
++        "/api/v1/rooms/000000/join", json={"user_id": 2}, headers={"X-User-Id": "2"}
++    )
+     assert response.status_code == 404
+ 
+ 
+@@ -145,7 +149,9 @@ def test_host_swipes_alone_and_gets_consensus(client, room_env):
+         assert veto_row["masked_by_veto"] is True
+         assert veto_row["group_score"] == 0.0
+ 
+-    snapshot = client.get(f"/api/v1/rooms/{code}").json()
++    snapshot = client.get(
++        f"/api/v1/rooms/{code}", headers={"X-User-Id": "1"}
++    ).json()
+     assert snapshot["status"] == "FINISHED"
+     assert snapshot["winner_dish_id"] == reveal["winner_dish_id"]
+     assert snapshot["winner_dish"]["dish_id"] == reveal["winner_dish_id"]
+@@ -240,16 +246,18 @@ def test_settlement_survives_all_disconnects(client, room_env, monkeypatch):
+         host.send_json(
+             {
+                 "type": "SUBMIT_VOTE",
+-                "dish_id": client.get(f"/api/v1/rooms/{code}").json()["candidates"][0][
+-                    "dish_id"
+-                ],
++                "dish_id": client.get(
++                    f"/api/v1/rooms/{code}", headers={"X-User-Id": "1"}
++                ).json()["candidates"][0]["dish_id"],
+                 "vote_type": "LIKE",
+             }
+         )
+         _drain_until(host, "PROGRESS_UPDATE")
+     # 连接全部断开，谁都不在线
+     time.sleep(1.4)
+-    snapshot = client.get(f"/api/v1/rooms/{code}").json()
++    snapshot = client.get(
++        f"/api/v1/rooms/{code}", headers={"X-User-Id": "1"}
++    ).json()
+     assert snapshot["status"] == "FINISHED", "断线后仍必须按截止时间结算"
+     assert snapshot["consensus_report"] is not None
+ 
+@@ -271,7 +279,9 @@ def test_snapshot_exposes_deadline_for_recovery(client, room_env):
+         )
+         _drain_until(host, "PROGRESS_UPDATE")
+ 
+-        snapshot = client.get(f"/api/v1/rooms/{code}").json()
++        snapshot = client.get(
++            f"/api/v1/rooms/{code}", headers={"X-User-Id": "1"}
++        ).json()
+         assert snapshot["status"] == "SWIPING"
+         assert snapshot["deadline_at"]
+         assert snapshot["remaining_ms"] > 0
+@@ -301,25 +311,77 @@ def test_bad_votes_are_rejected(client, room_env):
+         assert "未知指令" in error["detail"]
+ 
+ def test_omega_group_follows_algo_config(client, session_factory):
+-    """审查 F10：群组 ω 必须读 algo_configs，不能写死 0.5。"""
+-    from backend.models import AlgoConfig
++    """审查 F10：群组 ω 读 algo_configs，且建房快照优先。"""
++    from backend.models import AlgoConfig, GroupRoom
+     from backend.routers import group_room
+ 
+     session = session_factory()
+     try:
+-        config = session.query(AlgoConfig).filter(AlgoConfig.config_name == "default_production").first()
++        config = (
++            session.query(AlgoConfig)
++            .filter(AlgoConfig.config_name == "default_production")
++            .first()
++        )
+         assert config is not None
+         config.omega_group = 0.83
+         session.commit()
+-        assert abs(group_room._omega_group(session) - 0.83) < 1e-9
++
++        plain_room = GroupRoom(room_code="000001", host_user_id=1, mode_type="OUT_DINING")
++        assert abs(group_room._omega_group(session, plain_room) - 0.83) < 1e-9
++
++        # 建房快照优先于 DB 配置：沙盒里调过的 ω 必须能带进这一局
++        snapshot_room = GroupRoom(
++            room_code="000002",
++            host_user_id=1,
++            mode_type="OUT_DINING",
++            algo_params={"omega_group": 0.2},
++        )
++        assert abs(group_room._omega_group(session, snapshot_room) - 0.2) < 1e-9
+ 
+         # 没有配置行时回退默认值，而不是崩掉（跑完把配置行放回去，避免污染同库其它用例）
+         session.query(AlgoConfig).delete()
+         session.commit()
+         try:
+-            assert abs(group_room._omega_group(session) - 0.5) < 1e-9
++            assert abs(group_room._omega_group(session, plain_room) - 0.5) < 1e-9
+         finally:
+             session.add(AlgoConfig(config_name="default_production", omega_group=0.5))
+             session.commit()
+     finally:
+         session.close()
++
++
++def test_room_snapshots_override_params_at_create(client, session_factory):
++    """F10：override_params 在建房那一刻落库，结算时用快照而不是读 DB。"""
++    from backend.models import GroupRoom
++    from backend.routers.group_room import _omega_group
++
++    response = client.post(
++        "/api/v1/rooms/create",
++        json={
++            "mode_type": "OUT_DINING",
++            "override_params": {"omega_group": 0.9, "lambda_decay": 1.4},
++        },
++        headers={"X-User-Id": "1"},
++    )
++    assert response.status_code == 200
++    code = response.json()["room_code"]
++
++    session = session_factory()
++    try:
++        room = session.query(GroupRoom).filter(GroupRoom.room_code == code).first()
++        assert room.algo_params == {"omega_group": 0.9, "lambda_decay": 1.4}
++        assert abs(_omega_group(session, room) - 0.9) < 1e-9
++    finally:
++        session.close()
++
++
++def test_room_rejects_bad_override_params(client):
++    response = client.post(
++        "/api/v1/rooms/create",
++        json={"mode_type": "OUT_DINING", "override_params": {"omega_group": 3.0}},
++        headers={"X-User-Id": "1"},
++    )
++    assert response.status_code == 422
++
++
++
+diff --git a/frontend/src/api/client.js b/frontend/src/api/client.js
+index 17ec358..fc9f343 100644
+--- a/frontend/src/api/client.js
++++ b/frontend/src/api/client.js
+@@ -2,16 +2,32 @@
+  * 唯一的后端出口。路由前缀 /api/v1 由 Vite 代理转发到 127.0.0.1:8000，
+  * 前端任何地方都不许再拼后端域名。
+  *
+- * 身份口径（v2.3.1 已锁定）：演示级 X-User-Id 请求头，默认 1。
++ * 身份口径（v2.3.5）：演示级 X-User-Id 请求头，必填；后端对缺失/非法/
++ * 未知身份一律 4xx，不会回退用户 1。本地只在首次进入时用演示角色 1。
+  * POST /auth/login 已删除，不要复活它。
+  */
+ const BASE = '/api/v1'
++const STORAGE_KEY = 'eatwhat.userId'
+ 
+-let currentUserId = Number(localStorage.getItem('eatwhat.userId') || 1)
++function normalizeUserId(raw, fallback = 1) {
++  const value = Number(raw)
++  return Number.isInteger(value) && value > 0 ? value : fallback
++}
++
++const storedRaw = localStorage.getItem(STORAGE_KEY)
++let currentUserId = normalizeUserId(storedRaw)
++if (storedRaw !== null && String(currentUserId) !== String(storedRaw)) {
++  console.warn(`已丢弃非法本地身份 ${storedRaw}，本次演示使用用户 ${currentUserId}`)
++  localStorage.setItem(STORAGE_KEY, String(currentUserId))
++}
+ 
+ export function setUserId(id) {
+-  currentUserId = Number(id) || 1
+-  localStorage.setItem('eatwhat.userId', String(currentUserId))
++  const next = Number(id)
++  if (!Number.isInteger(next) || next <= 0) {
++    throw new Error(`非法用户身份：${id}`)
++  }
++  currentUserId = next
++  localStorage.setItem(STORAGE_KEY, String(currentUserId))
+ }
+ 
+ export function getUserId() {
+diff --git a/frontend/src/api/index.js b/frontend/src/api/index.js
+index a0b87b7..c46879b 100644
+--- a/frontend/src/api/index.js
++++ b/frontend/src/api/index.js
+@@ -75,24 +75,29 @@ export function upsertFridge(userId, payload) {
+   return api.post(`/fridge/${userId}`, payload)
+ }
+ 
+-/** POST /fridge/shopping-list —— 多菜谱主辅料并集减冰箱现有 */
+-export function fetchShoppingList(userId, dishIds) {
+-  return api.post("/fridge/shopping-list", { user_id: userId, dish_ids: dishIds })
++/** POST /fridge/shopping-list —— 多菜谱主辅料并集减冰箱现有（身份只走请求头） */
++export function fetchShoppingList(dishIds) {
++  return api.post("/fridge/shopping-list", { dish_ids: dishIds })
+ }
+ 
+ /**
+  * POST /rooms/create —— 建房（v2.3.2 契约第 315 行）
+  * 传 budget 时后端按预算 1.25 倍做软上限筛候选；返回里带 10 道 candidates。
++ * host_user_id 不再放 body：身份只由 client.js 统一注入 X-User-Id。
+  */
+-export function createRoom(modeType, userId, budget = null) {
+-  const payload = { mode_type: modeType, host_user_id: userId }
++export function createRoom(modeType, budget = null, overrideParams = null) {
++  const payload = { mode_type: modeType }
+   if (budget != null) payload.budget = budget
++  // F10：沙盒调过的参数随建房一起落库成快照，结算时用快照而不是读 DB
++  if (overrideParams && Object.keys(overrideParams).length) {
++    payload.override_params = { ...overrideParams }
++  }
+   return api.post('/rooms/create', payload)
+ }
+ 
+-/** POST /rooms/{code}/join —— 加入房间（幂等） */
+-export function joinRoom(code, userId) {
+-  return api.post(`/rooms/${code}/join`, { user_id: userId })
++/** POST /rooms/{code}/join —— 加入房间（幂等；身份只走请求头） */
++export function joinRoom(code) {
++  return api.post(`/rooms/${code}/join`, {})
+ }
+ 
+ /** GET /rooms/{code} —— 房间快照 */
+diff --git a/frontend/src/stores/persona.js b/frontend/src/stores/persona.js
+index c5acafa..7d70df5 100644
+--- a/frontend/src/stores/persona.js
++++ b/frontend/src/stores/persona.js
+@@ -14,52 +14,72 @@ export const usePersonaStore = defineStore('persona', () => {
+   const profile = ref(null)
+   const loading = ref(false)
+   const error = ref('')
++  // 角色切换时递增；晚到的旧请求结果不得覆盖新角色数据
++  let profileToken = 0
+ 
+   const nickname = computed(
+-    () => profile.value?.nickname ?? demoUsers.value.find((u) => u.user_id === userId.value)?.nickname ?? '演示用户',
++    () => profile.value?.nickname ?? demoUsers.value.find((u) => u.id === userId.value)?.nickname ?? '演示用户',
+   )
+   const avatar = computed(
+-    () => profile.value?.avatar ?? demoUsers.value.find((u) => u.user_id === userId.value)?.avatar ?? '🍚',
++    () => profile.value?.avatar ?? demoUsers.value.find((u) => u.id === userId.value)?.avatar ?? '🍚',
+   )
+ 
+   async function loadDemoUsers() {
+     try {
+       const data = await fetchDemoUsers()
+-      demoUsers.value = data?.users ?? data ?? []
++      // demo-list 是公开的全局角色列表，与当前身份无关
++      demoUsers.value = Array.isArray(data) ? data : (data?.users ?? [])
+     } catch (err) {
+       error.value = err.message
+     }
+   }
+ 
+   async function loadProfile() {
++    const token = ++profileToken
++    const targetId = userId.value
+     loading.value = true
+     try {
+-      profile.value = await fetchProfile(userId.value)
++      const data = await fetchProfile(targetId)
++      if (token !== profileToken || targetId !== userId.value) return
++      profile.value = data
+       error.value = ''
+     } catch (err) {
++      if (token !== profileToken || targetId !== userId.value) return
+       error.value = err.message
+     } finally {
+-      loading.value = false
++      if (token === profileToken) loading.value = false
+     }
+   }
+ 
+   async function switchUser(id) {
+-    if (Number(id) === userId.value) return
+-    setUserId(id)
+-    userId.value = Number(id)
++    const next = Number(id)
++    if (!Number.isInteger(next) || next <= 0) {
++      throw new Error(`非法用户身份：${id}`)
++    }
++    if (next === userId.value) return
++    setUserId(next)
++    userId.value = next
+     profile.value = null
++    error.value = ''
++    profileToken += 1
+     await loadProfile()
+   }
+ 
+   async function persistPreferences(patch) {
+-    const data = await savePreferences(userId.value, patch)
+-    profile.value = { ...(profile.value ?? {}), ...(data ?? {}) }
++    const targetId = userId.value
++    const data = await savePreferences(targetId, patch)
++    if (targetId === userId.value) {
++      profile.value = { ...(profile.value ?? {}), ...(data ?? {}) }
++    }
+     return data
+   }
+ 
+   async function toggleRedBlack(payload) {
+-    const data = await updateRedBlackList(userId.value, payload)
+-    profile.value = { ...(profile.value ?? {}), ...(data ?? {}) }
++    const targetId = userId.value
++    const data = await updateRedBlackList(targetId, payload)
++    if (targetId === userId.value) {
++      profile.value = { ...(profile.value ?? {}), ...(data ?? {}) }
++    }
+     return data
+   }
+ 
+diff --git a/frontend/src/views/mobile/Fridge.vue b/frontend/src/views/mobile/Fridge.vue
+index 90be54f..64889da 100644
+--- a/frontend/src/views/mobile/Fridge.vue
++++ b/frontend/src/views/mobile/Fridge.vue
+@@ -10,7 +10,7 @@
+  * 单色体系：临期不用红色，用「实白底 + ink 字」的最高对比徽章表达紧急度，
+  * 与全站的双模式不靠颜色的规则一致。
+  */
+-import { computed, onMounted, ref } from 'vue'
++import { computed, onMounted, ref, watch } from 'vue'
+ import { useAutoAnimate } from '@formkit/auto-animate/vue'
+ import { fetchFridge, fetchHomeDishes, fetchShoppingList, upsertFridge } from '../../api'
+ import { usePersonaStore } from '../../stores/persona'
+@@ -132,7 +132,7 @@ async function buildShoppingList() {
+   shoppingBusy.value = true
+   shoppingError.value = ''
+   try {
+-    shopping.value = await fetchShoppingList(persona.userId, picked.value)
++    shopping.value = await fetchShoppingList(picked.value)
+   } catch (err) {
+     shoppingError.value = err?.message || '清单没生成出来'
+     shopping.value = null
+@@ -150,6 +150,14 @@ function clearShopping() {
+ onMounted(async () => {
+   await Promise.all([load(), loadDishes()])
+ })
++
++// S01：角色切换后冰箱必须重新拉取，不能继续显示上一个角色缓存
++watch(() => persona.userId, async () => {
++  picked.value = []
++  shopping.value = null
++  shoppingError.value = ''
++  await load()
++})
+ </script>
+ 
+ <template>
+@@ -442,8 +450,8 @@ onMounted(async () => {
+   min-height: 36px;
+   padding: 0 10px;
+   border-radius: 0.75rem;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
+-  background: rgb(255 255 255 / 0.08);
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
++  background: rgb(var(--rgb-white) / 0.08);
+   color: var(--on-glass);
+   font-size: 12.5px;
+ }
+@@ -453,7 +461,7 @@ onMounted(async () => {
+ }
+ 
+ .field--select option {
+-  color: #17171a;
++  color: var(--color-ink);
+ }
+ 
+ .field--days {
+@@ -494,7 +502,7 @@ onMounted(async () => {
+   min-width: 16px;
+   padding: 1px 5px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+   font-size: 9.5px;
+   text-align: center;
+   color: var(--on-glass-soft);
+@@ -542,7 +550,7 @@ onMounted(async () => {
+   flex: 0 0 auto;
+   padding: 6px 11px;
+   border-radius: 999px;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
+   background: transparent;
+   color: var(--on-glass-soft);
+   font-size: 11px;
+@@ -550,7 +558,7 @@ onMounted(async () => {
+ }
+ 
+ .row__del:hover {
+-  background: rgb(255 255 255 / 0.1);
++  background: rgb(var(--rgb-white) / 0.1);
+   color: var(--on-glass);
+ }
+ 
+@@ -562,7 +570,7 @@ onMounted(async () => {
+   overflow-y: auto;
+   padding: 2px 1px;
+   scrollbar-width: thin;
+-  scrollbar-color: rgb(255 255 255 / 0.24) transparent;
++  scrollbar-color: rgb(var(--rgb-white) / 0.24) transparent;
+ }
+ 
+ .picks::-webkit-scrollbar {
+@@ -571,13 +579,13 @@ onMounted(async () => {
+ 
+ .picks::-webkit-scrollbar-thumb {
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.24);
++  background: rgb(var(--rgb-white) / 0.24);
+ }
+ 
+ .pick {
+   padding: 6px 10px;
+   border-radius: 999px;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
+   background: transparent;
+   color: var(--on-glass-soft);
+   font-size: 11.5px;
+@@ -587,7 +595,7 @@ onMounted(async () => {
+ .pick--on {
+   background: var(--on-glass);
+   border-color: transparent;
+-  color: #17171a;
++  color: var(--color-ink);
+   font-weight: 600;
+ }
+ 
+@@ -612,14 +620,14 @@ onMounted(async () => {
+   flex: 0 0 auto;
+   padding: 3px 8px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+   font-size: 10px;
+   color: var(--on-glass-soft);
+ }
+ 
+ .tag--buy {
+   background: var(--on-glass);
+-  color: #17171a;
++  color: var(--color-ink);
+   font-weight: 600;
+ }
+ 
+@@ -638,7 +646,7 @@ onMounted(async () => {
+   border: 0;
+   border-radius: 999px;
+   background: var(--on-glass);
+-  color: #17171a;
++  color: var(--color-ink);
+   font-size: 13px;
+   font-weight: 650;
+   cursor: pointer;
+@@ -653,7 +661,7 @@ onMounted(async () => {
+   min-height: 38px;
+   padding: 0 14px;
+   border-radius: 999px;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
+   background: transparent;
+   color: var(--on-glass-soft);
+   font-size: 12.5px;
+diff --git a/frontend/src/views/mobile/Home.vue b/frontend/src/views/mobile/Home.vue
+index 5443620..e54ea1b 100644
+--- a/frontend/src/views/mobile/Home.vue
++++ b/frontend/src/views/mobile/Home.vue
+@@ -181,6 +181,19 @@ watch(
+   },
+ )
+ 
++/** S01：角色切换后不沿用上一个角色的卡组/已划记录，立即按新身份重取 */
++watch(
++  () => persona.userId,
++  () => {
++    radarDish.value = null
++    checkedDishIds.value = []
++    swiped.value = []
++    deck.value = []
++    roundDone.value = false
++    loadBatch({ keepSwiped: false })
++  },
++)
++
+ onMounted(async () => {
+   await mode.loadWeather()
+   if (!persona.profile) persona.loadProfile()
+@@ -363,12 +376,12 @@ onMounted(async () => {
+   border-radius: 0 0 28px 28px;
+   /*
+    * LiquidChrome 的 shader 是 uBaseColor / abs(sin(...))，分母贴近 0 时约 6.5% 的画面会被钳成纯白，
+-   * 而规格要求铬底「最亮不超过 #222226」。不碰 shader 的前提下唯一无损压法是外层线性缩放：
+-   * 0.13 × 255 ≈ 33 ≈ #212121 < #222226。这是调用处的视觉约束，不是组件实现改动。
++   * 而规格要求铬底「最亮不超过 var(--color-chrome-max)」。不碰 shader 的前提下唯一无损压法是外层线性缩放：
++   * 0.13 × 255 ≈ 33 ≈ var(--color-ink) < var(--color-chrome-max)。这是调用处的视觉约束，不是组件实现改动。
+    */
+   filter: brightness(0.13);
+-  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+-  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
++  mask-image: linear-gradient(to bottom, var(--color-black) 55%, transparent 100%);
++  -webkit-mask-image: linear-gradient(to bottom, var(--color-black) 55%, transparent 100%);
+ }
+ 
+ /* —— 状态行 —— */
+@@ -396,7 +409,7 @@ onMounted(async () => {
+   line-height: 1.5;
+   white-space: nowrap;
+   color: var(--color-white);
+-  text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
++  text-shadow: 0 1px 12px rgb(var(--rgb-black) / 0.35);
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+@@ -540,9 +553,9 @@ onMounted(async () => {
+ }
+ 
+ .chip--top {
+-  background: rgb(255 255 255 / 0.92);
++  background: rgb(var(--rgb-white) / 0.92);
+   color: var(--color-ink);
+-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.28);
++  box-shadow: 0 8px 20px rgb(var(--rgb-black) / 0.28);
+ }
+ 
+ .chip__rank {
+@@ -585,8 +598,10 @@ onMounted(async () => {
+ }
+ 
+ .toast--warn {
+-  color: #ffe2c9;
+-  box-shadow: inset 0 0 0 1px rgb(255 190 140 / 0.32);
++  /* 单色体系下警示不靠色相：反白底 + ink 字，与普通 toast 形成明度反差 */
++  background: var(--color-white);
++  color: var(--color-ink);
++  box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 0.45), 0 10px 24px rgb(var(--rgb-black) / 0.4);
+ }
+ 
+ .toast-fade-enter-active,
+@@ -634,7 +649,7 @@ onMounted(async () => {
+ }
+ 
+ .act--ink {
+-  background: rgb(255 255 255 / 0.92);
++  background: rgb(var(--rgb-white) / 0.92);
+   color: var(--color-ink);
+ }
+ 
+@@ -674,9 +689,9 @@ onMounted(async () => {
+   border-radius: 16px;
+   background: linear-gradient(
+     90deg,
+-    rgb(255 255 255 / 0.07),
+-    rgb(255 255 255 / 0.16),
+-    rgb(255 255 255 / 0.07)
++    rgb(var(--rgb-white) / 0.07),
++    rgb(var(--rgb-white) / 0.16),
++    rgb(var(--rgb-white) / 0.07)
+   );
+   background-size: 200% 100%;
+   animation: skeleton-move 1.4s ease-in-out infinite;
+@@ -727,39 +742,7 @@ onMounted(async () => {
+     margin-top: 8px;
+   }
+ 
+-  .toast {
+-  position: fixed;
+-  left: 50%;
+-  bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+-  z-index: 40;
+-  transform: translateX(-50%);
+-  max-width: min(86vw, 360px);
+-  margin: 0;
+-  border-radius: 999px;
+-  padding: 8px 14px;
+-  font-size: 12px;
+-  line-height: 1.4;
+-  text-align: center;
+-  color: var(--on-glass);
+-}
+-
+-.toast--warn {
+-  color: #ffe2c9;
+-  box-shadow: inset 0 0 0 1px rgb(255 190 140 / 0.32);
+-}
+-
+-.toast-fade-enter-active,
+-.toast-fade-leave-active {
+-  transition: opacity 0.22s ease, transform 0.22s ease;
+-}
+-
+-.toast-fade-enter-from,
+-.toast-fade-leave-to {
+-  opacity: 0;
+-  transform: translate(-50%, 6px);
+-}
+-
+-.deck-actions {
++  .deck-actions {
+     margin-top: 8px;
+   }
+ }
+diff --git a/frontend/src/views/mobile/Profile.vue b/frontend/src/views/mobile/Profile.vue
+index 0bf967a..a04f2b5 100644
+--- a/frontend/src/views/mobile/Profile.vue
++++ b/frontend/src/views/mobile/Profile.vue
+@@ -132,8 +132,9 @@ onMounted(async () => {
+   await loadFridgeSummary()
+ })
+ watch(() => persona.userId, async () => {
+-  await loadCatalog()
+   budgetDraft.value = null
++  await loadCatalog()
++  await loadFridgeSummary()
+ })
+ 
+ async function pickUser(user) {
+@@ -442,7 +443,7 @@ function geneValue(key) {
+   padding: 11px 13px;
+   font-size: 12px;
+   color: var(--on-glass);
+-  background: rgb(255 255 255 / 0.12);
++  background: rgb(var(--rgb-white) / 0.12);
+ }
+ 
+ /* 人设卡 */
+@@ -505,7 +506,7 @@ function geneValue(key) {
+   height: 46px;
+   border-radius: 50%;
+   font-size: 24px;
+-  background: rgb(255 255 255 / 0.12);
++  background: rgb(var(--rgb-white) / 0.12);
+ }
+ 
+ .persona__text {
+@@ -532,7 +533,7 @@ function geneValue(key) {
+   padding: 6px 10px;
+   font-size: 10.5px;
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.9);
++  background: rgb(var(--rgb-white) / 0.9);
+ }
+ 
+ .roster {
+@@ -552,11 +553,11 @@ function geneValue(key) {
+   border-radius: 0.9rem;
+   padding: 9px 10px;
+   text-align: left;
+-  background: rgb(255 255 255 / 0.08);
++  background: rgb(var(--rgb-white) / 0.08);
+ }
+ 
+ .roster__row[data-active='true'] {
+-  background: rgb(255 255 255 / 0.16);
++  background: rgb(var(--rgb-white) / 0.16);
+ }
+ 
+ .roster__avatar {
+@@ -619,7 +620,7 @@ function geneValue(key) {
+   gap: 8px;
+   border-radius: 1.125rem;
+   padding: 13px 14px;
+-  background: rgb(255 255 255 / 0.07);
++  background: rgb(var(--rgb-white) / 0.07);
+ }
+ 
+ .gene {
+@@ -639,14 +640,14 @@ function geneValue(key) {
+   height: 4px;
+   overflow: hidden;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+ }
+ 
+ .gene__fill {
+   position: absolute;
+   inset: 0 auto 0 0;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.82);
++  background: rgb(var(--rgb-white) / 0.82);
+ }
+ 
+ .gene__val {
+@@ -662,7 +663,7 @@ function geneValue(key) {
+   gap: 12px;
+   border-radius: 1.125rem;
+   padding: 12px 14px;
+-  background: rgb(255 255 255 / 0.07);
++  background: rgb(var(--rgb-white) / 0.07);
+ }
+ 
+ .budget .slider-ink {
+@@ -694,7 +695,7 @@ function geneValue(key) {
+   padding: 4px 6px 4px 10px;
+   font-size: 11.5px;
+   color: var(--on-glass);
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+ }
+ 
+ .veto button {
+@@ -706,7 +707,7 @@ function geneValue(key) {
+   font-size: 12px;
+   line-height: 1;
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.75);
++  background: rgb(var(--rgb-white) / 0.75);
+ }
+ 
+ .veto--ghost {
+@@ -714,7 +715,7 @@ function geneValue(key) {
+   font-size: 10.5px;
+   color: var(--on-glass-dim);
+   background: transparent;
+-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
++  box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 0.16);
+ }
+ 
+ .veto-add {
+@@ -729,8 +730,8 @@ function geneValue(key) {
+   padding: 8px 11px;
+   font-size: 12px;
+   color: var(--on-glass);
+-  background: rgb(255 255 255 / 0.08);
+-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.08);
++  box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 0.14);
+ }
+ 
+ .veto-add input::placeholder {
+@@ -743,7 +744,7 @@ function geneValue(key) {
+   padding: 0 12px;
+   font-size: 11.5px;
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.86);
++  background: rgb(var(--rgb-white) / 0.86);
+ }
+ 
+ .presets {
+@@ -757,7 +758,7 @@ function geneValue(key) {
+   padding: 3px 9px;
+   font-size: 10.5px;
+   color: var(--on-glass-soft);
+-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
++  box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 0.16);
+ }
+ 
+ .presets button:disabled {
+@@ -776,12 +777,12 @@ function geneValue(key) {
+   padding: 6px 4px;
+   font-size: 11px;
+   color: var(--on-glass-soft);
+-  background: rgb(255 255 255 / 0.07);
++  background: rgb(var(--rgb-white) / 0.07);
+ }
+ 
+ .tab[data-active='true'] {
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.9);
++  background: rgb(var(--rgb-white) / 0.9);
+ }
+ 
+ .tab__count {
+@@ -797,7 +798,7 @@ function geneValue(key) {
+   font-size: 11.5px;
+   line-height: 1.7;
+   color: var(--on-glass-soft);
+-  background: rgb(255 255 255 / 0.07);
++  background: rgb(var(--rgb-white) / 0.07);
+ }
+ 
+ .board {
+@@ -815,7 +816,7 @@ function geneValue(key) {
+   gap: 10px;
+   border-radius: 1rem;
+   padding: 9px 11px;
+-  background: rgb(255 255 255 / 0.08);
++  background: rgb(var(--rgb-white) / 0.08);
+ }
+ 
+ .board__text {
+@@ -837,7 +838,7 @@ function geneValue(key) {
+ }
+ 
+ .board__warn {
+-  color: rgb(255 255 255 / 0.45);
++  color: rgb(var(--rgb-white) / 0.45);
+ }
+ 
+ .board__out {
+@@ -846,7 +847,7 @@ function geneValue(key) {
+   padding: 5px 11px;
+   font-size: 10.5px;
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.86);
++  background: rgb(var(--rgb-white) / 0.86);
+ }
+ 
+ .board__out:disabled {
+@@ -892,7 +893,7 @@ function geneValue(key) {
+   gap: 7px;
+   border-radius: 1.125rem;
+   padding: 12px 14px;
+-  background: rgb(255 255 255 / 0.07);
++  background: rgb(var(--rgb-white) / 0.07);
+ }
+ 
+ .split__bar {
+@@ -900,14 +901,14 @@ function geneValue(key) {
+   height: 6px;
+   overflow: hidden;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.16);
++  background: rgb(var(--rgb-white) / 0.16);
+ }
+ 
+ .split__out {
+   position: absolute;
+   inset: 0 auto 0 0;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.88);
++  background: rgb(var(--rgb-white) / 0.88);
+ }
+ 
+ .split__legend {
+@@ -932,7 +933,7 @@ function geneValue(key) {
+   font-size: 11.5px;
+   white-space: nowrap;
+   color: var(--color-ink);
+-  background: rgb(255 255 255 / 0.92);
+-  box-shadow: 0 10px 24px rgb(0 0 0 / 0.32);
++  background: rgb(var(--rgb-white) / 0.92);
++  box-shadow: 0 10px 24px rgb(var(--rgb-black) / 0.32);
+ }
+ </style>
+diff --git a/frontend/src/views/mobile/Room.vue b/frontend/src/views/mobile/Room.vue
+index f8ec883..552b8d8 100644
+--- a/frontend/src/views/mobile/Room.vue
++++ b/frontend/src/views/mobile/Room.vue
+@@ -24,11 +24,13 @@ import { gsap } from 'gsap'
+ import { createRoom, joinRoom, roomSocketUrl } from '../../api'
+ import { usePersonaStore } from '../../stores/persona'
+ import { useModeStore } from '../../stores/mode'
++import { useAlgoStore } from '../../stores/algo'
+ 
+ const route = useRoute()
+ const router = useRouter()
+ const persona = usePersonaStore()
+ const mode = useModeStore()
++const algo = useAlgoStore()
+ 
+ const VOTE_BUTTONS = [
+   { type: 'SUPER_LIKE', label: '超想吃', hint: '加分最多' },
+@@ -247,7 +249,12 @@ async function doCreate() {
+   busy.value = true
+   error.value = ''
+   try {
+-    room.value = await createRoom(createMode.value, persona.userId, budgetForRoom())
++    // F10：把沙盒调过的参数随建房快照下去，结算用快照，不是读 DB
++    room.value = await createRoom(
++      createMode.value,
++      budgetForRoom(),
++      algo.dirty ? { ...algo.overrides } : null,
++    )
+     candidates.value = room.value?.candidates || []
+     stage.value = 'lobby'
+     rememberCode(room.value?.room_code)
+@@ -268,7 +275,7 @@ async function doJoin() {
+   busy.value = true
+   error.value = ''
+   try {
+-    room.value = await joinRoom(code, persona.userId)
++    room.value = await joinRoom(code)
+     candidates.value = room.value?.candidates || []
+     stage.value = 'lobby'
+     rememberCode(code)
+@@ -328,7 +335,7 @@ function playReveal() {
+       spread: 78,
+       startVelocity: 42,
+       origin: { y: 0.62 },
+-      colors: ['#ffffff', '#e4e4e7', '#a1a1aa', '#55555e'],
++      colors: ['var(--color-white)', 'var(--color-mist)', 'var(--color-steel)', 'var(--color-steel)'],
+       scalar: 0.9,
+       disableForReducedMotion: true,
+     })
+@@ -600,7 +607,7 @@ onBeforeUnmount(() => {
+   gap: 4px;
+   padding: 3px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.08);
++  background: rgb(var(--rgb-white) / 0.08);
+ }
+ 
+ .seg__item {
+@@ -614,7 +621,7 @@ onBeforeUnmount(() => {
+ }
+ 
+ .seg__item[data-active='true'] {
+-  background: rgb(23 23 26 / 0.92);
++  background: rgb(var(--rgb-ink) / 0.92);
+   color: var(--color-white);
+   font-weight: 650;
+ }
+@@ -624,8 +631,8 @@ onBeforeUnmount(() => {
+   min-height: 38px;
+   padding: 0 12px;
+   border-radius: 0.85rem;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
+-  background: rgb(255 255 255 / 0.08);
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
++  background: rgb(var(--rgb-white) / 0.08);
+   color: var(--on-glass);
+   font-size: 13px;
+   letter-spacing: 0.18em;
+@@ -666,7 +673,7 @@ onBeforeUnmount(() => {
+   margin-left: auto;
+   padding: 3px 9px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+   font-size: 10.5px;
+   color: var(--on-glass-soft);
+ }
+@@ -704,7 +711,7 @@ onBeforeUnmount(() => {
+   padding: 1px 6px;
+   border-radius: 999px;
+   background: var(--on-glass);
+-  color: #17171a;
++  color: var(--color-ink);
+   font-size: 9.5px;
+ }
+ 
+@@ -727,7 +734,7 @@ onBeforeUnmount(() => {
+ .timer__bar {
+   height: 4px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.16);
++  background: rgb(var(--rgb-white) / 0.16);
+   overflow: hidden;
+ }
+ 
+@@ -755,7 +762,7 @@ onBeforeUnmount(() => {
+ .card__shot {
+   position: relative;
+   height: 148px;
+-  background: rgb(255 255 255 / 0.06);
++  background: rgb(var(--rgb-white) / 0.06);
+ }
+ 
+ .card__img {
+@@ -807,7 +814,7 @@ onBeforeUnmount(() => {
+   gap: 2px;
+   padding: 8px 2px;
+   border-radius: 0.85rem;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
+   background: transparent;
+   color: var(--on-glass-soft);
+   cursor: pointer;
+@@ -826,11 +833,11 @@ onBeforeUnmount(() => {
+ .vote--super_like {
+   background: var(--on-glass);
+   border-color: transparent;
+-  color: #17171a;
++  color: var(--color-ink);
+ }
+ 
+ .vote--super_like small {
+-  color: rgb(23 23 26 / 0.6);
++  color: rgb(var(--rgb-ink) / 0.6);
+ }
+ 
+ .vote--veto {
+@@ -882,16 +889,16 @@ onBeforeUnmount(() => {
+ 
+ .reveal__ring {
+   fill: none;
+-  stroke: rgb(255 255 255 / 0.34);
++  stroke: rgb(var(--rgb-white) / 0.34);
+   stroke-width: 1.4;
+ }
+ 
+ .reveal__core {
+-  fill: rgb(255 255 255 / 0.92);
++  fill: rgb(var(--rgb-white) / 0.92);
+ }
+ 
+ .reveal__dot {
+-  fill: rgb(255 255 255 / 0.72);
++  fill: rgb(var(--rgb-white) / 0.72);
+ }
+ 
+ .reveal__label {
+@@ -940,7 +947,7 @@ onBeforeUnmount(() => {
+ .reveal__bar {
+   height: 5px;
+   border-radius: 999px;
+-  background: rgb(255 255 255 / 0.14);
++  background: rgb(var(--rgb-white) / 0.14);
+   overflow: hidden;
+ }
+ 
+@@ -964,7 +971,7 @@ onBeforeUnmount(() => {
+   border: 0;
+   border-radius: 999px;
+   background: var(--on-glass);
+-  color: #17171a;
++  color: var(--color-ink);
+   font-size: 13.5px;
+   font-weight: 650;
+   cursor: pointer;
+@@ -979,7 +986,7 @@ onBeforeUnmount(() => {
+   min-height: 38px;
+   padding: 0 16px;
+   border-radius: 999px;
+-  border: 1px solid var(--on-glass-line, rgb(255 255 255 / 0.22));
++  border: 1px solid var(--on-glass-line, rgb(var(--rgb-white) / 0.22));
+   background: transparent;
+   color: var(--on-glass-soft);
+   font-size: 12.5px;

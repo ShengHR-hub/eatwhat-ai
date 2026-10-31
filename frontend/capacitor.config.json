@@ -1,0 +1,8 @@
+{
+  "appId": "com.eatwhat.app",
+  "appName": "食刻 EatWhat",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true
+  }
+}

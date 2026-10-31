@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>食刻 EatWhat · 校园饮食数据大屏</title>
+<style>
+  /* 大屏视觉语言（参考 DataV / RayData 这一系）：
+     深蓝底 + 青色高饱和 + 直角带角标边框 + 居中发光标题 + DIN 等宽数字。
+     和后台报表是两套东西——报表追求可读，大屏追求"远看有气势"。 */
+  :root {
+    --bg: #030a1a;
+    --cyan: #00d4ff;
+    --cyan-dim: rgba(0, 212, 255, .55);
+    --blue: #1b7cff;
+    --green: #23e6a0;
+    --amber: #ffc53d;
+    --red: #ff6b6b;
+    --text: #dceeff;
+    --muted: #6f97bd;
+    --line: rgba(0, 212, 255, .2);
+    --panel-bg: linear-gradient(180deg, rgba(9, 30, 62, .82) 0%, rgba(4, 14, 32, .9) 100%);
+    --num: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
+    --font: "PingFang SC", "Microsoft YaHei UI", "Source Han Sans CN", "Noto Sans SC", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); color: var(--text); background: var(--bg);
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(90% 55% at 50% -10%, rgba(0, 120, 255, .28), transparent 62%),
+      radial-gradient(60% 40% at 8% 100%, rgba(0, 212, 255, .1), transparent 70%),
+      radial-gradient(60% 40% at 92% 100%, rgba(124, 92, 255, .12), transparent 70%),
+      linear-gradient(rgba(0, 212, 255, .035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, .035) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  }
+  .num { font-family: var(--num); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+
+  .screen { height: 100vh; display: flex; flex-direction: column; padding: 0 16px 10px; }
+
+  /* ── 顶部标题栏 ───────────────────────────────────────────── */
+  .header {
+    height: 62px; flex: 0 0 62px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .header::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan-dim) 20%, var(--cyan) 50%, var(--cyan-dim) 80%, transparent);
+    opacity: .6;
+  }
+  .header__side { position: absolute; display: flex; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); }
+  .header__side--l { left: 8px; }
+  .header__side--r { right: 8px; }
+  .header__title { display: flex; align-items: center; gap: 18px; }
+  .header__title h1 {
+    font-size: 24px; font-weight: 600; letter-spacing: .12em; white-space: nowrap;
+    background: linear-gradient(180deg, #ffffff 30%, #7fd4ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 14px rgba(0, 212, 255, .55));
+  }
+  .header__wing { width: 96px; height: 8px; position: relative; }
+  .header__wing::before, .header__wing::after {
+    content: ""; position: absolute; top: 3px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan));
+  }
+  .header__wing::before { left: 0; right: 8px; }
+  .header__wing::after {
+    right: 0; width: 6px; height: 6px; top: 0; transform: rotate(45deg);
+    background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+  }
+  .header__wing--r::before { background: linear-gradient(270deg, transparent, var(--cyan)); }
+  .header__wing--r::after { right: auto; left: 0; }
+
+  .pill {
+    height: 22px; padding: 0 9px; border: 1px solid var(--line);
+    display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted);
+    background: rgba(0, 212, 255, .05);
+  }
+  .pill b { color: var(--cyan); font-weight: 500; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+  /* ── 主体三栏 ─────────────────────────────────────────────── */
+  .body { flex: 1; display: flex; gap: 12px; min-height: 0; padding-top: 12px; }
+  .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  .col--l, .col--r { flex: 0 0 306px; }
+  .col--m { flex: 1; min-width: 0; }
+
+  /* 面板：直角 + 四角 L 形角标（大屏的标志性元素） */
+  .panel {
+    position: relative; background: var(--panel-bg);
+    border: 1px solid var(--line);
+    padding: 10px 12px 8px; display: flex; flex-direction: column; min-height: 0;
+    box-shadow: inset 0 0 42px rgba(0, 120, 255, .12);
+  }
+  .panel::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(var(--cyan), var(--cyan)) left top / 11px 1.5px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) left top / 1.5px 11px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) right top / 11px 1.5px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) right top / 1.5px 11px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) left bottom / 11px 1.5px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) left bottom / 1.5px 11px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) right bottom / 11px 1.5px no-repeat,
+      linear-gradient(var(--cyan), var(--cyan)) right bottom / 1.5px 11px no-repeat;
+    opacity: .75;
+  }
+  .panel__title {
+    display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    font-size: 12px; letter-spacing: .06em; color: #bfe4ff; padding-bottom: 7px;
+    border-bottom: 1px solid rgba(0, 212, 255, .12); margin-bottom: 8px;
+  }
+  .panel__title::before {
+    content: ""; width: 3px; height: 11px; background: var(--cyan);
+    box-shadow: 0 0 9px var(--cyan);
+  }
+  .panel__title span { margin-left: auto; font-size: 9.5px; color: var(--muted); letter-spacing: .04em; }
+  .panel__body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 中央 KPI 数字 ────────────────────────────────────────── */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 0 0 auto; }
+  .kpi {
+    position: relative; padding: 8px 10px; text-align: center;
+    background: linear-gradient(180deg, rgba(0, 212, 255, .1), rgba(0, 212, 255, .01));
+    border: 1px solid var(--line);
+  }
+  .kpi__k { font-size: 10.5px; color: var(--muted); letter-spacing: .08em; }
+  .kpi__v {
+    font-family: var(--num); font-size: 34px; line-height: 1.05; margin-top: 2px;
+    background: linear-gradient(180deg, #ffffff 20%, #37c8ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 12px rgba(0, 212, 255, .5));
+  }
+  .kpi__v small { font-size: 11px; margin-left: 3px; -webkit-text-fill-color: var(--muted); color: var(--muted); }
+  .kpi__d { font-size: 9.5px; color: var(--muted); margin-top: 1px; }
+
+  /* ── 热力矩阵 ─────────────────────────────────────────────── */
+  .heat { display: grid; gap: 3px; height: 100%; grid-auto-rows: 1fr; }
+  .heat__c { background: rgba(0, 212, 255, .06); }
+  .heat__lbl { font-size: 9px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+
+  /* ── 横条 ─────────────────────────────────────────────────── */
+  .hbars { display: flex; flex-direction: column; gap: 8px; }
+  .hbar { display: grid; grid-template-columns: 44px 1fr 42px; align-items: center; gap: 8px; font-size: 10.5px; }
+  .hbar__t { display: block; height: 7px; background: rgba(0, 212, 255, .08); }
+  .hbar__f {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, rgba(27, 124, 255, .35), var(--cyan));
+    box-shadow: 0 0 10px rgba(0, 212, 255, .55);
+  }
+  .hbar__v { text-align: right; font-family: var(--num); font-size: 12px; color: #a9d8ff; }
+
+  /* ── 环形 ─────────────────────────────────────────────────── */
+  .donut-wrap { display: flex; align-items: center; gap: 12px; }
+  .legend { display: flex; flex-direction: column; gap: 6px; font-size: 10.5px; flex: 1; }
+  .legend div { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .legend i { width: 6px; height: 6px; }
+  .legend b { margin-left: auto; font-family: var(--num); font-size: 13px; color: #cfe9ff; font-weight: 400; }
+
+  /* ── 列表 ─────────────────────────────────────────────────── */
+  .rows { display: flex; flex-direction: column; gap: 5px; }
+  .row {
+    display: flex; align-items: center; gap: 7px; font-size: 10.5px; color: var(--muted);
+    padding: 3px 0; border-bottom: 1px dashed rgba(0, 212, 255, .1);
+  }
+  .row:last-child { border-bottom: 0; }
+  .row__n { width: 15px; font-family: var(--num); font-size: 10px; color: var(--cyan-dim); }
+  .row__t { color: #c3e2ff; }
+  .row b { margin-left: auto; font-family: var(--num); font-size: 12px; font-weight: 400; color: #9fd6ff; }
+
+  svg.chart { display: block; width: 100%; height: 100%; overflow: visible; }
+
+  /* ── 底部滚动 ─────────────────────────────────────────────── */
+  .ticker {
+    flex: 0 0 auto; height: 26px; margin-top: 8px; display: flex; align-items: center; gap: 10px;
+    border-top: 1px solid rgba(0, 212, 255, .15); font-size: 10px; color: var(--muted);
+    overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  }
+  .ticker__run { display: flex; gap: 30px; white-space: nowrap; animation: run 32s linear infinite; }
+  @keyframes run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="header">
+    <div class="header__side header__side--l">
+      <span id="clock" class="num">--:--:--</span>
+      <span class="pill"><span class="dot"></span>数据实时同步</span>
+    </div>
+    <div class="header__title">
+      <span class="header__wing"></span>
+      <h1>校园饮食决策数据大屏</h1>
+      <span class="header__wing header__wing--r"></span>
+    </div>
+    <div class="header__side header__side--r">
+      <span class="pill">全部校区</span>
+      <span class="pill">近 <b>7</b> 天</span>
+      <span class="pill">v2.3.6</span>
+    </div>
+  </header>
+
+  <div class="body">
+    <div class="col col--l">
+      <section class="panel" style="flex:1.15">
+        <div class="panel__title">菜品结构 · 菜系分布<span>TOP 8</span></div>
+        <div class="panel__body"><div class="hbars" id="cuisine"></div></div>
+      </section>
+
+      <section class="panel" style="flex:1">
+        <div class="panel__title">数据质量 · 打标覆盖<span>6,560 道</span></div>
+        <div class="panel__body">
+          <div class="donut-wrap">
+            <svg viewBox="0 0 42 42" style="width:96px;height:96px;flex:0 0 96px">
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(0,212,255,.1)" stroke-width="4"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#23e6a0" stroke-width="4"
+                      stroke-dasharray="99.27 100" stroke-dashoffset="25"
+                      style="filter:drop-shadow(0 0 5px rgba(35,230,160,.8))"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#ffc53d" stroke-width="4"
+                      stroke-dasharray="0.37 100" stroke-dashoffset="25.63"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#ff6b6b" stroke-width="4"
+                      stroke-dasharray="0.37 100" stroke-dashoffset="25.26"/>
+              <text x="21" y="20.5" text-anchor="middle" font-size="6" fill="#eaf7ff"
+                    font-family="Bahnschrift" font-weight="600">99.3</text>
+              <text x="21" y="24.6" text-anchor="middle" font-size="2.7" fill="#6f97bd">%</text>
+            </svg>
+            <div class="legend">
+              <div><i style="background:#23e6a0"></i>已完成<b>6,512</b></div>
+              <div><i style="background:#ffc53d"></i>待打标<b>24</b></div>
+              <div><i style="background:#ff6b6b"></i>失败<b>24</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="flex:1.45">
+        <div class="panel__title">人设口味 · 八维对比<span>base_vector</span></div>
+        <div class="panel__body"><svg class="chart" viewBox="0 0 240 150" id="radar"></svg></div>
+      </section>
+    </div>
+
+    <div class="col col--m">
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__k">有效门店</div><div class="kpi__v">7,704<small>家</small></div><div class="kpi__d">思源 3,862 · 建大 3,842</div></div>
+        <div class="kpi"><div class="kpi__k">菜品菜谱</div><div class="kpi__v">6,560<small>道</small></div><div class="kpi__d">外食 120 · 下厨 6,440</div></div>
+        <div class="kpi"><div class="kpi__k">有效特征值</div><div class="kpi__v">52,352<small>个</small></div><div class="kpi__d">6,544 道 × 8 维</div></div>
+        <div class="kpi"><div class="kpi__k">饮食流水</div><div class="kpi__v">1,284<small>条</small></div><div class="kpi__d">近 7 天 214 条</div></div>
+      </div>
+
+      <section class="panel" style="flex:1.75">
+        <div class="panel__title">一周 × 时段 决策密度<span>颜色越亮 = 行为越多</span></div>
+        <div class="panel__body"><div class="heat" id="heat"></div></div>
+      </section>
+
+      <section class="panel" style="flex:1">
+        <div class="panel__title">防腻衰减实验 · 重样率曲线<span>λ=0.5 vs λ=0</span></div>
+        <div class="panel__body"><svg class="chart" viewBox="0 0 560 130" preserveAspectRatio="none" id="curve"></svg></div>
+      </section>
+    </div>
+
+    <div class="col col--r">
+      <section class="panel" style="flex:1.15">
+        <div class="panel__title">今日热度榜<span>TOP 5</span></div>
+        <div class="panel__body">
+          <div class="rows">
+            <div class="row"><span class="row__n">01</span><span class="row__t">砂锅豆腐</span><b>42</b></div>
+            <div class="row"><span class="row__n">02</span><span class="row__t">红烧牛肉面</span><b>38</b></div>
+            <div class="row"><span class="row__n">03</span><span class="row__t">麻辣香锅</span><b>31</b></div>
+            <div class="row"><span class="row__n">04</span><span class="row__t">蛋炒饭</span><b>27</b></div>
+            <div class="row"><span class="row__n">05</span><span class="row__t">黄焖鸡米饭</span><b>24</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="flex:1.05">
+        <div class="panel__title">校区对比<span>门店 / 菜品</span></div>
+        <div class="panel__body">
+          <div class="hbars" style="gap:14px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:5px">
+                <span style="color:#c3e2ff">思源</span><span class="num" style="color:var(--muted)">3,862 / 3,280</span>
+              </div>
+              <div class="hbar__t"><span class="hbar__f" style="width:100%"></span></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:5px">
+                <span style="color:#c3e2ff">建大雁塔</span><span class="num" style="color:var(--muted)">3,842 / 3,280</span>
+              </div>
+              <div class="hbar__t"><span class="hbar__f" style="width:99.5%;background:linear-gradient(90deg,rgba(35,230,160,.35),#23e6a0);box-shadow:0 0 10px rgba(35,230,160,.5)"></span></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:10.5px;margin-bottom:5px">
+                <span style="color:#c3e2ff">共享下厨菜谱</span><span class="num" style="color:var(--muted)">6,440 道</span>
+              </div>
+              <div class="hbar__t"><span class="hbar__f" style="width:83%;background:linear-gradient(90deg,rgba(124,92,255,.35),#7c5cff);box-shadow:0 0 10px rgba(124,92,255,.5)"></span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="flex:1">
+        <div class="panel__title">待处理事项<span>实时</span></div>
+        <div class="panel__body">
+          <div class="rows">
+            <div class="row"><span class="row__t">待打标菜品</span><b style="color:#ffc53d">24</b></div>
+            <div class="row"><span class="row__t">打标失败</span><b style="color:#ff6b6b">3</b></div>
+            <div class="row"><span class="row__t">数据异常行</span><b style="color:#ffc53d">18</b></div>
+            <div class="row"><span class="row__t">今日新增流水</span><b>32</b></div>
+            <div class="row"><span class="row__t">活跃房间</span><b>4</b></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="ticker">
+    <span class="dot"></span>
+    <div class="ticker__run">
+      <span>砂锅豆腐 · 教工食堂 · 今日 42 次</span>
+      <span>红烧牛肉面 · 二食堂 · 今日 38 次</span>
+      <span>麻辣香锅 · 一食堂 · 今日 31 次</span>
+      <span>数据质量：18 行异常待处理</span>
+      <span>打标队列：24 道待处理</span>
+      <span>砂锅豆腐 · 教工食堂 · 今日 42 次</span>
+      <span>红烧牛肉面 · 二食堂 · 今日 38 次</span>
+      <span>麻辣香锅 · 一食堂 · 今日 31 次</span>
+      <span>数据质量：18 行异常待处理</span>
+      <span>打标队列：24 道待处理</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  (function clock() {
+    const el = $('clock');
+    const tick = () => {
+      const d = new Date();
+      const p = (n) => String(n).padStart(2, '0');
+      el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    };
+    tick(); setInterval(tick, 1000);
+  })();
+
+  /* 热力：低值压暗，峰值推到亮青 */
+  (function heat() {
+    const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
+    const SLOTS = ['06-08','08-10','10-12','12-14','14-16','16-18','18-20','20-22'];
+    const M = [
+      [4,9,12,38,10,8,26,7],[5,8,14,41,9,7,24,6],[4,10,15,36,11,9,27,8],
+      [6,9,13,39,10,8,25,9],[7,11,16,44,13,12,31,14],[9,14,18,35,16,15,33,19],
+      [8,13,17,32,15,14,30,17],
+    ];
+    const max = Math.max.apply(null, M.flat());
+    const color = (r) => {
+      const t = Math.pow(r, 1.6);
+      const c = [Math.round(6 + t * 190), Math.round(26 + t * 220), Math.round(58 + t * 197)];
+      return `rgb(${c.join(',')})`;
+    };
+    const el = $('heat');
+    el.style.gridTemplateColumns = `38px repeat(${SLOTS.length}, 1fr)`;
+    let html = '<div></div>' + SLOTS.map((s) => `<div class="heat__lbl">${s}</div>`).join('');
+    M.forEach((row, i) => {
+      html += `<div class="heat__lbl">${DAYS[i]}</div>`;
+      row.forEach((v) => {
+        html += `<div class="heat__c" title="${v}" style="background:${color(v / max)}"></div>`;
+      });
+    });
+    el.innerHTML = html;
+  })();
+
+  (function cuisine() {
+    const D = [['家常',1842],['川湘菜',1486],['面食',1162],['粤菜',824],['凉菜',662],['轻食',584],['小吃',512],['汤品',388]];
+    const max = D[0][1];
+    $('cuisine').innerHTML = D.map((d) =>
+      `<div class="hbar"><span>${d[0]}</span>
+        <span class="hbar__t"><span class="hbar__f" style="width:${(d[1]/max*100).toFixed(1)}%"></span></span>
+        <span class="hbar__v">${d[1].toLocaleString()}</span></div>`).join('');
+  })();
+
+  /* 防腻曲线：面积渐变 + 发光描边 */
+  (function curve() {
+    const W = 560, H = 130, P = { l: 34, r: 10, t: 10, b: 18 };
+    const a = [0.62,0.58,0.55,0.52,0.50,0.49,0.48,0.47,0.47,0.46];
+    const b = [0.62,0.66,0.69,0.72,0.74,0.76,0.78,0.79,0.80,0.81];
+    const x = (i) => P.l + (i / (a.length - 1)) * (W - P.l - P.r);
+    const y = (v) => P.t + (1 - (v - 0.4) / 0.45) * (H - P.t - P.b);
+    let s = `<defs>
+      <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00d4ff" stop-opacity=".38"/>
+        <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff6b6b" stop-opacity=".28"/>
+        <stop offset="100%" stop-color="#ff6b6b" stop-opacity="0"/>
+      </linearGradient>
+    </defs>`;
+    [0.5, 0.6, 0.7, 0.8].forEach((g) => {
+      s += `<line x1="${P.l}" y1="${y(g)}" x2="${W - P.r}" y2="${y(g)}" stroke="rgba(0,212,255,.1)" stroke-dasharray="3 4"/>`;
+      s += `<text x="6" y="${y(g) + 3}" font-size="9" fill="#6f97bd" font-family="Bahnschrift">${(g*100).toFixed(0)}%</text>`;
+    });
+    const path = (arr) => arr.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const area = (arr, g) =>
+      `<polygon points="${P.l},${H - P.b} ${path(arr)} ${W - P.r},${H - P.b}" fill="url(#${g})"/>`;
+    s += area(b, 'gb') + area(a, 'ga');
+    s += `<polyline points="${path(b)}" fill="none" stroke="#ff6b6b" stroke-width="1.8"
+            stroke-dasharray="5 4" style="filter:drop-shadow(0 0 6px rgba(255,107,107,.7))"/>`;
+    s += `<polyline points="${path(a)}" fill="none" stroke="#00d4ff" stroke-width="2.2"
+            style="filter:drop-shadow(0 0 7px rgba(0,212,255,.85))"/>`;
+    a.forEach((v, i) => { s += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.2" fill="#eafcff"/>`; });
+    s += `<text x="${W - P.r}" y="${y(a[9]) + 16}" text-anchor="end" font-size="9.5" fill="#00d4ff">λ=0.5 重样率下降</text>`;
+    s += `<text x="${W - P.r}" y="${y(b[9]) - 8}" text-anchor="end" font-size="9.5" fill="#ff6b6b">λ=0 持续升高</text>`;
+    $('curve').innerHTML = s;
+  })();
+
+  (function radar() {
+    const cx = 120, cy = 80, R = 56;
+    const AX = ['酸','甜','苦','辣','咸','鲜','油','烫'];
+    const P = [
+      { c: '#ff6b6b', v: [.4,.2,.1,.9,.7,.6,.8,.6] },
+      { c: '#23e6a0', v: [.3,.1,.2,.1,.5,.7,.2,.8] },
+      { c: '#ffc53d', v: [.5,.3,.1,.3,.8,.4,.6,.5] },
+      { c: '#00d4ff', v: [.4,.2,.2,.1,.3,.5,.1,.4] },
+    ];
+    const ang = (i) => (-Math.PI / 2) + (i * 2 * Math.PI) / 8;
+    const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
+    let s = '';
+    [0.33, 0.66, 1].forEach((r) => {
+      s += `<polygon points="${AX.map((_, i) => pt(i, r).map(n => n.toFixed(1)).join(',')).join(' ')}"
+        fill="none" stroke="rgba(0,212,255,${r === 1 ? .28 : .1})"/>`;
+    });
+    AX.forEach((_, i) => {
+      const p = pt(i, 1);
+      s += `<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="rgba(0,212,255,.12)"/>`;
+    });
+    P.forEach((p) => {
+      const pts = p.v.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ');
+      s += `<polygon points="${pts}" fill="${p.c}18" stroke="${p.c}" stroke-width="1.4"
+        stroke-linejoin="round" style="filter:drop-shadow(0 0 5px ${p.c}aa)"/>`;
+    });
+    AX.forEach((label, i) => {
+      const p = pt(i, 1.2);
+      s += `<text x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" text-anchor="middle"
+        dominant-baseline="middle" font-size="8" fill="#7fb4dc">${label}</text>`;
+    });
+    $('radar').innerHTML = s;
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>食刻 EatWhat · 数据版面</title>
+<style>
+  /* 编辑式排版（editorial data page）：
+     不用卡片、不用阴影、不用发光。靠三样东西组织版面——
+     字号对比、细线分割、克制的单一强调色。
+     参考《经济学人》数据版、Reuters Graphics 的版面逻辑。 */
+  :root {
+    --paper: #f6f4ef;
+    --ink: #14130f;
+    --muted: #6b665c;
+    --faint: #a29b8e;
+    --rule: rgba(20, 19, 15, .16);
+    --rule-soft: rgba(20, 19, 15, .08);
+    --accent: #c2451f;
+    --accent-soft: rgba(194, 69, 31, .12);
+    --num: "Bahnschrift", "DIN Alternate", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Songti SC", "SimSun", Georgia, serif;
+    --font: "PingFang SC", "Microsoft YaHei UI", "Source Han Sans CN", "Helvetica Neue", sans-serif;
+  }
+  html[data-theme="dark"] {
+    --paper: #12110f;
+    --ink: #f2efe8;
+    --muted: #9b958a;
+    --faint: #6a655c;
+    --rule: rgba(242, 239, 232, .18);
+    --rule-soft: rgba(242, 239, 232, .09);
+    --accent: #e46a3c;
+    --accent-soft: rgba(228, 106, 60, .14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--paper); color: var(--ink);
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+    transition: background .25s ease, color .25s ease;
+  }
+  .num { font-family: var(--num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+
+  .page {
+    height: 100vh; padding: 26px 34px 20px;
+    display: flex; flex-direction: column;
+  }
+
+  /* ── 页眉 ─────────────────────────────────────────────────── */
+  .masthead {
+    display: flex; align-items: baseline; gap: 16px;
+    padding-bottom: 12px; border-bottom: 2px solid var(--ink);
+  }
+  .masthead__mark { font-size: 11px; letter-spacing: .22em; color: var(--muted); }
+  .masthead h1 {
+    font-size: 27px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1;
+  }
+  .masthead__meta {
+    margin-left: auto; display: flex; gap: 22px; font-size: 10.5px; color: var(--muted);
+    font-family: var(--num); letter-spacing: .04em;
+  }
+  .masthead__meta b { color: var(--ink); font-weight: 500; }
+  .themebtn {
+    border: 1px solid var(--rule); background: transparent; color: var(--muted);
+    height: 22px; padding: 0 9px; font-size: 10px; cursor: pointer; letter-spacing: .04em;
+  }
+  .themebtn:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ── 主体：左栏数字 / 右栏图 ──────────────────────────────── */
+  .main {
+    flex: 1; display: grid; grid-template-columns: 268px minmax(0, 1fr);
+    gap: 34px; padding: 18px 0 0; min-height: 0;
+  }
+
+  .figures { display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 6px; }
+  .figure { border-bottom: 1px solid var(--rule-soft); padding-bottom: 9px; }
+  .figure:last-child { border-bottom: 0; }
+  .figure__k {
+    font-size: 10px; letter-spacing: .14em; color: var(--faint);
+    text-transform: uppercase;
+  }
+  .figure__v {
+    font-family: var(--num); font-size: 44px; line-height: 1;
+    letter-spacing: -.035em; margin-top: 2px;
+  }
+  .figure__v small { font-size: 12px; font-family: var(--font); letter-spacing: 0; color: var(--muted); margin-left: 5px; }
+  .figure__d { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+
+  .charts { display: flex; flex-direction: column; min-height: 0; gap: 18px; }
+  .block { display: flex; flex-direction: column; min-height: 0; }
+  .block__head {
+    display: flex; align-items: baseline; gap: 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--rule); margin-bottom: 10px;
+  }
+  .block__head h2 { font-size: 13px; font-weight: 600; letter-spacing: -.005em; }
+  .block__head span { font-size: 10px; color: var(--faint); margin-left: auto; letter-spacing: .04em; }
+  .block__body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+  /* ── 底部三栏 ─────────────────────────────────────────────── */
+  .bottom {
+    display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 34px;
+    border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 4px;
+    flex: 0 0 208px;
+  }
+
+  /* ── 热力 ─────────────────────────────────────────────────── */
+  .heat { display: grid; gap: 2px; height: 100%; grid-auto-rows: 1fr; }
+  .heat__c { background: var(--rule-soft); }
+  .heat__lbl { font-size: 9px; color: var(--faint); display: flex; align-items: center; justify-content: center; font-family: var(--num); }
+
+  /* ── 横条 ─────────────────────────────────────────────────── */
+  .bars { display: flex; flex-direction: column; gap: 7px; }
+  .bar { display: grid; grid-template-columns: 52px 1fr 46px; align-items: center; gap: 10px; font-size: 11px; }
+  .bar__t { height: 5px; background: var(--rule-soft); display: block; }
+  .bar__f { display: block; height: 100%; background: var(--muted); }
+  .bar--top .bar__f { background: var(--accent); }
+  .bar--top { color: var(--ink); font-weight: 500; }
+  .bar__v { text-align: right; font-family: var(--num); font-size: 11.5px; color: var(--muted); }
+
+  /* ── 列表 ─────────────────────────────────────────────────── */
+  .list { display: flex; flex-direction: column; }
+  .list__row {
+    display: flex; align-items: baseline; gap: 10px; font-size: 11.5px;
+    padding: 6px 0; border-bottom: 1px solid var(--rule-soft);
+  }
+  .list__row:last-child { border-bottom: 0; }
+  .list__n { font-family: var(--num); font-size: 10px; color: var(--faint); width: 14px; }
+  .list__t { color: var(--ink); }
+  .list__m { color: var(--faint); font-size: 10px; }
+  .list__v { margin-left: auto; font-family: var(--num); font-size: 12px; color: var(--muted); }
+
+  /* ── 图例 ─────────────────────────────────────────────────── */
+  .key { display: flex; gap: 16px; font-size: 10px; color: var(--muted); margin-top: 8px; }
+  .key i { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 5px; }
+
+  svg.chart { display: block; width: 100%; height: 100%; overflow: visible; }
+  .axis text { font-size: 9px; fill: var(--faint); font-family: var(--num); }
+  .gridline { stroke: var(--rule-soft); stroke-width: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <span class="masthead__mark">EATWHAT</span>
+    <h1>校园饮食决策 · 数据版面</h1>
+    <div class="masthead__meta">
+      <span>全部校区</span>
+      <span>近 <b>7</b> 天</span>
+      <span id="clock">--:--</span>
+      <button class="themebtn" id="themebtn">反色</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="figures">
+      <div class="figure">
+        <div class="figure__k">有效门店</div>
+        <div class="figure__v">7,704<small>家</small></div>
+        <div class="figure__d">思源 3,862 · 建大 3,842</div>
+      </div>
+      <div class="figure">
+        <div class="figure__k">菜品 / 菜谱</div>
+        <div class="figure__v">6,560<small>道</small></div>
+        <div class="figure__d">外食 120 · 下厨 6,440</div>
+      </div>
+      <div class="figure">
+        <div class="figure__k">有效特征值</div>
+        <div class="figure__v">52,352<small>个</small></div>
+        <div class="figure__d">6,544 道 × 8 维</div>
+      </div>
+      <div class="figure">
+        <div class="figure__k">饮食流水</div>
+        <div class="figure__v">1,284<small>条</small></div>
+        <div class="figure__d">近 7 天 214 条</div>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="block" style="flex:1.55">
+        <div class="block__head">
+          <h2>一周 × 时段的决策密度</h2>
+          <span>格越深，行为越多 · 峰值 12:00–14:00</span>
+        </div>
+        <div class="block__body"><div class="heat" id="heat"></div></div>
+      </div>
+
+      <div class="block" style="flex:.9">
+        <div class="block__head">
+          <h2>防腻衰减是否降低了重样率</h2>
+          <span>10 天仿真 · λ=0.5 对比 λ=0</span>
+        </div>
+        <div class="block__body">
+          <svg class="chart" viewBox="0 0 620 120" id="curve"></svg>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom">
+    <div class="block">
+      <div class="block__head"><h2>菜系构成</h2><span>Top 8</span></div>
+      <div class="bars" id="cuisine"></div>
+    </div>
+
+    <div class="block">
+      <div class="block__head"><h2>人设八维口味</h2><span>0–1 原始量纲</span></div>
+      <div class="block__body"><svg class="chart" viewBox="0 0 220 150" id="radar"></svg></div>
+    </div>
+
+    <div class="block">
+      <div class="block__head"><h2>本周最常吃</h2><span>Top 5</span></div>
+      <div class="list">
+        <div class="list__row"><span class="list__n">01</span><span class="list__t">砂锅豆腐</span><span class="list__m">教工食堂</span><span class="list__v">42</span></div>
+        <div class="list__row"><span class="list__n">02</span><span class="list__t">红烧牛肉面</span><span class="list__m">二食堂</span><span class="list__v">38</span></div>
+        <div class="list__row"><span class="list__n">03</span><span class="list__t">麻辣香锅</span><span class="list__m">一食堂</span><span class="list__v">31</span></div>
+        <div class="list__row"><span class="list__n">04</span><span class="list__t">蛋炒饭</span><span class="list__m">二食堂</span><span class="list__v">27</span></div>
+        <div class="list__row"><span class="list__n">05</span><span class="list__t">黄焖鸡米饭</span><span class="list__m">一食堂</span><span class="list__v">24</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  (function clock() {
+    const el = $('clock');
+    const tick = () => {
+      const d = new Date();
+      el.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    };
+    tick(); setInterval(tick, 1000);
+  })();
+
+  $('themebtn').addEventListener('click', () => {
+    const root = document.documentElement;
+    const dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
+    drawAll();
+  });
+
+  /* 热力：单色阶（墨的浓淡），不用彩色 */
+  function drawHeat() {
+    const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
+    const SLOTS = ['06','08','10','12','14','16','18','20'];
+    const M = [
+      [4,9,12,38,10,8,26,7],[5,8,14,41,9,7,24,6],[4,10,15,36,11,9,27,8],
+      [6,9,13,39,10,8,25,9],[7,11,16,44,13,12,31,14],[9,14,18,35,16,15,33,19],
+      [8,13,17,32,15,14,30,17],
+    ];
+    const max = Math.max.apply(null, M.flat());
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const base = dark ? [242, 239, 232] : [20, 19, 15];
+    const color = (r) => {
+      // 指数 2 让低值几乎留白，只有真正的峰值才压深，中段才看得出层次
+      const t = Math.pow(r, 2);
+      const a = dark ? 0.04 + t * 0.92 : 0.03 + t * 0.9;
+      return `rgba(${base.join(',')},${a.toFixed(3)})`;
+    };
+    const el = $('heat');
+    el.style.gridTemplateColumns = `38px repeat(${SLOTS.length}, 1fr)`;
+    let html = '<div></div>' + SLOTS.map((s) => `<div class="heat__lbl">${s}</div>`).join('');
+    M.forEach((row, i) => {
+      html += `<div class="heat__lbl">${DAYS[i]}</div>`;
+      row.forEach((v) => {
+        html += `<div class="heat__c" title="${v} 次" style="background:${color(v / max)}"></div>`;
+      });
+    });
+    el.innerHTML = html;
+  }
+
+  /* 菜系横条：只有第一名用强调色 */
+  function drawCuisine() {
+    const D = [['家常',1842],['川湘菜',1486],['面食',1162],['粤菜',824],['凉菜',662],['轻食',584],['小吃',512],['汤品',388]];
+    const max = D[0][1];
+    $('cuisine').innerHTML = D.map((d, i) =>
+      `<div class="bar ${i === 0 ? 'bar--top' : ''}"><span>${d[0]}</span>
+        <span class="bar__t"><span class="bar__f" style="width:${(d[1]/max*100).toFixed(1)}%"></span></span>
+        <span class="bar__v">${d[1].toLocaleString()}</span></div>`).join('');
+  }
+
+  /* 防腻曲线：一条实线一条虚线，无面积填充 */
+  function drawCurve() {
+    const W = 620, H = 118, P = { l: 30, r: 8, t: 8, b: 18 };
+    const a = [0.62,0.58,0.55,0.52,0.50,0.49,0.48,0.47,0.47,0.46];
+    const b = [0.62,0.66,0.69,0.72,0.74,0.76,0.78,0.79,0.80,0.81];
+    const x = (i) => P.l + (i / (a.length - 1)) * (W - P.l - P.r);
+    const y = (v) => P.t + (1 - (v - 0.4) / 0.45) * (H - P.t - P.b);
+    const ink = css('--ink'), faint = css('--faint'), accent = css('--accent');
+    let s = '';
+    [0.5, 0.6, 0.7, 0.8].forEach((g) => {
+      s += `<line class="gridline" x1="${P.l}" y1="${y(g)}" x2="${W - P.r}" y2="${y(g)}"/>`;
+      s += `<text class="axis" x="4" y="${y(g) + 3}">${(g*100).toFixed(0)}</text>`;
+    });
+    const path = (arr) => arr.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    s += `<polyline points="${path(b)}" fill="none" stroke="${faint}" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+    s += `<polyline points="${path(a)}" fill="none" stroke="${accent}" stroke-width="2"/>`;
+    a.forEach((v, i) => { s += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="1.6" fill="${accent}"/>`; });
+    s += `<text x="${W - P.r}" y="${y(a[9]) + 15}" text-anchor="end" font-size="9.5" fill="${accent}" font-family="Bahnschrift">λ=0.5</text>`;
+    s += `<text x="${W - P.r}" y="${y(b[9]) - 6}" text-anchor="end" font-size="9.5" fill="${faint}" font-family="Bahnschrift">λ=0</text>`;
+    $('curve').innerHTML = s;
+  }
+
+  /* 雷达：只描边，选中一条填色 */
+  function drawRadar() {
+    const cx = 108, cy = 78, R = 58;
+    const AX = ['酸','甜','苦','辣','咸','鲜','油','烫'];
+    const ink = css('--ink'), faint = css('--faint'), accent = css('--accent');
+    const P = [
+      { c: accent, v: [.4,.2,.1,.9,.7,.6,.8,.6], main: true },
+      { c: ink, v: [.3,.1,.2,.1,.5,.7,.2,.8] },
+      { c: ink, v: [.5,.3,.1,.3,.8,.4,.6,.5] },
+      { c: ink, v: [.4,.2,.2,.1,.3,.5,.1,.4] },
+    ];
+    const ang = (i) => (-Math.PI / 2) + (i * 2 * Math.PI) / 8;
+    const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
+    let s = '';
+    [0.33, 0.66, 1].forEach((r) => {
+      s += `<polygon points="${AX.map((_, i) => pt(i, r).map(n => n.toFixed(1)).join(',')).join(' ')}"
+        fill="none" stroke="${css('--rule')}" stroke-width="1"/>`;
+    });
+    AX.forEach((_, i) => {
+      const p = pt(i, 1);
+      s += `<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="${css('--rule-soft')}"/>`;
+    });
+    P.forEach((p) => {
+      const pts = p.v.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ');
+      if (p.main) {
+        s += `<polygon points="${pts}" fill="${css('--accent-soft')}" stroke="${p.c}" stroke-width="1.8" stroke-linejoin="round"/>`;
+        p.v.forEach((v, i) => {
+          const q = pt(i, v);
+          s += `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="2" fill="${p.c}"/>`;
+        });
+      } else {
+        s += `<polygon points="${pts}" fill="none" stroke="${p.c}" stroke-width="1"
+          stroke-opacity=".35" stroke-linejoin="round"/>`;
+      }
+    });
+    AX.forEach((label, i) => {
+      const p = pt(i, 1.19);
+      s += `<text x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" text-anchor="middle"
+        dominant-baseline="middle" font-size="8.5" fill="${faint}">${label}</text>`;
+    });
+    $('radar').innerHTML = s;
+  }
+
+  function drawAll() { drawHeat(); drawCuisine(); drawCurve(); drawRadar(); }
+  drawAll();
+</script>
+</body>
+</html>

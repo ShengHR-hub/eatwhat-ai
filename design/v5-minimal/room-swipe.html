@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>食刻 · 房间划卡</title>
+<style>
+  :root {
+    --bg: #e7e1d5;
+    --paper: #f4f1ea;
+    --ink: #1d1c19;
+    --muted: #6e6256;
+    --faint: #a39a8c;
+    --line: rgba(29, 28, 25, .12);
+    --line-strong: rgba(29, 28, 25, .2);
+    --accent: #b85c2e;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  .stage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; }
+  .stage-note { position: fixed; left: 42px; top: 40px; width: 220px; }
+  .stage-note__eyebrow { margin: 0 0 8px; font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+  .stage-note__title { margin: 0 0 12px; font-size: 18px; font-weight: 500; line-height: 1.4; }
+  .stage-note__body { margin: 0; font-size: 12px; line-height: 1.75; color: var(--muted); }
+  .stage-note__meta { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 10px; line-height: 1.7; color: var(--faint); }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid rgba(255, 255, 255, .7);
+    box-shadow: 0 32px 90px rgba(38, 31, 23, .16), 0 2px 8px rgba(38, 31, 23, .08);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("./assets/paper-grain.png");
+    background-size: 180px 180px;
+    opacity: .52;
+    mix-blend-mode: multiply;
+  }
+  .status { position: relative; z-index: 2; height: 34px; padding: 11px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; }
+  .status__right { display: flex; gap: 4px; align-items: center; }
+  .battery { width: 16px; height: 7px; border: 1px solid var(--ink); border-radius: 2px; position: relative; opacity: .75; }
+  .battery::after { content: ""; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: var(--ink); border-radius: 0 1px 1px 0; }
+  .battery i { position: absolute; inset: 1px; width: 70%; background: var(--ink); border-radius: 1px; }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink); opacity: .6; }
+
+  .top { position: relative; z-index: 2; padding: 10px 22px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .top__left p { margin: 0 0 4px; font-size: 9px; letter-spacing: .14em; color: var(--faint); }
+  .top__left h1 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.03em; }
+  .mode-switch { display: inline-flex; gap: 7px; margin-left: 5px; vertical-align: 1px; }
+  .mode-switch button { padding: 0 0 1px; font-size: 8px; color: var(--faint); }
+  .mode-switch button.is-active { color: var(--ink); border-bottom: 1px solid var(--ink); }
+  .exit { padding: 0; font-size: 10px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .timer { position: relative; width: 52px; height: 52px; flex: 0 0 52px; display: grid; place-items: center; }
+  .timer svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .timer b { font-size: 16px; font-weight: 500; letter-spacing: -.04em; }
+  .timer span { position: absolute; bottom: -13px; font-size: 7.5px; color: var(--faint); white-space: nowrap; }
+
+  .members { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; margin: 15px 22px 0; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .avatars { display: flex; align-items: center; gap: 6px; }
+  .avatar { width: 27px; height: 27px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-size: 9px; position: relative; }
+  .avatar.is-wait { background: transparent; border: 1px dashed var(--line-strong); color: var(--faint); }
+  .avatar.is-done::after { content: "✓"; position: absolute; right: -3px; bottom: -3px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); color: var(--paper); font-size: 7px; display: grid; place-items: center; border: 1.5px solid var(--paper); }
+  .members__text { font-size: 9px; color: var(--faint); }
+
+  .content { position: relative; z-index: 2; flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 13px 22px 10px; }
+  .card { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; border-radius: 24px; background: rgba(251, 249, 244, .62); border: 1px solid rgba(255, 255, 255, .8); box-shadow: 0 12px 32px rgba(38, 31, 23, .07); padding: 13px 14px 14px; }
+  .card__top { display: flex; justify-content: space-between; align-items: center; }
+  .card__index { font-size: 9px; letter-spacing: .12em; color: var(--faint); }
+  .card__tags { display: flex; gap: 5px; }
+  .tag { padding: 3px 6px; border-radius: 6px; background: rgba(29, 28, 25, .055); font-size: 8.5px; color: var(--muted); }
+  .radar-single { position: relative; height: 264px; display: flex; align-items: center; justify-content: center; }
+  .radar-single svg { width: 264px; height: 264px; overflow: visible; }
+  .radar-legend { position: absolute; right: 2px; bottom: 4px; display: flex; flex-direction: column; gap: 4px; padding: 7px 8px; border-radius: 9px; background: rgba(251, 249, 244, .72); border: 1px solid var(--line); }
+  .radar-legend__row { display: flex; align-items: center; gap: 5px; font-size: 8px; color: var(--muted); white-space: nowrap; }
+  .radar-legend__line { width: 13px; height: 1.5px; border-radius: 1px; background: var(--ink); }
+  .radar-legend__line--match { background: var(--accent); }
+  .radar-legend__note { font-size: 7.5px; color: var(--faint); }
+  .card__info { padding: 0 2px; }
+  .card__name { margin: 0 0 4px; font-size: 23px; font-weight: 500; letter-spacing: -.035em; }
+  .card__meta { margin: 0; font-size: 9.5px; color: var(--muted); }
+  .card__reason { margin: 9px 0 0; font-size: 10.5px; line-height: 1.6; color: var(--muted); }
+  .card__notes { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); }
+  .card__note { display: grid; grid-template-columns: 34px 1fr; gap: 7px; align-items: start; }
+  .card__note b { padding-top: 1px; font-size: 8.5px; font-weight: 500; color: var(--faint); }
+  .card__note p { margin: 0; font-size: 9.5px; line-height: 1.6; color: var(--muted); }
+  .card__note--personal b { color: var(--accent); }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-top: 13px; }
+  .vote { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .vote__btn { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center; font-size: 10px; background: rgba(251, 249, 244, .55); color: var(--muted); }
+  .vote__btn--like { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .vote__btn--super { border-color: var(--accent); color: var(--accent); }
+  .vote__label { font-size: 8.5px; color: var(--faint); }
+  .vote--like .vote__label { color: var(--ink); font-weight: 500; }
+
+  .hint { margin: 9px 0 0; text-align: center; font-size: 8.5px; color: var(--faint); }
+
+  .toast { position: absolute; left: 50%; bottom: 22px; z-index: 20; transform: translate(-50%, 14px); padding: 9px 14px; border-radius: 12px; background: rgba(29, 28, 25, .9); color: var(--paper); font-size: 10px; opacity: 0; pointer-events: none; transition: opacity .22s ease, transform .22s ease; white-space: nowrap; }
+  .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .stage-note { display: none; }
+    .stage { padding: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+  <aside class="stage-note" aria-label="设计说明">
+    <p class="stage-note__eyebrow">EATWHAT · V5 / 04B</p>
+    <h1 class="stage-note__title">15 秒，只做四个决定</h1>
+    <p class="stage-note__body">不展示长解释，不让人读小字。雷达、菜名、价格、四个投票动作，够了。</p>
+    <div class="stage-note__meta">390 × 844<br>静态设计原型<br>不连接数据库与后端</div>
+  </aside>
+
+  <section class="phone" aria-label="食刻房间划卡页">
+    <div class="status"><span>9:41</span><span class="status__right"><span class="dot"></span><span class="dot"></span><span class="battery"><i></i></span></span></div>
+
+    <header class="top">
+      <div class="top__left"><p>ROOM 4821 · SWIPING <span class="mode-switch"><button type="button" data-room-mode="out" class="is-active">外食</button><button type="button" data-room-mode="home">下厨</button></span></p><h1>帮大家选一道</h1><a class="exit" href="room.html">退出房间</a></div>
+      <div class="timer">
+        <svg viewBox="0 0 52 52" aria-hidden="true">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(29,28,25,.1)" stroke-width="3"/>
+          <circle cx="26" cy="26" r="22" fill="none" stroke="#1d1c19" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="36"/>
+        </svg>
+        <b>08</b><span>秒后结算</span>
+      </div>
+    </header>
+
+    <div class="members">
+      <div class="avatars">
+        <span class="avatar is-done">赵</span>
+        <span class="avatar is-done">明</span>
+        <span class="avatar is-done">王</span>
+        <span class="avatar is-wait">李</span>
+      </div>
+      <span class="members__text">3 / 4 已投 · 第 3 / 10 张</span>
+    </div>
+
+    <div class="content">
+      <article class="card">
+        <div class="card__top"><span class="card__index">DISH 03 / 10</span><div class="card__tags" id="dishTags"><span class="tag">热汤</span><span class="tag">高饱腹</span></div></div>
+        <div class="radar-single">
+          <svg id="comboRadar" viewBox="0 0 320 320" role="img" aria-label="番茄牛腩汤面八维风味与个人五维匹配雷达"></svg>
+          <div class="radar-legend">
+            <div class="radar-legend__row"><span class="radar-legend__line"></span>菜品风味 · 8 维</div>
+            <div class="radar-legend__row"><span class="radar-legend__line radar-legend__line--match"></span>你的匹配 · 5 维</div>
+            <div class="radar-legend__note" id="legendLine1">口味92 · 天气88 · 预算76</div>
+            <div class="radar-legend__note" id="legendLine2">新鲜64 · 状态81</div>
+            <div class="radar-legend__note">橙线独立缩放</div>
+          </div>
+        </div>
+        <div class="card__info">
+          <h2 class="card__name">番茄牛腩汤面</h2>
+          <p class="card__meta" id="dishMeta">一食堂 · 川湘窗口 · ¥26 · 20 分钟</p>
+          <div class="card__notes">
+            <div class="card__note"><b>这道菜</b><p id="dishNote">热汤、高饱腹，牛腩和番茄是今天最该先用的食材，适合下雨降温的晚上。</p></div>
+            <div class="card__note card__note--personal"><b>对你</b><p id="personalNote">口味 92 · 天气 88 · 预算 76 · 新鲜 64。雨天和三天没吃牛肉拉高匹配；预算接近上限。</p></div>
+          </div>
+        </div>
+      </article>
+
+      <div class="actions">
+        <button class="vote" type="button" data-vote="跳过"><span class="vote__btn">←</span><span class="vote__label">跳过</span></button>
+        <button class="vote" type="button" data-vote="不吃"><span class="vote__btn">×</span><span class="vote__label">不吃</span></button>
+        <button class="vote vote--like" type="button" data-vote="想吃"><span class="vote__btn vote__btn--like">想</span><span class="vote__label">想吃</span></button>
+        <button class="vote" type="button" data-vote="超想吃"><span class="vote__btn vote__btn--super">超</span><span class="vote__label">超想吃</span></button>
+      </div>
+      <p class="hint">投票后不可修改 · 全员完成或倒计时结束即结算</p>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+  function drawComboRadar(element, matchValues) {
+    const center = 160;
+    const radius = 104;
+    const dishAxes = [
+      { label: '辣', value: .25 }, { label: '油', value: .3 }, { label: '汤', value: .9 }, { label: '温', value: .85 },
+      { label: '饱', value: .8 }, { label: '快', value: .55 }, { label: '社交', value: .35 }, { label: '抚慰', value: .9 },
+    ];
+    const point = (index, count, ratio) => {
+      const angle = (-90 + index * 360 / count) * Math.PI / 180;
+      return {
+        x: center + Math.cos(angle) * radius * ratio,
+        y: center + Math.sin(angle) * radius * ratio,
+      };
+    };
+    const polygon = (count, ratio, values) => Array.from({ length: count }, (_, index) => {
+      const p = point(index, count, values ? values[index] : ratio);
+      return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+    }).join(' ');
+    const grid = [0.25, 0.5, 0.75, 1].map((ratio) => `<polygon points="${polygon(8, ratio)}" fill="none" stroke="rgba(29,28,25,.12)" stroke-width="1"/>`).join('');
+    const axes = Array.from({ length: 8 }, (_, index) => {
+      const p = point(index, 8, 1);
+      return `<line x1="${center}" y1="${center}" x2="${p.x.toFixed(2)}" y2="${p.y.toFixed(2)}" stroke="rgba(29,28,25,.1)" stroke-width="1"/>`;
+    }).join('');
+    const labels = dishAxes.map((axis, index) => {
+      const p = point(index, 8, 1.27);
+      const anchor = p.x < center - 3 ? 'end' : p.x > center + 3 ? 'start' : 'middle';
+      return `<text x="${p.x.toFixed(2)}" y="${p.y.toFixed(2)}" text-anchor="${anchor}" dominant-baseline="middle" fill="#6e6256" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif">${axis.label}</text>`;
+    }).join('');
+    const matchSpokes = Array.from({ length: 5 }, (_, index) => {
+      const p = point(index, 5, 1);
+      return `<line x1="${center}" y1="${center}" x2="${p.x.toFixed(2)}" y2="${p.y.toFixed(2)}" stroke="rgba(184,92,46,.22)" stroke-width="1" stroke-dasharray="2 4"/>`;
+    }).join('');
+    const matchDots = Array.from({ length: 5 }, (_, index) => {
+      const p = point(index, 5, matchValues[index]);
+      return `<circle cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="2.2" fill="#b85c2e"/>`;
+    }).join('');
+    element.innerHTML = `
+      <title>菜品八维风味与个人五维匹配</title>
+      <desc>深色线为菜品八维风味，橙色线为个人五维匹配，橙色独立缩放</desc>
+      ${grid}${axes}${matchSpokes}
+      <polygon points="${polygon(8, 1, dishAxes.map((axis) => axis.value))}" fill="rgba(29,28,25,.075)" stroke="#1d1c19" stroke-width="1.6" stroke-linejoin="round"/>
+      <polygon points="${polygon(5, 1, matchValues)}" fill="rgba(184,92,46,.1)" stroke="#b85c2e" stroke-width="1.5" stroke-linejoin="round"/>
+      ${matchDots}
+      <circle cx="${center}" cy="${center}" r="2.2" fill="#1d1c19"/>
+      ${labels}
+    `;
+  }
+
+  const ROOM_MODES = {
+    out: {
+      meta: '一食堂 · 川湘窗口 · ¥26 · 20 分钟',
+      tags: ['热汤', '高饱腹'],
+      dishNote: '一食堂的番茄牛腩汤面，热汤和高饱腹都适合雨天；从宿舍走过去约 6 分钟，不用等太久。',
+      personalNote: '口味 92 · 天气 88 · 预算 76 · 新鲜 64。雨天和三天没吃牛肉拉高匹配；预算接近上限，别再加饮料。',
+      legend1: '口味92 · 天气88 · 预算76',
+      legend2: '新鲜64 · 状态81',
+      match: [.92, .88, .76, .64, .81],
+    },
+    home: {
+      meta: '宿舍 · 电饭煲/炒锅 · ¥18 · 25 分钟',
+      tags: ['一锅出', '清库存'],
+      dishNote: '冰箱里有牛腩和番茄，25 分钟一锅出；今晚优先用掉临期食材，不用再买菜。',
+      personalNote: '口味 90 · 天气 92 · 预算 88 · 新鲜 70。厨具和时间都够，但牛腩要提前解冻；自己做比外食省 ¥8。',
+      legend1: '口味90 · 天气92 · 预算88',
+      legend2: '新鲜70 · 状态78',
+      match: [.90, .92, .88, .70, .78],
+    },
+  };
+
+  function renderRoomMode(mode) {
+    const data = ROOM_MODES[mode];
+    if (!data) return;
+    document.getElementById('dishMeta').textContent = data.meta;
+    document.getElementById('dishNote').textContent = data.dishNote;
+    document.getElementById('personalNote').textContent = data.personalNote;
+    document.getElementById('legendLine1').textContent = data.legend1;
+    document.getElementById('legendLine2').textContent = data.legend2;
+    document.getElementById('dishTags').innerHTML = data.tags.map((tag) => `<span class="tag">${tag}</span>`).join('');
+    drawComboRadar(document.getElementById('comboRadar'), data.match);
+    document.querySelectorAll('[data-room-mode]').forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.roomMode === mode);
+    });
+  }
+
+  document.querySelectorAll('[data-room-mode]').forEach((button) => {
+    button.addEventListener('click', () => renderRoomMode(button.dataset.roomMode));
+  });
+  renderRoomMode(new URLSearchParams(location.search).get('mode') === 'home' ? 'home' : 'out');
+
+  let timer;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('is-show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('is-show'), 2200);
+  }
+  document.querySelectorAll('[data-vote]').forEach((button) => {
+    button.addEventListener('click', () => {
+      showToast(`已投：${button.dataset.vote}`);
+      button.closest('.actions').style.opacity = '.45';
+      setTimeout(() => { button.closest('.actions').style.opacity = ''; }, 450);
+    });
+  });
+</script>
+</body>
+</html>

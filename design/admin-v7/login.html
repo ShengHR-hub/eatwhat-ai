@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>登录 · 食刻 EatWhat 后台</title>
+<link rel="stylesheet" href="app.css" />
+<style>
+  body { overflow: auto; background: var(--bg); }
+  .auth { display: grid; grid-template-columns: 460px 1fr; min-height: 100vh; }
+
+  /* 左侧品牌区：深色，和右侧表单形成对比 */
+  .auth__brand {
+    position: relative; overflow: hidden;
+    background: #14171c; color: #eef1f5;
+    padding: 44px 40px; display: flex; flex-direction: column;
+  }
+  .auth__brand::before {
+    content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%;
+    left: -180px; top: -120px;
+    background: radial-gradient(circle, rgba(47, 107, 255, .34) 0%, rgba(47, 107, 255, 0) 62%);
+  }
+  .auth__brand::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(80% 60% at 20% 30%, #000 20%, transparent 78%);
+  }
+  .auth__logo { display: flex; align-items: center; gap: 11px; position: relative; z-index: 1; }
+  .auth__mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #f4f6fa; color: #14171c;
+    display: grid; place-items: center; font-size: 15px; font-weight: 600;
+  }
+  .auth__name { font-size: 14px; font-weight: 600; letter-spacing: .01em; }
+  .auth__sub { font-size: 9.5px; letter-spacing: .16em; color: rgba(238,241,245,.45); text-transform: uppercase; }
+  .auth__pitch { position: relative; z-index: 1; margin-top: auto; }
+  .auth__pitch h2 {
+    font-size: 26px; font-weight: 600; line-height: 1.42; letter-spacing: -.02em;
+    max-width: 320px;
+  }
+  .auth__pitch p { font-size: 12px; color: rgba(238,241,245,.55); margin-top: 12px; line-height: 1.7; max-width: 320px; }
+  .auth__meta {
+    position: relative; z-index: 1; margin-top: 34px; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    font-size: 10.5px; color: rgba(238,241,245,.4);
+    display: flex; justify-content: space-between;
+  }
+
+  /* 右侧表单 */
+  .auth__form-wrap { display: grid; place-items: center; padding: 40px; }
+  .auth__form { width: 340px; }
+  .auth__form h1 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+  .auth__form > p { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+  .f { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; }
+  .f label { font-size: 11.5px; color: var(--muted); }
+  .f input {
+    height: 38px; padding: 0 12px; border-radius: 9px;
+    border: 1px solid var(--line); background: var(--surface);
+    font-size: 13px; outline: none; transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .f input:focus {
+    border-color: rgba(47, 107, 255, .55);
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .1);
+  }
+  .f input.is-error { border-color: rgba(192, 57, 43, .5); }
+  .f input.is-error:focus { box-shadow: 0 0 0 3px rgba(192, 57, 43, .1); }
+
+  .err {
+    display: none; align-items: center; gap: 7px;
+    margin-top: 14px; padding: 9px 11px; border-radius: 8px;
+    background: var(--bad-bg); border: 1px solid rgba(192, 57, 43, .2);
+    color: var(--bad); font-size: 11.5px;
+  }
+  .err.is-on { display: flex; }
+
+  .auth__submit {
+    width: 100%; height: 40px; margin-top: 22px; border-radius: 9px;
+    background: var(--ink); color: #fff; font-size: 13px; font-weight: 500;
+    transition: background .15s ease, transform .12s ease;
+  }
+  .auth__submit:hover { background: #2a2f36; }
+  .auth__submit:active { transform: scale(.99); }
+  .auth__hint { font-size: 10.5px; color: var(--faint); margin-top: 14px; line-height: 1.7; }
+  /* 命令单独一行，别让它跟着正文折行 */
+  .auth__hint code {
+    display: block; margin-top: 7px; padding: 7px 9px;
+    font-family: var(--mono); font-size: 10px; line-height: 1.6;
+    background: rgba(23, 26, 31, .05); border-radius: 6px;
+    color: var(--muted); word-break: break-all;
+  }
+
+  /* 403 无权限 */
+  .deny { display: none; width: 400px; text-align: center; }
+  .deny.is-on { display: block; }
+  .deny__icon {
+    width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 16px;
+    background: var(--bad-bg); color: var(--bad);
+    display: grid; place-items: center;
+  }
+  .deny h1 { font-size: 19px; font-weight: 600; }
+  .deny p { font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.75; }
+  .deny__box {
+    margin-top: 18px; padding: 12px 14px; border-radius: 9px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    font-size: 11.5px; color: var(--muted); text-align: left;
+    font-family: var(--mono);
+  }
+  .deny__box b { color: var(--bad); font-weight: 600; }
+  .deny__actions { display: flex; gap: 9px; justify-content: center; margin-top: 20px; }
+
+  /* 评审用的状态切换（正式版删除） */
+  .statebar {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; gap: 3px; padding: 4px; border-radius: 999px;
+    background: rgba(23, 26, 31, .9); z-index: 90;
+  }
+  .statebar button {
+    height: 24px; padding: 0 11px; border-radius: 999px;
+    font-size: 11px; color: rgba(255,255,255,.7);
+  }
+  .statebar button.is-on { background: #fff; color: #171a1f; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="auth">
+  <aside class="auth__brand">
+    <div class="auth__logo">
+      <span class="auth__mark">食</span>
+      <span>
+        <div class="auth__name">食刻 EatWhat</div>
+        <div class="auth__sub">Admin Console</div>
+      </span>
+    </div>
+
+    <div class="auth__pitch">
+      <h2>把数据管住，<br />推荐才不会算错。</h2>
+      <p>门店与菜品是推荐的唯一事实来源。这里的每一次改动都会立即影响线上结果，并留下可追溯的记录。</p>
+    </div>
+
+    <div class="auth__meta">
+      <span>v2.3.6 · G4</span>
+      <span>仅限管理员访问</span>
+    </div>
+  </aside>
+
+  <main class="auth__form-wrap">
+    <!-- 登录态 -->
+    <form class="auth__form" id="loginForm" onsubmit="return false">
+      <h1>登录管理后台</h1>
+      <p>使用管理员账号登录。普通账号会被拒绝。</p>
+
+      <div class="f">
+        <label for="u">用户名</label>
+        <input id="u" value="testuser" autocomplete="username" />
+      </div>
+      <div class="f">
+        <label for="p">密码</label>
+        <input id="p" type="password" value="········" autocomplete="current-password" />
+      </div>
+
+      <div class="err" id="err">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 17h.01"/></svg>
+        <span>用户名或密码错误</span>
+      </div>
+
+      <button class="auth__submit" type="submit">登录</button>
+
+      <p class="auth__hint">
+        没有管理员账号？让已有管理员执行
+        <code>python -m backend.scripts.grant_admin --username 你的账号</code>
+        授权。注册接口不允许自选角色。
+      </p>
+    </form>
+
+    <!-- 403 无权限 -->
+    <div class="deny" id="deny">
+      <div class="deny__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+      </div>
+      <h1>没有管理权限</h1>
+      <p>你已经登录成功，但当前账号的角色不是管理员，无法进入后台。</p>
+      <div class="deny__box">
+        GET /api/v1/admin/restaurants → <b>403 Forbidden</b><br />
+        current_user.role = "USER"
+      </div>
+      <div class="deny__actions">
+        <button class="btn" onclick="location.href='index.html'">返回移动端</button>
+        <button class="btn btn--primary" onclick="switchState('login')">换个账号登录</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="statebar">
+  <button data-state="login" class="is-on">登录</button>
+  <button data-state="error">密码错误</button>
+  <button data-state="deny">无权限 403</button>
+</div>
+
+<script>
+  const form = document.getElementById('loginForm');
+  const deny = document.getElementById('deny');
+  const err = document.getElementById('err');
+
+  function switchState(s) {
+    document.querySelectorAll('.statebar button').forEach((b) => {
+      b.classList.toggle('is-on', b.dataset.state === s);
+    });
+    form.style.display = s === 'deny' ? 'none' : 'block';
+    deny.classList.toggle('is-on', s === 'deny');
+    err.classList.toggle('is-on', s === 'error');
+    document.getElementById('u').classList.toggle('is-error', s === 'error');
+    document.getElementById('p').classList.toggle('is-error', s === 'error');
+  }
+
+  document.querySelector('.statebar').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) switchState(b.dataset.state);
+  });
+
+  form.addEventListener('submit', () => switchState('deny'));
+</script>
+</body>
+</html>

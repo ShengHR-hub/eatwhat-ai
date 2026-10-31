@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>布局 F · 状态看板 · 食刻 EatWhat 后台</title>
+<link rel="stylesheet" href="base.css" />
+<style>
+  /* 变体 F：按「打标状态」分列。打标是运营最高频的动作，直接做成看板。 */
+  :root {
+    --font-cjk: "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei UI";
+    --body-size: 14px; --body-lh: 1.66;
+  }
+  .board {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;
+    height: calc(100vh - 176px); min-height: 460px;
+  }
+  .col {
+    background: rgba(255, 253, 248, .55);
+    border: 1px solid var(--line); border-radius: 13px;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .col__head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px; border-bottom: 1px solid var(--line-soft);
+  }
+  .col__dot { width: 7px; height: 7px; border-radius: 50%; }
+  .col__title { font-size: 12.5px; font-weight: 500; }
+  .col__count {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    background: rgba(36, 30, 24, .06); padding: 2px 8px; border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+  }
+  .col__body { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 9px; }
+
+  .kcard {
+    background: var(--paper-strong); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 12px;
+    box-shadow: var(--shadow-sm); cursor: grab;
+    transition: transform .14s ease, box-shadow .14s ease;
+  }
+  .kcard:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .kcard:active { cursor: grabbing; }
+  .kcard__name { font-size: 13px; font-weight: 500; }
+  .kcard__meta { font-size: 10.5px; color: var(--faint); margin-top: 2px; }
+  .kcard__foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .kcard__price { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .kcard__tag {
+    margin-left: auto; font-size: 9.5px; padding: 1px 6px; border-radius: 4px;
+    background: rgba(36, 30, 24, .05); color: var(--muted);
+  }
+  .kcard__why { font-size: 10px; color: var(--bad); margin-top: 6px; line-height: 1.5; }
+
+  .col__add {
+    margin: 10px; height: 32px; border-radius: 8px;
+    border: 1px dashed var(--line-strong); color: var(--faint);
+    font-size: 11.5px; display: flex; align-items: center; justify-content: center;
+  }
+  .col__add:hover { color: var(--muted); border-color: var(--muted); }
+
+  .bulkstrip {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    padding: 10px 14px; border-radius: 10px;
+    background: var(--accent-soft); border: 1px solid rgba(184, 92, 46, .18);
+    font-size: 12px; color: var(--accent);
+  }
+  .bulkstrip b { font-weight: 600; }
+  .bulkstrip .btn { margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span class="brand__copy"><span class="brand__name">食刻 EatWhat</span><span class="brand__sub">Admin Console</span></span>
+    </div>
+    <nav class="nav">
+      <p class="nav__label">数据</p>
+      <button class="nav__item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>数据管理</button>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5h9M9 12h9M9 19h9M4 5h1M4 12h1M4 19h1"/></svg>审计日志</button>
+      <p class="nav__label">分析</p>
+      <button class="nav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>实验大屏</button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="who">
+        <span class="who__avatar">测</span>
+        <span class="who__copy"><span class="who__name">测试账号</span><span class="who__role">ADMIN</span></span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span>后台</span><span>/</span><b>数据管理 · 打标看板</b></div>
+      <div class="search" style="margin-left:auto">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input placeholder="搜菜品名或 ID" />
+      </div>
+    </header>
+
+    <div class="page" style="padding-bottom:26px">
+      <div class="page-head" style="margin-bottom:14px">
+        <div><h1>打标看板</h1><p>按状态分列。待打标的一列清空，推荐池就满了。</p></div>
+        <div class="page-head__actions">
+          <button class="btn">导出异常清单</button>
+          <button class="btn btn--primary">新增菜品</button>
+        </div>
+      </div>
+
+      <div class="bulkstrip">
+        已选 <b>3</b> 道待打标菜品，将调用视觉/文本模型补风味向量（单次上限 20 道）
+        <button class="btn btn--sm">开始批量打标</button>
+      </div>
+
+      <div class="board">
+        <section class="col">
+          <header class="col__head">
+            <span class="col__dot" style="background: var(--warn)"></span>
+            <span class="col__title">待打标</span>
+            <span class="col__count">24</span>
+          </header>
+          <div class="col__body">
+            <article class="kcard">
+              <div class="kcard__name">孜然木耳黄瓜</div>
+              <div class="kcard__meta">三食堂 · 凉菜窗口 · 建大</div>
+              <div class="kcard__foot"><span class="kcard__price">¥12</span><span class="kcard__tag">缺向量</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">酸辣粉</div>
+              <div class="kcard__meta">一食堂 · 小吃窗口 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥9</span><span class="kcard__tag">缺向量</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">手撕包菜</div>
+              <div class="kcard__meta">二食堂 · 素菜窗口 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥11</span><span class="kcard__tag">缺菜系</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">红烧茄子</div>
+              <div class="kcard__meta">教工食堂 · 家常 · 建大</div>
+              <div class="kcard__foot"><span class="kcard__price">¥14</span><span class="kcard__tag">缺向量</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">冬瓜排骨汤</div>
+              <div class="kcard__meta">三食堂 · 汤品 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥8</span><span class="kcard__tag">缺向量</span></div>
+            </article>
+          </div>
+          <button class="col__add">＋ 从这里新增</button>
+        </section>
+
+        <section class="col">
+          <header class="col__head">
+            <span class="col__dot" style="background: var(--ok)"></span>
+            <span class="col__title">已完成</span>
+            <span class="col__count">6,512</span>
+          </header>
+          <div class="col__body">
+            <article class="kcard">
+              <div class="kcard__name">砂锅豆腐</div>
+              <div class="kcard__meta">教工食堂 · 砂锅炖菜 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥22</span><span class="kcard__tag">8 维齐全</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">红烧牛肉面</div>
+              <div class="kcard__meta">二食堂 · 牛肉面 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥18</span><span class="kcard__tag">8 维齐全</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">麻辣香锅</div>
+              <div class="kcard__meta">一食堂 · 川湘窗口 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥32</span><span class="kcard__tag">8 维齐全</span></div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">清蒸鲈鱼</div>
+              <div class="kcard__meta">教工食堂 · 蒸菜 · 建大</div>
+              <div class="kcard__foot"><span class="kcard__price">¥38</span><span class="kcard__tag">8 维齐全</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="col">
+          <header class="col__head">
+            <span class="col__dot" style="background: var(--bad)"></span>
+            <span class="col__title">失败</span>
+            <span class="col__count">24</span>
+          </header>
+          <div class="col__body">
+            <article class="kcard">
+              <div class="kcard__name">番茄鸡蛋面</div>
+              <div class="kcard__meta">家常菜谱 · 下厨 · 15 分钟</div>
+              <div class="kcard__foot"><span class="kcard__price">—</span><span class="kcard__tag">重试 2 次</span></div>
+              <div class="kcard__why">模型返回格式不合法：feature_vector 缺「烫」维度</div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">鸡胸肉沙拉</div>
+              <div class="kcard__meta">轻食窗口 · 建大</div>
+              <div class="kcard__foot"><span class="kcard__price">¥26</span><span class="kcard__tag">超时</span></div>
+              <div class="kcard__why">调用超时 20s，未返回结果</div>
+            </article>
+            <article class="kcard">
+              <div class="kcard__name">奶油蘑菇汤</div>
+              <div class="kcard__meta">西餐窗口 · 思源</div>
+              <div class="kcard__foot"><span class="kcard__price">¥15</span><span class="kcard__tag">余额不足</span></div>
+              <div class="kcard__why">视觉模型账户余额不足，需充值后重试</div>
+            </article>
+          </div>
+          <button class="col__add">批量重试失败项</button>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

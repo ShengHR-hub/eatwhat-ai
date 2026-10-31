@@ -1,0 +1,31 @@
+# ⚠️ 已被原生安装取代（2026-10-30）。现在运行库是 D:\PostgreSQL\16 + D:\PGData\16。
+#    本文件仅作为「换机器时快速起一个等价 PG」的备用方案保留。
+#
+# 开发用 PostgreSQL。只给本机联调，不要拿它当生产库。
+#   docker compose -f docker-compose.dev.yml up -d
+#   DATABASE_URL=postgresql+psycopg://eatwhat:eatwhat_dev@127.0.0.1:5433/eatwhat
+#
+# 用 5433 是为了避开本机可能已装的 5432，免得和别的项目抢端口。
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eatwhat-pg-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eatwhat
+      POSTGRES_PASSWORD: eatwhat_dev
+      POSTGRES_DB: eatwhat
+      # 中文菜名/门店名排序依赖 locale，建库时就定死，避免以后要重建
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "5433:5432"
+    volumes:
+      - eatwhat_pg_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eatwhat -d eatwhat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  eatwhat_pg_dev:

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>食刻 EatWhat · 数据大屏</title>
+<style>
+  /* 设计思路：大屏要有"主视觉"，不能是等大面板平铺。
+     结构 = 中央大环形（视觉锚点）+ 四周环绕指标 + 底部趋势带。
+     质感 = 深底 + 玻璃层 + 渐变描边，不用发光和角标（那是上一版的套路）。 */
+  :root {
+    --bg: #07070b;
+    --glass: rgba(255, 255, 255, .035);
+    --glass-2: rgba(255, 255, 255, .055);
+    --line: rgba(255, 255, 255, .09);
+    --line-2: rgba(255, 255, 255, .14);
+    --text: #f4f5f8;
+    --muted: #8c92a3;
+    --faint: #5b6070;
+    --mint: #5eead4;
+    --violet: #a78bfa;
+    --amber: #fbbf24;
+    --rose: #fb7185;
+    --num: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
+    --font: "PingFang SC", "Microsoft YaHei UI", "Source Han Sans CN", "Noto Sans SC", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); color: var(--text); background: var(--bg);
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(70% 50% at 50% 0%, rgba(94, 234, 212, .13), transparent 60%),
+      radial-gradient(50% 40% at 0% 100%, rgba(167, 139, 250, .12), transparent 70%),
+      radial-gradient(50% 40% at 100% 100%, rgba(94, 234, 212, .07), transparent 70%);
+  }
+  .num { font-family: var(--num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+
+  .screen { height: 100vh; display: flex; flex-direction: column; padding: 18px 22px 16px; gap: 14px; }
+
+  /* ── 顶栏 ─────────────────────────────────────────────────── */
+  .top { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand__mark {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--mint), var(--violet));
+    color: #07070b; display: grid; place-items: center;
+    font-size: 14px; font-weight: 700;
+  }
+  .brand__name { font-size: 14px; font-weight: 600; letter-spacing: .01em; }
+  .brand__sub { font-size: 9px; letter-spacing: .18em; color: var(--faint); }
+  .chips { display: flex; gap: 6px; margin-left: 22px; }
+  .chip {
+    height: 24px; padding: 0 10px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted);
+    font-size: 10.5px; display: inline-flex; align-items: center; gap: 5px;
+    background: var(--glass);
+  }
+  .chip.is-on { color: var(--mint); border-color: rgba(94, 234, 212, .38); background: rgba(94, 234, 212, .1); }
+  .top__right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--muted); }
+  .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 10px var(--mint); }
+  .clock { font-family: var(--num); font-size: 15px; color: var(--text); letter-spacing: .04em; }
+
+  /* ── 主体：左栏 / 主视觉 / 右栏 ───────────────────────────── */
+  .body { flex: 1; display: grid; grid-template-columns: 262px minmax(0, 1fr) 262px; gap: 14px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+
+  .card {
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 14px;
+    display: flex; flex-direction: column; min-height: 0;
+    backdrop-filter: blur(18px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  }
+  .card__head { display: flex; align-items: baseline; gap: 8px; flex: 0 0 auto; margin-bottom: 10px; }
+  .card__head h2 { font-size: 11.5px; font-weight: 500; color: #cfd3de; letter-spacing: .02em; }
+  .card__head span { margin-left: auto; font-size: 9.5px; color: var(--faint); }
+  .card__body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+  /* 小指标 */
+  .stat { display: flex; flex-direction: column; gap: 1px; }
+  .stat__k { font-size: 10px; color: var(--faint); letter-spacing: .06em; }
+  .stat__v { font-family: var(--num); font-size: 30px; line-height: 1.05; letter-spacing: -.03em; }
+  .stat__v small { font-size: 10.5px; font-family: var(--font); color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+  .stat__d { font-size: 9.5px; color: var(--faint); }
+
+  /* ── 中央主视觉 ───────────────────────────────────────────── */
+  .hero {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    border-radius: 18px; overflow: hidden; min-height: 0;
+    background:
+      radial-gradient(60% 60% at 50% 45%, rgba(94, 234, 212, .09), transparent 70%),
+      var(--glass);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(18px);
+  }
+  .hero__ring { width: min(58vh, 430px); height: min(58vh, 430px); display: block; }
+  .hero__center {
+    position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none;
+  }
+  .hero__k { font-size: 11px; color: var(--muted); letter-spacing: .16em; }
+  .hero__v {
+    font-family: var(--num); font-size: 66px; line-height: 1; letter-spacing: -.04em;
+    background: linear-gradient(180deg, #ffffff 25%, var(--mint) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-top: 2px;
+  }
+  .hero__d { font-size: 10.5px; color: var(--faint); margin-top: 4px; }
+
+  /* 环绕四个角的小标签 */
+  .hero__tag {
+    position: absolute; display: flex; flex-direction: column; gap: 1px;
+    padding: 6px 10px; border-radius: 9px;
+    background: rgba(255, 255, 255, .04); border: 1px solid var(--line);
+  }
+  .hero__tag b { font-family: var(--num); font-size: 17px; font-weight: 500; }
+  .hero__tag span { font-size: 9.5px; color: var(--faint); }
+  .t1 { left: 18px; top: 18px; } .t2 { right: 18px; top: 18px; }
+  .t3 { left: 18px; bottom: 18px; } .t4 { right: 18px; bottom: 18px; }
+
+  /* ── 底部趋势带 ───────────────────────────────────────────── */
+  .bottom { flex: 0 0 208px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 14px; min-height: 0; }
+
+  /* ── 组件 ─────────────────────────────────────────────────── */
+  .bars { display: flex; flex-direction: column; gap: 8px; }
+  .bar { display: grid; grid-template-columns: 46px 1fr 40px; align-items: center; gap: 8px; font-size: 10.5px; color: var(--muted); }
+  .bar__t { display: block; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+  .bar__f { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, rgba(94, 234, 212, .35), var(--mint)); }
+  .bar__v { text-align: right; font-family: var(--num); font-size: 11.5px; color: #cfd3de; }
+
+  .list { display: flex; flex-direction: column; }
+  .lrow {
+    display: flex; align-items: center; gap: 8px; font-size: 11px;
+    padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, .05);
+  }
+  .lrow:last-child { border-bottom: 0; }
+  .lrow__n { font-family: var(--num); font-size: 9.5px; color: var(--faint); width: 14px; }
+  .lrow__t { color: #dfe2ea; }
+  .lrow__m { color: var(--faint); font-size: 9.5px; }
+  .lrow__v { margin-left: auto; font-family: var(--num); font-size: 11.5px; color: var(--muted); }
+
+  .legend { display: flex; flex-direction: column; gap: 7px; font-size: 10.5px; }
+  .legend div { display: flex; align-items: center; gap: 7px; color: var(--muted); }
+  .legend i { width: 7px; height: 7px; border-radius: 2px; }
+  .legend b { margin-left: auto; font-family: var(--num); font-size: 12.5px; color: #dfe2ea; font-weight: 400; }
+
+  svg.chart { display: block; width: 100%; height: 100%; overflow: visible; }
+  .axis text { font-size: 9px; fill: var(--faint); font-family: var(--num); }
+  .gridline { stroke: rgba(255, 255, 255, .06); stroke-width: 1; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="top">
+    <div class="brand">
+      <span class="brand__mark">食</span>
+      <span>
+        <div class="brand__name">食刻 EatWhat</div>
+        <div class="brand__sub">DATA WALL</div>
+      </span>
+    </div>
+    <div class="chips">
+      <span class="chip is-on">全部校区</span>
+      <span class="chip">近 7 天</span>
+      <span class="chip">v2.3.6</span>
+    </div>
+    <div class="top__right">
+      <span class="live"><i></i>实时同步</span>
+      <span class="clock" id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- 左栏 -->
+    <div class="col">
+      <div class="card" style="flex:1">
+        <div class="card__head"><h2>规模</h2><span>GLOBAL</span></div>
+        <div class="card__body" style="justify-content:space-around">
+          <div class="stat">
+            <span class="stat__k">有效门店</span>
+            <span class="stat__v"><span class="count" data-to="7704">0</span><small>家</small></span>
+            <span class="stat__d">思源 3,862 · 建大 3,842</span>
+          </div>
+          <div class="stat">
+            <span class="stat__k">菜品 / 菜谱</span>
+            <span class="stat__v"><span class="count" data-to="6560">0</span><small>道</small></span>
+            <span class="stat__d">外食 120 · 下厨 6,440</span>
+          </div>
+          <div class="stat">
+            <span class="stat__k">有效特征值</span>
+            <span class="stat__v"><span class="count" data-to="52352">0</span><small>个</small></span>
+            <span class="stat__d">6,544 道 × 8 维</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:.95">
+        <div class="card__head"><h2>菜系构成</h2><span>TOP 6</span></div>
+        <div class="card__body"><div class="bars" id="cuisine"></div></div>
+      </div>
+    </div>
+
+    <!-- 中央主视觉 -->
+    <div class="hero">
+      <svg class="hero__ring" id="ring" viewBox="0 0 400 400"></svg>
+      <div class="hero__center">
+        <div class="hero__k">今日饮食决策</div>
+        <div class="hero__v"><span class="count" data-to="1284">0</span></div>
+        <div class="hero__d">条流水 · 覆盖 2 个校区</div>
+      </div>
+      <div class="hero__tag t1"><b class="num" style="color:var(--mint)">62.4%</b><span>推荐命中率</span></div>
+      <div class="hero__tag t2"><b class="num" style="color:var(--violet)">386</b><span>真实投票</span></div>
+      <div class="hero__tag t3"><b class="num" style="color:var(--amber)">24</b><span>待打标</span></div>
+      <div class="hero__tag t4"><b class="num" style="color:var(--rose)">18</b><span>数据异常</span></div>
+    </div>
+
+    <!-- 右栏 -->
+    <div class="col">
+      <div class="card" style="flex:1">
+        <div class="card__head"><h2>数据质量</h2><span>6,560 道</span></div>
+        <div class="card__body">
+          <div style="display:flex;align-items:center;gap:14px">
+            <svg viewBox="0 0 42 42" style="width:88px;height:88px;flex:0 0 88px">
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4.2"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5eead4" stroke-width="4.2"
+                      stroke-dasharray="99.27 100" stroke-dashoffset="25"
+                      style="filter:drop-shadow(0 0 6px rgba(94,234,212,.65))"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#fbbf24" stroke-width="4.2"
+                      stroke-dasharray="0.37 100" stroke-dashoffset="25.63"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#fb7185" stroke-width="4.2"
+                      stroke-dasharray="0.37 100" stroke-dashoffset="25.26"/>
+              <text x="21" y="21" text-anchor="middle" dominant-baseline="middle"
+                    font-size="5.4" fill="#f4f5f8" font-family="Bahnschrift" font-weight="600">99.3%</text>
+            </svg>
+            <div class="legend" style="flex:1">
+              <div><i style="background:#5eead4"></i>已完成<b>6,512</b></div>
+              <div><i style="background:#fbbf24"></i>待打标<b>24</b></div>
+              <div><i style="background:#fb7185"></i>失败<b>24</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1.05">
+        <div class="card__head"><h2>本周最常吃</h2><span>TOP 5</span></div>
+        <div class="card__body">
+          <div class="list">
+            <div class="lrow"><span class="lrow__n">01</span><span class="lrow__t">砂锅豆腐</span><span class="lrow__m">教工</span><span class="lrow__v">42</span></div>
+            <div class="lrow"><span class="lrow__n">02</span><span class="lrow__t">红烧牛肉面</span><span class="lrow__m">二食堂</span><span class="lrow__v">38</span></div>
+            <div class="lrow"><span class="lrow__n">03</span><span class="lrow__t">麻辣香锅</span><span class="lrow__m">一食堂</span><span class="lrow__v">31</span></div>
+            <div class="lrow"><span class="lrow__n">04</span><span class="lrow__t">蛋炒饭</span><span class="lrow__m">二食堂</span><span class="lrow__v">27</span></div>
+            <div class="lrow"><span class="lrow__n">05</span><span class="lrow__t">黄焖鸡米饭</span><span class="lrow__m">一食堂</span><span class="lrow__v">24</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="card">
+      <div class="card__head"><h2>防腻衰减实验 · 重样率</h2><span>10 天仿真</span></div>
+      <div class="card__body"><svg class="chart" viewBox="0 0 620 120" id="curve"></svg></div>
+    </div>
+
+    <div class="card">
+      <div class="card__head"><h2>人设八维口味</h2><span>0–1</span></div>
+      <div class="card__body"><svg class="chart" viewBox="0 0 220 150" id="radar"></svg></div>
+    </div>
+
+    <div class="card">
+      <div class="card__head"><h2>一周 × 时段密度</h2><span>峰值 12–14 时</span></div>
+      <div class="card__body"><div class="bars" id="heat"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  (function clock() {
+    const el = $('clock');
+    const tick = () => {
+      const d = new Date();
+      el.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
+        .map((n) => String(n).padStart(2, '0')).join(':');
+    };
+    tick(); setInterval(tick, 1000);
+  })();
+
+  /* 数字滚动：大屏上"动起来"比静态数字有展示性 */
+  document.querySelectorAll('.count').forEach((el) => {
+    const target = Number(el.dataset.to);
+    const dur = 1100;
+    const t0 = performance.now();
+    const step = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  /* 中央环形：24 小时决策分布，每根柱子是一个时段 */
+  (function ring() {
+    const cx = 200, cy = 200, R0 = 86, R1 = 160, N = 24;
+    // 三餐双峰 + 夜间低谷
+    const V = [2,1,1,1,1,2,4,9,12,7,10,26,38,22,9,7,12,24,31,18,9,5,3,2];
+    const max = Math.max.apply(null, V);
+    const ang = (i) => (-Math.PI / 2) + (i / N) * Math.PI * 2;
+    const arc = (i, r0, r1) => {
+      const a0 = ang(i) + 0.012, a1 = ang(i + 1) - 0.012;
+      const p = (r, a) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      const [x0, y0] = p(r0, a0), [x1, y1] = p(r0, a1);
+      const [x2, y2] = p(r1, a1), [x3, y3] = p(r1, a0);
+      return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r0},${r0} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}
+              L${x2.toFixed(1)},${y2.toFixed(1)} A${r1},${r1} 0 0 0 ${x3.toFixed(1)},${y3.toFixed(1)} Z`;
+    };
+    let s = `<defs>
+      <linearGradient id="gring" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#5eead4"/>
+        <stop offset="55%" stop-color="#7dd3fc"/>
+        <stop offset="100%" stop-color="#a78bfa"/>
+      </linearGradient>
+      <radialGradient id="gfade">
+        <stop offset="60%" stop-color="#5eead4" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#5eead4" stop-opacity=".12"/>
+      </radialGradient>
+    </defs>`;
+    s += `<circle cx="${cx}" cy="${cy}" r="${R1 + 14}" fill="url(#gfade)"/>`;
+    s += `<circle cx="${cx}" cy="${cy}" r="${R0 - 2}" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1"/>`;
+    // 刻度环
+    [R0 - 8, R1 + 8].forEach((r) => {
+      s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.07)"/>`;
+    });
+    V.forEach((v, i) => {
+      const h = R0 + (R1 - R0) * Math.pow(v / max, 0.85);
+      const hot = v / max > 0.55;
+      // 非峰值段给足底色亮度：太暗整圈会显得是空的
+      s += `<path d="${arc(i, R0, h)}" fill="${hot ? 'url(#gring)' : 'rgba(255,255,255,.22)'}"/>`;
+    });
+    // 时段刻度
+    [0, 6, 12, 18].forEach((h) => {
+      const a = ang(h) - Math.PI / 2 + Math.PI / 2;
+      const r = R1 + 22;
+      const x = cx + Math.cos(ang(h)) * r, y = cy + Math.sin(ang(h)) * r;
+      s += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
+             font-size="9.5" fill="#5b6070" font-family="Bahnschrift">${String(h).padStart(2,'0')}:00</text>`;
+    });
+    $('ring').innerHTML = s;
+  })();
+
+  (function cuisine() {
+    const D = [['家常',1842],['川湘菜',1486],['面食',1162],['粤菜',824],['凉菜',662],['轻食',584]];
+    const max = D[0][1];
+    $('cuisine').innerHTML = D.map((d) =>
+      `<div class="bar"><span>${d[0]}</span>
+        <span class="bar__t"><span class="bar__f" style="width:${(d[1]/max*100).toFixed(1)}%"></span></span>
+        <span class="bar__v">${d[1].toLocaleString()}</span></div>`).join('');
+  })();
+
+  (function heat() {
+    const D = [['周一',38],['周二',41],['周三',36],['周四',39],['周五',44],['周六',35],['周日',32]];
+    const max = 44;
+    $('heat').innerHTML = D.map((d) =>
+      `<div class="bar"><span>${d[0]}</span>
+        <span class="bar__t"><span class="bar__f" style="width:${(d[1]/max*100).toFixed(1)}%"></span></span>
+        <span class="bar__v">${d[1]}</span></div>`).join('');
+  })();
+
+  (function curve() {
+    const W = 620, H = 120, P = { l: 28, r: 8, t: 10, b: 16 };
+    const a = [0.62,0.58,0.55,0.52,0.50,0.49,0.48,0.47,0.47,0.46];
+    const b = [0.62,0.66,0.69,0.72,0.74,0.76,0.78,0.79,0.80,0.81];
+    const x = (i) => P.l + (i / (a.length - 1)) * (W - P.l - P.r);
+    const y = (v) => P.t + (1 - (v - 0.4) / 0.45) * (H - P.t - P.b);
+    let s = `<defs>
+      <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5eead4" stop-opacity=".32"/>
+        <stop offset="100%" stop-color="#5eead4" stop-opacity="0"/>
+      </linearGradient>
+    </defs>`;
+    [0.5, 0.6, 0.7, 0.8].forEach((g) => {
+      s += `<line class="gridline" x1="${P.l}" y1="${y(g)}" x2="${W - P.r}" y2="${y(g)}"/>`;
+      s += `<text class="axis" x="4" y="${y(g) + 3}">${(g*100).toFixed(0)}</text>`;
+    });
+    const path = (arr) => arr.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    s += `<polygon points="${P.l},${H - P.b} ${path(a)} ${W - P.r},${H - P.b}" fill="url(#ga)"/>`;
+    s += `<polyline points="${path(b)}" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+    s += `<polyline points="${path(a)}" fill="none" stroke="#5eead4" stroke-width="2"
+            style="filter:drop-shadow(0 0 6px rgba(94,234,212,.55))"/>`;
+    a.forEach((v, i) => { s += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="1.8" fill="#5eead4"/>`; });
+    s += `<text x="${W - P.r}" y="${y(a[9]) + 14}" text-anchor="end" font-size="9.5" fill="#5eead4" font-family="Bahnschrift">λ=0.5</text>`;
+    s += `<text x="${W - P.r}" y="${y(b[9]) - 5}" text-anchor="end" font-size="9.5" fill="rgba(255,255,255,.4)" font-family="Bahnschrift">λ=0</text>`;
+    $('curve').innerHTML = s;
+  })();
+
+  (function radar() {
+    const cx = 110, cy = 76, R = 60;
+    const AX = ['酸','甜','苦','辣','咸','鲜','油','烫'];
+    const P = [
+      { c: '#5eead4', v: [.4,.2,.1,.9,.7,.6,.8,.6], main: true },
+      { c: '#a78bfa', v: [.3,.1,.2,.1,.5,.7,.2,.8] },
+      { c: '#fbbf24', v: [.5,.3,.1,.3,.8,.4,.6,.5] },
+    ];
+    const ang = (i) => (-Math.PI / 2) + (i * 2 * Math.PI) / 8;
+    const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
+    let s = '';
+    [0.33, 0.66, 1].forEach((r) => {
+      s += `<polygon points="${AX.map((_, i) => pt(i, r).map(n => n.toFixed(1)).join(',')).join(' ')}"
+        fill="none" stroke="rgba(255,255,255,${r === 1 ? .12 : .05})"/>`;
+    });
+    AX.forEach((_, i) => {
+      const p = pt(i, 1);
+      s += `<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="rgba(255,255,255,.05)"/>`;
+    });
+    P.forEach((p) => {
+      const pts = p.v.map((v, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ');
+      if (p.main) {
+        s += `<polygon points="${pts}" fill="rgba(94,234,212,.14)" stroke="${p.c}" stroke-width="1.8"
+          stroke-linejoin="round" style="filter:drop-shadow(0 0 5px rgba(94,234,212,.5))"/>`;
+      } else {
+        s += `<polygon points="${pts}" fill="none" stroke="${p.c}" stroke-width="1.1"
+          stroke-opacity=".5" stroke-linejoin="round"/>`;
+      }
+    });
+    AX.forEach((label, i) => {
+      const p = pt(i, 1.16);
+      s += `<text x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" text-anchor="middle"
+        dominant-baseline="middle" font-size="8" fill="#5b6070">${label}</text>`;
+    });
+    $('radar').innerHTML = s;
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "files": 144,
+  "fingerprint": "3caa7db07f0516db1ecbda9e58a7cee35c3832ad235dc74f0f4f9c1002c4ad29",
+  "git": {
+    "branch": "master",
+    "head": null,
+    "commit_count": 0,
+    "staged_diff_sha256": "cbfeb1e84ea5a38053d2b0fa67bd897b69a9aa988e16426e2ccc437e13a630cb",
+    "status": {
+      "staged": 280,
+      "unstaged": 136,
+      "untracked": 55,
+      "note": "仓库无 commit；本包不清理、不覆盖既有 staged/unstaged/untracked 变更"
+    }
+  }
+}

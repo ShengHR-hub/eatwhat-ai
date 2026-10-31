@@ -1,0 +1,1550 @@
+.admin-shell {
+  /* 后台浅色令牌（见 main.css 的 --admin-*，口径来自 v7 设计稿）。
+     这里只做「别名映射」：本文件后面所有 rgb(var(--rgb-silver)/x) 之类
+     的写法会自动落到浅色灰阶上，不必逐条改色值。
+     注意 --rgb-white 映射到深色：原写法是「白色低透明度」当高光用，
+     在浅底上要反过来变成深色低透明度才成立。 */
+  --color-ink: var(--admin-ink);
+  --color-mist: var(--admin-ink);
+  --color-white: var(--admin-ink);
+  --color-silver: var(--admin-muted);
+  --rgb-ink: var(--rgb-admin-bg);
+  --rgb-mist: var(--rgb-admin-ink);
+  --rgb-white: var(--rgb-admin-ink);
+  --rgb-silver: var(--rgb-admin-ink);
+  --rgb-panel: var(--rgb-admin-surface);
+  --rgb-sheet: var(--rgb-admin-surface);
+
+  min-height: 100dvh;
+  background: var(--admin-bg);
+  color: var(--admin-ink);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 86px;
+  padding: 16px 32px;
+  border-bottom: 1px solid rgb(var(--rgb-silver) / 0.16);
+  background: rgb(var(--rgb-ink) / 0.94);
+  backdrop-filter: blur(18px);
+}
+
+.admin-header__brand,
+.admin-dashboard-filters,
+.admin-data-toolbar,
+.admin-section-heading,
+.admin-modal__header,
+.admin-modal__footer,
+.admin-pagination,
+.admin-tag-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-header__brand {
+  justify-content: flex-start;
+}
+
+.admin-header h1,
+.admin-section-heading h2,
+.admin-rank-export h2,
+.admin-map-heading h2,
+.admin-quality-card h2,
+.admin-modal h2 {
+  margin: 2px 0 0;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.admin-brand-mark {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgb(var(--rgb-silver) / 0.32);
+  border-radius: 14px;
+  background: rgb(var(--rgb-white) / 0.08);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.admin-eyebrow {
+  margin: 0;
+  color: rgb(var(--rgb-silver) / 0.74);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+}
+
+.admin-subtitle,
+.admin-section-heading p,
+.admin-rank-export header > p:last-child,
+.admin-map-heading > p:last-child,
+.admin-dashboard-filters > p,
+.admin-footnote {
+  margin: 4px 0 0;
+  color: rgb(var(--rgb-silver) / 0.76);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 999px;
+  background: rgb(var(--rgb-white) / 0.04);
+}
+
+.admin-nav a {
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: rgb(var(--rgb-mist) / 0.72);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.admin-nav a.is-active {
+  border-color: rgb(var(--rgb-admin-accent) / 0.42);
+  background: rgb(var(--rgb-admin-accent) / 0.12);
+  color: var(--admin-accent);
+}
+
+.admin-main {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 24px 28px 56px;
+}
+
+.admin-button,
+.admin-icon-button,
+.admin-row-actions button,
+.admin-tabs button {
+  border: 1px solid rgb(var(--rgb-silver) / 0.24);
+  border-radius: 10px;
+  background: rgb(var(--rgb-white) / 0.06);
+  color: var(--color-mist);
+  cursor: pointer;
+  font: inherit;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.admin-button {
+  min-height: 38px;
+  padding: 8px 15px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.admin-button--small {
+  min-height: 30px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.admin-button--primary {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent);
+  color: var(--color-white);
+  font-weight: 650;
+}
+
+.admin-button:hover:not(:disabled),
+.admin-row-actions button:hover,
+.admin-tabs button:hover {
+  background: rgb(var(--rgb-white) / 0.15);
+}
+
+.admin-button--primary:hover:not(:disabled) {
+  background: var(--admin-accent);
+  border-color: var(--admin-accent);
+}
+
+.admin-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.admin-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.admin-dashboard-filters {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 18px;
+  background: rgb(var(--rgb-white) / 0.04);
+}
+
+.admin-dashboard-filters > div {
+  margin-right: auto;
+}
+
+.admin-dashboard-filters > p {
+  flex-basis: 100%;
+}
+
+.admin-dashboard-filters label,
+.admin-filter-bar label,
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgb(var(--rgb-mist) / 0.72);
+  font-size: 11px;
+}
+
+.admin-dashboard-filters select,
+.admin-filter-bar input,
+.admin-filter-bar select,
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+  min-height: 38px;
+  box-sizing: border-box;
+  border: 1px solid rgb(var(--rgb-silver) / 0.22);
+  border-radius: 9px;
+  outline: none;
+  background: rgb(var(--rgb-ink) / 0.86);
+  color: var(--color-mist);
+  font: inherit;
+  font-size: 12px;
+}
+
+.admin-dashboard-filters select,
+.admin-filter-bar input,
+.admin-filter-bar select,
+.admin-field input,
+.admin-field select {
+  padding: 8px 11px;
+}
+
+.admin-field textarea {
+  padding: 10px 11px;
+  resize: vertical;
+}
+
+.admin-dashboard-filters select:focus,
+.admin-filter-bar input:focus,
+.admin-filter-bar select:focus,
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+  border-color: rgb(var(--rgb-white) / 0.66);
+}
+
+.admin-kpi-section {
+  margin-bottom: 24px;
+}
+
+.admin-section-heading {
+  margin-bottom: 12px;
+}
+
+.admin-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.14);
+  border-radius: 18px;
+  background: var(--color-ink);
+}
+
+.admin-kpi-card {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px 18px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 14px;
+  background: rgb(var(--rgb-white) / 0.045);
+}
+
+.admin-kpi-card > span,
+.admin-kpi-card small {
+  color: rgb(var(--rgb-silver) / 0.78);
+  font-size: 11px;
+}
+
+.admin-kpi-card strong {
+  margin: 4px 0;
+  font-size: clamp(24px, 2.1vw, 36px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.admin-campus-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 10px 14px 0;
+  color: rgb(var(--rgb-silver) / 0.7);
+  font-size: 10px;
+}
+
+.admin-dashboard-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.admin-dashboard-column {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+
+.admin-chart-card,
+.admin-quality-card,
+.admin-data-section,
+.admin-kpi-section,
+.admin-dashboard-filters {
+  min-width: 0;
+}
+
+.admin-chart-card,
+.admin-quality-card {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 18px;
+  background: rgb(var(--rgb-white) / 0.035);
+  box-shadow: 0 14px 38px rgb(var(--rgb-black) / 0.14);
+}
+
+.admin-chart {
+  width: 100%;
+  height: var(--admin-chart-height, 360px);
+}
+
+.admin-chart-actions {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.admin-empty {
+  display: flex;
+  min-height: 180px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: rgb(var(--rgb-silver) / 0.76);
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.admin-empty strong {
+  margin-bottom: 6px;
+  color: var(--color-mist);
+  font-size: 14px;
+}
+
+.admin-empty p {
+  max-width: 460px;
+  margin: 0;
+}
+
+.admin-empty__icon {
+  margin-bottom: 8px;
+  color: rgb(var(--rgb-silver) / 0.48);
+  font-size: 30px;
+}
+
+.admin-inline-error,
+.admin-form-error {
+  margin: 8px 12px;
+  color: var(--color-white);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-form-error {
+  padding: 10px 12px;
+  border: 1px solid rgb(var(--rgb-white) / 0.36);
+  border-radius: 10px;
+  background: rgb(var(--rgb-white) / 0.09);
+}
+
+.admin-notice {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-left: 2px solid var(--color-silver);
+  background: rgb(var(--rgb-white) / 0.04);
+  color: var(--color-mist);
+  font-size: 12px;
+}
+
+.admin-map-export {
+  background: var(--color-ink);
+}
+
+.admin-map-heading,
+.admin-rank-export header {
+  padding: 16px 18px 12px;
+}
+
+.admin-map-heading h2,
+.admin-rank-export h2 {
+  padding-right: 110px;
+  font-size: 17px;
+}
+
+.admin-map-canvas-wrap {
+  position: relative;
+  height: 330px;
+  margin: 0 12px;
+  overflow: hidden;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 12px;
+}
+
+.admin-map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.admin-map-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(var(--rgb-ink) / 0.9);
+}
+
+.admin-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 10px 16px 14px;
+  color: rgb(var(--rgb-silver) / 0.7);
+  font-size: 10px;
+}
+
+.admin-map-marker {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgb(var(--rgb-black) / 0.32);
+}
+
+.admin-map-marker.is-synthetic {
+  border-radius: 5px;
+  background: var(--color-silver);
+}
+
+.admin-rank-card {
+  min-height: 360px;
+}
+
+.admin-rank-export {
+  min-height: 358px;
+  background: var(--color-ink);
+}
+
+.admin-rank-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0 12px 14px;
+  list-style: none;
+}
+
+.admin-rank-list button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 30px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-mist);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.admin-rank-list button:hover {
+  background: rgb(var(--rgb-white) / 0.07);
+}
+
+.admin-rank-index,
+.admin-rank-list button > span:last-child {
+  color: rgb(var(--rgb-silver) / 0.68);
+  font-size: 10px;
+}
+
+.admin-rank-name {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-rank-list strong {
+  font-size: 14px;
+}
+
+.admin-secondary-section {
+  margin-top: 28px;
+}
+
+.admin-dashboard-secondary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-quality-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-quality-card {
+  padding: 20px;
+}
+
+.admin-quality-content {
+  margin-top: 16px;
+}
+
+.admin-anomaly-count {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgb(var(--rgb-white) / 0.06);
+}
+
+.admin-anomaly-count strong {
+  grid-row: span 2;
+  font-size: 30px;
+}
+
+.admin-anomaly-count small,
+.admin-quality-card h3 {
+  color: rgb(var(--rgb-silver) / 0.74);
+  font-size: 11px;
+}
+
+.admin-missing-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-missing-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgb(var(--rgb-silver) / 0.1);
+  font-size: 12px;
+}
+
+.admin-data-section {
+  padding: 18px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 18px;
+  background: rgb(var(--rgb-white) / 0.035);
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-tabs button {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.admin-tabs button.is-active {
+  border-color: rgb(var(--rgb-admin-accent) / 0.42);
+  background: rgb(var(--rgb-admin-accent) / 0.12);
+  color: var(--admin-accent);
+  font-weight: 550;
+}
+
+.admin-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgb(var(--rgb-white) / 0.035);
+}
+
+.admin-filter-bar label {
+  min-width: 120px;
+  flex: 1 1 130px;
+}
+
+.admin-filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-tag-toolbar {
+  justify-content: flex-start;
+  padding: 10px 0;
+  color: rgb(var(--rgb-mist) / 0.74);
+  font-size: 12px;
+}
+
+.admin-tag-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.16);
+  border-radius: 12px;
+  color: rgb(var(--rgb-mist) / 0.78);
+  font-size: 11px;
+}
+
+.admin-tag-result strong {
+  flex-basis: 100%;
+  color: var(--color-white);
+}
+
+.admin-tag-result span[data-status="FAILED"] {
+  text-decoration: underline;
+  text-decoration-color: var(--color-white);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgb(var(--rgb-silver) / 0.14);
+  border-radius: 14px;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.admin-table th {
+  padding: 12px;
+  background: rgb(var(--rgb-white) / 0.06);
+  color: rgb(var(--rgb-silver) / 0.82);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+
+.admin-table td {
+  max-width: 260px;
+  padding: 12px;
+  border-top: 1px solid rgb(var(--rgb-silver) / 0.1);
+  color: rgb(var(--rgb-mist) / 0.86);
+  vertical-align: top;
+}
+
+.admin-table td strong,
+.admin-table td small {
+  display: block;
+}
+
+.admin-table td small {
+  max-width: 230px;
+  margin-top: 5px;
+  overflow: hidden;
+  color: rgb(var(--rgb-silver) / 0.62);
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+
+.admin-table input[type="checkbox"],
+.admin-checks input[type="checkbox"] {
+  accent-color: var(--color-white);
+}
+
+.admin-status {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.22);
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+/* 浅色主题下状态标签用「浅底 + 深字」：原来靠白底黑字反色，翻到浅色后
+   --color-white 指向深色墨，整颗胶囊会变成黑块。 */
+.admin-status[data-status="SUCCESS"] {
+  border-color: rgb(var(--rgb-admin-ok) / 0.24);
+  background: rgb(var(--rgb-admin-ok) / 0.1);
+  color: var(--admin-ok);
+}
+
+.admin-status[data-status="PENDING"] {
+  border-color: rgb(var(--rgb-admin-warn) / 0.26);
+  background: rgb(var(--rgb-admin-warn) / 0.12);
+  color: var(--admin-warn);
+}
+
+.admin-status[data-status="FAILED"] {
+  border-style: dashed;
+  border-color: rgb(var(--rgb-admin-bad) / 0.3);
+  background: rgb(var(--rgb-admin-bad) / 0.08);
+  color: var(--admin-bad);
+}
+
+.admin-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-row-actions button {
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
+.admin-pagination {
+  padding-top: 14px;
+  color: rgb(var(--rgb-silver) / 0.74);
+  font-size: 12px;
+}
+
+.admin-pagination > div {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(var(--rgb-black) / 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.admin-modal {
+  width: min(900px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.14);
+  border-radius: 20px;
+  /* --color-ink 在旧代码里同时充当「背景」和「文字」，浅色主题下它是深墨，
+     直接沿用会让弹窗变黑底、标签看不见，必须显式换成 surface。 */
+  background: var(--admin-surface);
+  box-shadow: 0 28px 80px rgb(var(--rgb-black) / 0.28);
+}
+
+.admin-modal__header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  background: var(--admin-surface);
+}
+
+.admin-icon-button {
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px 22px;
+}
+
+.admin-field--wide,
+.admin-form-error,
+.admin-modal__footer {
+  grid-column: 1 / -1;
+}
+
+.admin-checks,
+.admin-feature-grid {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgb(var(--rgb-silver) / 0.18);
+  border-radius: 12px;
+}
+
+.admin-checks {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-checks label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-feature-grid legend,
+.admin-checks legend {
+  padding: 0 6px;
+}
+
+.admin-feature-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin-modal__footer {
+  justify-content: flex-end;
+  padding-top: 6px;
+}
+
+@media (max-width: 1500px) {
+  .admin-main {
+    padding: 18px;
+  }
+
+  .admin-dashboard-primary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-dashboard-center {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-map-canvas-wrap {
+    height: 330px;
+  }
+}
+
+@media (max-width: 980px) {
+  .admin-header {
+    position: relative;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .admin-main {
+    padding: 12px;
+  }
+
+  .admin-kpi-strip,
+  .admin-dashboard-primary,
+  .admin-dashboard-center,
+  .admin-dashboard-secondary,
+  .admin-quality-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-center {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .admin-kpi-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .admin-form,
+  .admin-kpi-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-data-toolbar,
+  .admin-section-heading,
+  .admin-tag-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* ==========================================================================
+   后台外壳 v7：左侧栏 + 顶栏面包屑 + 页面标题（对齐 design/admin-v7）
+   色值全部走 --admin-* / --rgb-admin-* 令牌，不写裸值。
+   ========================================================================== */
+.admin-shell {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.admin-side {
+  display: flex;
+  flex: 0 0 220px;
+  flex-direction: column;
+  width: 220px;
+  padding: 20px 12px 14px;
+  border-right: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  background: var(--admin-surface);
+}
+
+.admin-side__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 20px;
+}
+
+.admin-side__mark {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--admin-ink);
+  color: var(--admin-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-side__copy { display: flex; flex-direction: column; line-height: 1.2; }
+.admin-side__copy b { font-size: 13px; font-weight: 600; }
+.admin-side__copy small {
+  color: var(--admin-faint);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}
+
+.admin-side__nav { display: flex; flex-direction: column; gap: 1px; }
+
+.admin-side__label {
+  margin: 0;
+  padding: 14px 10px 5px;
+  color: var(--admin-faint);
+  font-size: 10.5px;
+}
+
+.admin-side__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  color: var(--admin-muted);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.admin-side__item svg { width: 15px; height: 15px; flex: 0 0 15px; }
+.admin-side__item:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+.admin-side__item.is-active {
+  background: rgb(var(--rgb-admin-accent) / 0.1);
+  color: var(--admin-accent);
+  font-weight: 500;
+}
+.admin-side__item.is-disabled { cursor: not-allowed; opacity: 0.55; }
+.admin-side__item em {
+  margin-left: auto;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgb(var(--rgb-admin-ink) / 0.06);
+  color: var(--admin-faint);
+  font-size: 8.5px;
+  font-style: normal;
+  letter-spacing: 0.06em;
+}
+.admin-side__item.is-active em {
+  background: rgb(var(--rgb-admin-accent) / 0.14);
+  color: var(--admin-accent);
+}
+
+.admin-side__foot {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgb(var(--rgb-admin-ink) / 0.06);
+}
+.admin-side__who { display: flex; align-items: center; gap: 9px; padding: 6px 6px 9px; }
+.admin-side__avatar {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(var(--rgb-admin-accent) / 0.1);
+  color: var(--admin-accent);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.admin-side__logout {
+  display: block;
+  width: 100%;
+  height: 29px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  border-radius: 7px;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 27px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.admin-side__logout:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+
+.admin-workspace {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  flex: 0 0 54px;
+  align-items: center;
+  gap: 14px;
+  height: 54px;
+  padding: 0 24px;
+  border-bottom: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  background: var(--admin-surface);
+}
+
+.admin-crumb { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--admin-faint); font-size: 11.5px; }
+.admin-crumb b { color: var(--admin-ink); font-weight: 500; }
+
+.admin-topbar__right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.admin-topbar__right input {
+  width: 232px;
+  height: 31px;
+  padding: 0 10px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.1);
+  border-radius: 8px;
+  background: var(--admin-surface-2);
+  color: var(--admin-ink);
+  font: inherit;
+  font-size: 11.5px;
+  outline: none;
+}
+.admin-topbar__right input:focus { border-color: rgb(var(--rgb-admin-accent) / 0.5); }
+
+/* 覆盖旧 .admin-main 的居中定宽：新外壳由 workspace 撑满、主区自己滚动 */
+.admin-main {
+  flex: 1;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 22px 24px 30px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.admin-pagehead {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.admin-pagehead h1 {
+  margin: 0;
+  color: var(--admin-ink);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.admin-pagehead p { margin: 2px 0 0; color: var(--admin-muted); font-size: 11.5px; }
+.admin-pagehead__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+/* 页面级视图切换（看板 / 表格 / 质检） */
+.admin-viewswitch {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgb(var(--rgb-admin-ink) / 0.05);
+}
+.admin-viewswitch button {
+  height: 27px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--admin-muted);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+.admin-viewswitch button.is-on {
+  background: var(--admin-surface);
+  color: var(--admin-ink);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(var(--rgb-admin-ink) / 0.06);
+}
+
+/* ── 质检视图：四列雷达卡（对齐 design/admin-v7 的 #view-grid） ── */
+.admin-qgrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.qcard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--admin-surface) 0%, var(--admin-surface-2) 100%);
+  /* 内高光 + 贴地细影 + 远距柔影：浅底上靠这三层撑出体积 */
+  box-shadow:
+    inset 0 1px 0 rgb(var(--rgb-admin-surface) / 0.9),
+    0 1px 2px rgb(var(--rgb-admin-ink) / 0.05),
+    0 10px 24px -14px rgb(var(--rgb-admin-ink) / 0.18);
+  transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.qcard:hover {
+  transform: translateY(-3px);
+  border-color: rgb(var(--rgb-admin-accent) / 0.3);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--rgb-admin-surface) / 0.95),
+    0 2px 4px rgb(var(--rgb-admin-ink) / 0.06),
+    0 18px 38px -16px rgb(var(--rgb-admin-ink) / 0.28);
+}
+
+/* 状态带：整条铺满顶部，颜色一眼可辨 */
+.qcard__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 11px;
+  border-bottom: 1px solid rgb(var(--rgb-admin-ink) / 0.05);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.qcard__dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.qcard__flag { margin-left: auto; font-weight: 500; letter-spacing: 0.02em; opacity: 0.85; }
+.qcard[data-tone="ok"] .qcard__bar { background: rgb(var(--rgb-admin-ok) / 0.1); color: var(--admin-ok); }
+.qcard[data-tone="warn"] .qcard__bar { background: rgb(var(--rgb-admin-warn) / 0.12); color: var(--admin-warn); }
+.qcard[data-tone="bad"] .qcard__bar { background: rgb(var(--rgb-admin-bad) / 0.1); color: var(--admin-bad); }
+.qcard[data-tone="warn"] { border-color: rgb(var(--rgb-admin-warn) / 0.22); }
+.qcard[data-tone="bad"] { border-color: rgb(var(--rgb-admin-bad) / 0.26); }
+
+.qcard__viz {
+  display: grid;
+  height: 138px;
+  place-items: center;
+  border-bottom: 1px solid rgb(var(--rgb-admin-ink) / 0.055);
+  background: radial-gradient(120% 92% at 50% 2%, rgb(var(--rgb-admin-accent) / 0.05) 0%, var(--admin-surface) 52%);
+  box-shadow: inset 0 -10px 16px -14px rgb(var(--rgb-admin-ink) / 0.22);
+}
+
+.qcard__body { display: flex; flex: 1; flex-direction: column; gap: 2px; padding: 11px 12px 12px; }
+.qcard__name {
+  margin: 0;
+  color: var(--admin-ink);
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qcard__meta {
+  margin: 0;
+  color: var(--admin-faint);
+  font-size: 10.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qcard__row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.qcard__price { color: var(--admin-ink); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.qcard__ops { display: flex; gap: 8px; }
+.qcard__ops button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--admin-faint);
+  font: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+.qcard__ops button:hover { color: var(--admin-ink); text-decoration: underline; text-underline-offset: 3px; }
+.qcard__ops .is-danger:hover { color: var(--admin-bad); }
+
+/* ── 看板视图：三列（对齐 design/admin-v7 的 #view-board） ── */
+.admin-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 460px;
+}
+
+.admin-board__col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 12px;
+  background: var(--admin-surface-2);
+}
+
+.admin-board__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 13px;
+  border-bottom: 1px solid rgb(var(--rgb-admin-ink) / 0.06);
+  font-size: 12.5px;
+}
+.admin-board__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--admin-faint); }
+.admin-board__dot[data-tone="ok"] { background: var(--admin-ok); }
+.admin-board__dot[data-tone="warn"] { background: var(--admin-warn); }
+.admin-board__dot[data-tone="bad"] { background: var(--admin-bad); }
+.admin-board__count {
+  margin-left: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(var(--rgb-admin-ink) / 0.06);
+  color: var(--admin-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-board__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 9px;
+  overflow-y: auto;
+}
+.admin-board__empty { margin: auto; color: var(--admin-faint); font-size: 11.5px; text-align: center; }
+
+.kcard {
+  padding: 10px 11px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.085);
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--admin-surface) 0%, var(--admin-surface-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--rgb-admin-surface) / 0.9),
+    0 1px 2px rgb(var(--rgb-admin-ink) / 0.05),
+    0 8px 18px -14px rgb(var(--rgb-admin-ink) / 0.2);
+  transition: transform 0.16s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.kcard:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--rgb-admin-accent) / 0.28);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--rgb-admin-surface) / 0.95),
+    0 2px 4px rgb(var(--rgb-admin-ink) / 0.06),
+    0 14px 28px -16px rgb(var(--rgb-admin-ink) / 0.28);
+}
+.kcard__name { color: var(--admin-ink); font-size: 12.5px; font-weight: 500; }
+.kcard__meta {
+  margin-top: 2px;
+  color: var(--admin-faint);
+  font-size: 10.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kcard__foot { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.kcard__price { color: var(--admin-muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.kcard__tag {
+  margin-left: auto;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgb(var(--rgb-admin-ink) / 0.05);
+  color: var(--admin-muted);
+  font-size: 9.5px;
+}
+
+@media (max-width: 1280px) {
+  .admin-qgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ── 审计日志 ─────────────────────────────────────────────── */
+.audit-time {
+  color: var(--admin-faint);
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.audit-summary {
+  display: block;
+  overflow: hidden;
+  color: var(--admin-ink);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.audit-detail {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--admin-faint);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 大屏用 flush 主区：不滚动、无内边距，内容自己按 100% 高度排版 */
+.admin-main--flush {
+  display: flex;
+  padding: 0;
+  /* 大屏目标是一屏装下；万一视口偏矮，允许滚动兜底，不要直接裁掉底部 */
+  overflow: auto;
+}
+
+/* ── 质量总览条：替代原来的「大环 + 松散清单」两栏 ─────────── */
+.admin-qbar {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 14px;
+  background: var(--admin-surface);
+}
+
+.admin-qbar__ring { position: relative; width: 72px; height: 72px; }
+.admin-qbar__ring svg { display: block; width: 72px; height: 72px; }
+.admin-qbar__ring b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--admin-ink);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.admin-qbar__ring b em { margin-left: 1px; color: var(--admin-faint); font-size: 8.5px; font-style: normal; }
+
+.admin-qbar__stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.admin-qbar__stats div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.admin-qbar__stats span { color: var(--admin-muted); font-size: 10.5px; }
+.admin-qbar__stats b {
+  color: var(--admin-ink);
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+.admin-qbar__stats b.is-bad { color: var(--admin-bad); }
+.admin-qbar__stats small { color: var(--admin-faint); font-size: 9.5px; white-space: nowrap; }
+
+.admin-qbar__gaps { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.admin-qbar__title { color: var(--admin-faint); font-size: 9.5px; letter-spacing: 0.12em; }
+.admin-qbar__bars { display: flex; flex-direction: column; gap: 5px; }
+.admin-qbar__bar {
+  display: grid;
+  grid-template-columns: 92px 1fr 54px;
+  align-items: center;
+  gap: 8px;
+  color: var(--admin-muted);
+  font-size: 10.5px;
+}
+.admin-qbar__bar i {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(var(--rgb-admin-ink) / 0.07);
+  overflow: hidden;
+}
+.admin-qbar__bar i b { display: block; height: 100%; border-radius: 3px; background: var(--admin-accent); }
+.admin-qbar__bar em {
+  color: var(--admin-ink);
+  font-size: 10.5px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.admin-qbar__empty { margin: 0; color: var(--admin-faint); font-size: 10.5px; }
+
+/* 质检卡角标：让 SUCCESS 之间也有可见差异 */
+.qcard__badge {
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: rgb(var(--rgb-admin-warn) / 0.16);
+  color: var(--admin-warn);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* 地图瓦片失败时的软提示：不遮挡热力层，只做说明 */
+.admin-map-overlay--soft {
+  align-items: flex-end;
+  background: none;
+  pointer-events: none;
+}
+.admin-map-fallback {
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid rgb(var(--rgb-admin-warn) / 0.3);
+  border-radius: 10px;
+  background: rgb(var(--rgb-admin-surface) / 0.92);
+  color: var(--admin-warn);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* ── 质量统计：一行数字，不用大环、不列非缺陷项 ───────────── */
+.admin-qstats {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  margin-bottom: 14px;
+  padding: 10px 16px;
+  border: 1px solid rgb(var(--rgb-admin-ink) / 0.09);
+  border-radius: 12px;
+  background: var(--admin-surface);
+}
+.admin-qstats__item { display: flex; align-items: baseline; gap: 7px; white-space: nowrap; }
+.admin-qstats__item span { color: var(--admin-muted); font-size: 11px; }
+.admin-qstats__item b {
+  color: var(--admin-ink);
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.admin-qstats__item b.is-bad { color: var(--admin-bad); }
+.admin-qstats__note {
+  margin: 0 0 0 auto;
+  color: var(--admin-faint);
+  font-size: 10.5px;
+  text-align: right;
+}
+
+/* 缺过敏原标签：整条状态带换琥珀，与「完全合格（绿）」「打标失败（红）」区分开 */
+.qcard[data-tone="tag"] .qcard__bar {
+  background: rgb(var(--rgb-admin-warn) / 0.14);
+  color: var(--admin-warn);
+}
+.qcard[data-tone="tag"] { border-color: rgb(var(--rgb-admin-warn) / 0.26); }
+
+/* 侧栏子导航（大屏分析主题）：缩进一级，跟着主项一起高亮 */
+.admin-side__sub {
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 1px 0;
+  padding: 0 10px 0 32px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--admin-faint);
+  font: inherit;
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+.admin-side__sub::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+.admin-side__sub:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+.admin-side__sub.is-on { background: rgb(var(--rgb-admin-accent) / 0.1); color: var(--admin-accent); font-weight: 500; }
+
+/* 侧栏子导航（大屏分析主题）：缩进一级，跟着主项一起高亮 */
+.admin-side__sub {
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 1px 0;
+  padding: 0 10px 0 32px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--admin-faint);
+  font: inherit;
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+.admin-side__sub::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+.admin-side__sub:hover { background: var(--admin-surface-2); color: var(--admin-ink); }
+.admin-side__sub.is-on { background: rgb(var(--rgb-admin-accent) / 0.1); color: var(--admin-accent); font-weight: 500; }

@@ -1,0 +1,303 @@
+"""算法 2：多维上下文单人效用推荐与红黑榜修正（MASTER_SPEC v2.3.2 第四章）。"""
+
+import math
+from typing import Dict, Iterable, List, Optional, Sequence
+
+from sqlalchemy.orm import Session
+
+from ..config import DEFAULT_ALGO_PARAMS
+from ..models import AlgoConfig, Dish, FridgeInventory, Restaurant, UserPreference
+from .combo_optimizer import optimize_combo
+from .time_decay import compute_decay_weights
+from .veto_rules import hits as veto_hits
+from .vector_spec import (
+    build_explain_reason,
+    light_healthy_hits,
+    normalize_vector,
+    resolve_bubble_effects,
+    similarity_to_100,
+    target_match_score,
+    weather_match_score,
+)
+
+FAVORITE_BOOST = 1.15
+PARAM_KEYS = (
+    "lambda_decay",
+    "omega_group",
+    "alpha_taste",
+    "beta_weather",
+    "gamma_budget",
+    "delta_status",
+)
+WEIGHT_KEYS = ("alpha_taste", "beta_weather", "gamma_budget", "delta_status")
+
+
+def _normalize_weights(params: Dict[str, float]) -> Dict[str, float]:
+    clipped = {key: max(0.0, float(params[key])) for key in WEIGHT_KEYS}
+    total = sum(clipped.values())
+    if total <= 0.0:
+        clipped = {key: float(DEFAULT_ALGO_PARAMS[key]) for key in WEIGHT_KEYS}
+        total = sum(clipped.values())
+    for key in WEIGHT_KEYS:
+        params[key] = clipped[key] / total
+    return params
+
+
+def _ingredient_set(values: Optional[Iterable[str]]) -> set[str]:
+    return {str(v).strip() for v in (values or []) if str(v).strip()}
+
+
+def _hit_veto(ingredients: set[str], veto_tags: Sequence[str]) -> bool:
+    """F01 修复：忌口匹配统一走 `veto_rules`（类别词表 + 别名展开）。
+
+    历史实现在这里做双向子串匹配，导致用户写「海鲜」、菜谱写「鲜虾/虾皮」时
+    互相不包含而漏判。现在两处调用（单人推荐、群组初筛）共用同一套规则。
+    """
+    return veto_hits(ingredients, veto_tags)
+
+
+def _appliance_set(value: object) -> set[str]:
+    """appliance_tag 兼容 JSON 数组与历史单值字符串两种存储形态。"""
+    if value is None:
+        return set()
+    if isinstance(value, str):
+        return {value.strip()} if value.strip() else set()
+    if isinstance(value, (list, tuple, set)):
+        return {str(v).strip() for v in value if str(v).strip()}
+    return set()
+
+
+def _budget_score(price: float, budget: float) -> float:
+    if budget <= 0:
+        return 0.0
+    if price <= budget:
+        return round(85.0 + 15.0 * (1.0 - price / budget), 2)
+    over_ratio = (price - budget) / budget
+    return round(max(0.0, 85.0 * math.exp(-3.0 * over_ratio)), 2)
+
+
+def _fridge_status_score(db: Session, user_id: int, dish: Dish) -> float:
+    mains = _ingredient_set(dish.ingredients_main)
+    if not mains:
+        return 0.0
+    items = db.query(FridgeInventory).filter(FridgeInventory.user_id == user_id).all()
+    if not items:
+        return 0.0
+    total_weight = 0.0
+    matched_weight = 0.0
+    for main in mains:
+        weight = 1.0
+        for item in items:
+            name = str(item.ingredient_name).strip()
+            if name and (name in main or main in name):
+                item_weight = 2.0 if (item.expire_days or 0) <= 2 else 1.0
+                matched_weight += item_weight
+                break
+        total_weight += weight
+    if total_weight == 0:
+        return 0.0
+    return round(min(100.0, 100.0 * matched_weight / total_weight), 2)
+
+
+def _load_params(db: Session, override: Optional[Dict[str, float]]) -> Dict[str, float]:
+    params = dict(DEFAULT_ALGO_PARAMS)
+    config = (
+        db.query(AlgoConfig)
+        .filter(AlgoConfig.config_name == "default_production")
+        .first()
+    )
+    if config is not None:
+        for key in PARAM_KEYS:
+            value = getattr(config, key, None)
+            if value is not None:
+                params[key] = float(value)
+    if override:
+        for key, value in override.items():
+            if key in PARAM_KEYS and value is not None:
+                params[key] = float(value)
+    return params
+
+
+def recommend_single(
+    db: Session,
+    user_id: int,
+    mode_type: str,
+    budget: Optional[float] = None,
+    bubbles: Optional[Sequence[str]] = None,
+    combo_mode: bool = False,
+    override_params: Optional[Dict[str, float]] = None,
+    weather_temp: float = 20.0,
+    weather_text: str = "",
+    max_distance_meters: Optional[int] = None,
+    limit: int = 10,
+    exclude_dish_ids: Optional[Sequence[int]] = None,
+) -> Dict[str, object]:
+    # 审查 F13：客户端可以把「已经看过/已划过」的菜排掉，后端在打分前就过滤，
+    # 这样「换一批」拿到的是真正的新候选，而不是同一批 Top N 再来一遍。
+    excluded = {int(i) for i in (exclude_dish_ids or [])}
+
+    prefs = (
+        db.query(UserPreference).filter(UserPreference.user_id == user_id).first()
+    )
+    if prefs is None:
+        raise ValueError(f"用户 {user_id} 缺少饮食基因配置")
+
+    bubbles = list(bubbles or [])
+    effects = resolve_bubble_effects(bubbles, mode_type)
+    params = _load_params(db, override_params)
+    params.update(effects["param_overrides"])
+    _normalize_weights(params)
+
+    budget = float(prefs.default_budget if budget is None else budget)
+    base_vector = normalize_vector(prefs.base_vector)
+    veto_tags = [str(t) for t in (prefs.veto_tags or [])]
+    blacklist = {int(i) for i in (prefs.blacklist_dish_ids or [])}
+    # 黑榜门店：外食模式下该门店全部菜品一并剔除（v2.3.1 第三章硬性红线）
+    blacklist_restaurants = {
+        int(i) for i in (getattr(prefs, "blacklist_restaurant_ids", None) or [])
+    }
+    favorites = {int(i) for i in (prefs.favorite_dish_ids or [])}
+    target_vector = effects["target_vector"]
+
+    dishes = (
+        db.query(Dish).filter(Dish.mode_type == mode_type).order_by(Dish.id).all()
+    )
+    restaurant_map: Dict[int, Restaurant] = {}
+    if mode_type == "OUT_DINING":
+        restaurant_map = {r.id: r for r in db.query(Restaurant).all()}
+
+    candidates: List[Dish] = []
+    for dish in dishes:
+        if dish.id in blacklist:
+            continue
+        if dish.id in excluded:
+            continue
+        if (
+            mode_type == "OUT_DINING"
+            and dish.restaurant_id is not None
+            and int(dish.restaurant_id) in blacklist_restaurants
+        ):
+            continue
+        ingredients = _ingredient_set(dish.ingredients_main) | _ingredient_set(
+            dish.ingredients_aux
+        )
+        if _hit_veto(ingredients, veto_tags):
+            continue
+        if max_distance_meters is not None and mode_type == "OUT_DINING":
+            restaurant = restaurant_map.get(dish.restaurant_id)
+            if restaurant is not None and (restaurant.distance_meters or 0) > max_distance_meters:
+                continue
+        if effects["budget_filter"] and float(dish.price_or_cost or 0.0) > budget:
+            continue
+        vector = normalize_vector(dish.feature_vector)
+        if effects["hot_soup_filter"]:
+            if not (
+                vector["soup_level"] >= 0.7 and vector["temp_fit"] <= 0.4
+            ):
+                continue
+        if effects["lazy_filter"]:
+            # v2.3.2 审核裁决：lazy_one_pot 语义是「厨具可用性（低动手）」，与出餐速度正交，
+            # 已删除 prep_speed >= 0.7 门槛，只按 appliance_tag 数组筛选。
+            allowed = set(effects.get("allowed_appliances") or ())
+            if not (allowed & _appliance_set(dish.appliance_tag)):
+                continue
+        candidates.append(dish)
+
+    decay_weights = compute_decay_weights(
+        db, user_id, candidates, params["lambda_decay"]
+    )
+
+    scored: List[Dict[str, object]] = []
+    for dish in candidates:
+        vector = normalize_vector(dish.feature_vector)
+        taste = similarity_to_100(base_vector, vector)
+        weather = weather_match_score(vector, weather_temp, weather_text)
+        price = float(dish.price_or_cost or 0.0)
+        budget_score = _budget_score(price, budget)
+        decay = decay_weights.get(dish.id, 1.0)
+        freshness = round(decay * 100.0, 2)
+        if mode_type == "HOME_COOKING":
+            status = _fridge_status_score(db, user_id, dish)
+        elif target_vector:
+            status = target_match_score(vector, target_vector)
+        else:
+            status = 60.0
+
+        total = decay * (
+            params["alpha_taste"] * taste
+            + params["beta_weather"] * weather
+            + params["gamma_budget"] * budget_score
+            + params["delta_status"] * status
+        )
+        if effects["light_penalty"] and light_healthy_hits(vector):
+            total *= float(effects.get("penalty_multiplier", 0.2))
+        is_favorite = dish.id in favorites
+        if is_favorite:
+            total *= FAVORITE_BOOST
+        raw_score = round(total, 4)
+        total = round(min(100.0, raw_score), 1)
+
+        restaurant = restaurant_map.get(dish.restaurant_id)
+        scored.append(
+            {
+                "dish_id": dish.id,
+                "name": dish.name,
+                "mode_type": dish.mode_type,
+                "cuisine_type": dish.cuisine_type or "",
+                "dish_role": dish.dish_role,
+                "price": price,
+                "restaurant_id": dish.restaurant_id,
+                "restaurant_name": restaurant.name if restaurant else None,
+                "total_score": total,
+                "raw_score": raw_score,
+                "radar_5d": {
+                    "taste": taste,
+                    "weather": weather,
+                    "budget": budget_score,
+                    "freshness": freshness,
+                    "status": status,
+                },
+                "decay_weight": decay,
+                "explain_reason": build_explain_reason(
+                    taste,
+                    weather,
+                    budget_score,
+                    freshness,
+                    status,
+                    decay,
+                    is_favorite,
+                    list(effects["labels"]),
+                ),
+                "feature_vector": vector,
+                "is_favorite": is_favorite,
+                # 图片缺失时为 None，前端渲染无图占位；不借用其它菜的图。
+                "image_url": (dish.image_url or None),
+            }
+        )
+
+    scored.sort(key=lambda item: (-float(item["raw_score"]), int(item["dish_id"])))
+    combo = None
+    if combo_mode:
+        combo_candidates = [
+            {
+                "dish_id": item["dish_id"],
+                "name": item["name"],
+                "dish_role": item["dish_role"],
+                "price": item["price"],
+                "score": item["raw_score"],
+                "oily_level": item["feature_vector"]["oily_level"],
+            }
+            for item in scored[:20]
+        ]
+        combo = optimize_combo(combo_candidates, budget)
+
+    return {
+        "mode_type": mode_type,
+        "recommendations": scored[: max(1, limit)],
+        "combo": combo,
+        "params_used": {key: round(params[key], 4) for key in PARAM_KEYS},
+        "bubble_effects": {
+            "applied": effects["labels"],
+            "ignored": effects["ignored"],
+        },
+    }

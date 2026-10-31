@@ -1,0 +1,2 @@
+detail_lines: 48000
+rooms_lines: 1000
